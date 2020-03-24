@@ -1,0 +1,401 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+
+        <Space
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+        <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <android.support.v4.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <include layout="@layout/clock_start"/>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v4.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <include layout="@layout/protection_level"/>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v4.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp" />
+
+                <android.support.v7.widget.CardView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <include layout="@layout/eye_exercise"/>
+
+                </android.support.v7.widget.CardView>
+
+                <android.support.v4.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layout_round_shape_black">
+
+                    <LinearLayout
+                        android:id="@+id/timer_start_stop"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginEnd="15dp"
+                        android:background="@drawable/layout_round_shape_dark_black_shade_blue">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:layout_marginStart="40dp"
+                            android:layout_marginTop="30dp"
+                            android:layout_marginBottom="30dp">
+
+                            <TextView
+                                android:id="@+id/timer_minute"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/default_min_sec"
+                                android:textSize="60sp"
+                                android:gravity="center"
+                                android:textColor="@color/eyeware_white"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/minute_text"
+                                android:gravity="center"
+                                android:textSize="20sp"
+                                android:textColor="@color/eyeware_white"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:text="@string/time_separator"
+                            android:textSize="45sp"
+                            android:gravity="center"
+                            android:layout_marginBottom="25dp"
+                            android:textColor="@color/eyeware_white"/>
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:layout_marginEnd="40dp"
+                            android:layout_marginTop="40dp"
+                            android:layout_marginBottom="40dp">
+
+                            <TextView
+                                android:id="@+id/timer_second"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/default_min_sec"
+                                android:textSize="60sp"
+                                android:gravity="center"
+                                android:textColor="@color/eyeware_white"/>
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="@string/second_text"
+                                android:gravity="center"
+                                android:textSize="20sp"
+                                android:textColor="@color/eyeware_white"/>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/home_nhi_message"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="25sp"
+                    android:text="@string/home_default_hello_text"/>
+
+                <android.support.v4.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/smart_detect_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layout_rectangle_dark_blue_shade">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/home_checkbox_text_smart_detect"
+                        android:textColor="@color/eyeware_white"
+                        android:textSize="25sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_smart_detect"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="15dp"
+                        android:scaleX="1.4"
+                        android:scaleY="1.4"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/divider"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/divider"
+                        android:layout_width="1dp"
+                        android:layout_height="55dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="64dp"
+                        android:layout_marginTop="8dp"
+                        android:background="?android:attr/listDivider"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+                </android.support.constraint.ConstraintLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/vibrate_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layout_rectangle_dark_blue_shade">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/home_checkbox_vibrate"
+                        android:textColor="@color/eyeware_white"
+                        android:textSize="25sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_vibrate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="15dp"
+                        android:scaleX="1.4"
+                        android:scaleY="1.4"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/divider2"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/divider2"
+                        android:layout_width="1dp"
+                        android:layout_height="55dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="64dp"
+                        android:layout_marginTop="8dp"
+                        android:background="?android:attr/listDivider"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                </android.support.constraint.ConstraintLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/voice_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layout_rectangle_dark_blue_shade">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/home_checkbox_read_time_out_loud"
+                        android:textSize="25sp"
+                        android:textColor="@color/eyeware_white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_voice"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="15dp"
+                        android:scaleX="1.4"
+                        android:scaleY="1.4"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/divider3"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/divider3"
+                        android:layout_width="1dp"
+                        android:layout_height="55dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="64dp"
+                        android:layout_marginTop="8dp"
+                        android:background="?android:attr/listDivider"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                </android.support.constraint.ConstraintLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/lock_screen_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layout_rectangle_dark_blue_shade">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="15dp"
+                        android:text="@string/home_checkbox_lock_screen"
+                        android:textSize="25sp"
+                        android:textColor="@color/eyeware_white"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <CheckBox
+                        android:id="@+id/checkbox_lock_screen"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="15dp"
+                        android:layout_marginEnd="8dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginTop="15dp"
+                        android:scaleX="1.4"
+                        android:scaleY="1.4"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/divider4"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <View
+                        android:id="@+id/divider4"
+                        android:layout_width="1dp"
+                        android:layout_height="55dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginEnd="64dp"
+                        android:layout_marginTop="8dp"
+                        android:background="?android:attr/listDivider"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0" />
+
+                </android.support.constraint.ConstraintLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider" />
+
+                <android.support.v4.widget.Space
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp" />
+
+            </LinearLayout>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <Space
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

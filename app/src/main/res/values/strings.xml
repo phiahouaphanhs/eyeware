@@ -1,0 +1,207 @@
+<resources>
+    <string name="app_name">No More Eye Strain</string>
+    <string name="global_wait_message">Please wait for a moment&#8230;</string>
+    <string name="version_text">Version 1.0</string>
+
+    <!-- activity titles -->
+    <string name="title_activity_splash_screen">SplashScreen</string>
+    <string name="title_activity_notification_screen">NotificationScreen</string>
+
+    <!-- content descriptions -->
+    <string name="content_description_splash_image">Splash image</string>
+    <string name="content_description_setting_icon">Setting icon</string>
+    <string name="content_description_logo">logo</string>
+    <string name="content_description_notification_icon">notification icon</string>
+    <string name="content_description_start_icon">Start icon</string>
+    <string name="content_description_child_icon">child icon</string>
+    <string name="content_description_close_icon">close icon</string>
+    <string name="content_description_high_level_check_icon">High level check icon</string>
+    <string name="content_description_standard_level_check_icon">Standard level check icon</string>
+    <string name="content_description_low_level_check_icon">Low level check icon</string>
+    <string name="content_description_gamer_level_check_icon">Gamer level check icon</string>
+    <string name="content_description_customised_level_check_icon">Customised level check icon</string>
+
+
+    <!-- bottom navigation -->
+    <string name="navigation_item_home">Home</string>
+    <string name="navigation_item_settings">Settings</string>
+
+    <!-- home fragment -->
+    <string name="home_smart_detect_on">Smart detect on</string>
+    <string name="home_smart_detect_off">Smart detect off</string>
+    <string name="home_vibration_on">Vibration on</string>
+    <string name="home_vibration_off">Vibration off</string>
+    <string name="home_checkbox_text_smart_detect">Smart Detect</string>
+    <string name="home_checkbox_vibrate">Vibrate</string>
+    <string name="home_checkbox_read_time_out_loud">Sound</string>
+    <string name="home_checkbox_lock_screen">Lock Screen</string>
+    <string name="home_default_hello_text">Hi, my name is Southiny, I am here to help you protect your eyes from this device</string>
+    <string name="home_timer_start_message">Program started !</string>
+    <string name="home_timer_stop_message">Program stopped !</string>
+    <string name="home_manage_lock_screen_on">Lock screen manager on</string>
+    <string name="home_manage_lock_screen_off">Lock screen manager off</string>
+
+    <!-- shared -->
+    <string name="default_min_sec">00</string>
+    <string name="minute_text">min.</string>
+    <string name="second_text">sec.</string>
+    <string name="time_separator">:</string>
+
+    <string name="default_break_every">20</string>
+    <string name="default_break_for">20</string>
+    <string name="default_bluelight_change">20</string>
+
+    <!-- notification -->
+    <string name="notification_message">LOOK AWAY FROM PHONE OR CLOSE YOUR EYES</string>
+
+    <!-- advice -->
+    <string name="advice_text_notification_freq">Break every</string>
+    <string name="advice_text_notification_stay">Break for</string>
+    <string name="advice_save_button_text">Save</string>
+    <string name="advice_change_save">All saved !!</string>
+    <string name="advice_lock_screen_at">Lock screen at</string>
+    <string name="advice_change_password_button_text">Change password</string>
+
+    <string name="device_admin_lock_screen_explanation">for lock screen</string>
+
+    <!-- password activity -->
+    <string name="content_description_security_icon">Security icon</string>
+    <string name="enter_password_label">Enter Password</string>
+    <string name="hint_input_password">e.g. 12345678</string>
+    <string name="content_description_unlock_icon">unlock icon</string>
+
+    <!-- password form -->
+    <string name="password_form_ok_button">ok</string>
+    <string name="password_form_cancel_button">cancel</string>
+    <string name="password_form_text">Enter password :</string>
+
+    <!-- -->
+    <string name="change_password_form_old_pwd_text">Enter old password :</string>
+    <string name="change_password_form_new_pwd_text">Enter new password :</string>
+    <string name="title_activity_main2">Main2Activity</string>
+
+    <string name="main_language_english">English</string>
+    <string name="main_language_french">French</string>
+    <string name="main_language_lao">Lao</string>
+    <string name="main_language_thai">Thai</string>
+
+    <string name="main_start_text">START</string>
+    <string name="main_standard_mode">STANDARD</string>
+    <string name="main_low_mode">LOW</string>
+    <string name="main_high_mode">HIGH</string>
+    <string name="main_customised_mode">CUSTOMISED</string>
+    <string name="main_gamer_mode">GAMER</string>
+    <string name="main_protection_level_customised_label">(Customised)</string>
+    <string name="main_settings_title">SETTINGS</string>
+    <string name="main_unknown_mode">UNKNOWN</string>
+    <string name="main_stop_text">STOP</string>
+    <string name="title_parental_control">Control your kids</string>
+    <string name="lock_screen_activate_label">Lock screen</string>
+    <string name="change_lock_screen_time_text">Change lock screen time</string>
+    <string name="unlock_screen_activate_label">Unlock screen</string>
+    <string name="change_unlock_screen_time_text">Change unlock screen time</string>
+
+    <string name="content_description_settings_mini_icon">settings mini icon</string>
+    <string name="content_description_check_breaking_icon">check breaking icon</string>
+    <string name="main_blue_light_filtering_item_title">Blue light auto filtering</string>
+    <string name="main_blue_light_consequence_explanation">blue light damage light-sensitive cells in the retina.</string>
+    <string name="content_description_blue_light_check_icon">blue light check icon</string>
+    <string name="main_stay_long_time_consequence_explanation">staring for long time damage your eyesight.</string>
+    <string name="title_activity_settings">Settings</string>
+
+    <string name="password_activate_label">Lock app with password</string>
+    <string name="change_password_label">Change password</string>
+    <string name="forget_password_label">Forget password</string>
+
+    <!-- Strings related to Settings -->
+    <string name="hint_input_break_every">Break every (e.g. 20)</string>
+    <string name="hint_input_break_for">Break for (e.g. 20)</string>
+    <string name="hint_input_bluelight_change_every">Change every (e.g. 10)</string>
+    <string name="button_settings_apply">APPLY</string>
+    <string name="break_every_label">Break Every</string>
+    <string name="break_for_label">Break For</string>
+    <string name="auto_change_bluelight_every_label">Change Bluelight Filter Every</string>
+    <string name="filter_colors_label">Filter Colors</string>
+    <string name="error_message_input_pl_name">The name should not be more than 20 characters</string>
+    <string name="error_message_input_break_every">Please enter a number more than 0 minute in "Break Every". </string>
+    <string name="error_message_input_break_for">Please enter a number more than 5 seconds in "Break For". </string>
+    <string name="error_message_input_bluelight_change">Please enter a number more than 0 minute in "Auto Change Bluelight Every". </string>
+
+    <!-- Example General eye_exercise -->
+    <string name="pref_header_general">General</string>
+
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_default_display_name">John Smith</string>
+
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+
+    <!-- Example eye_exercise for Data & Sync -->
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+
+    <string-array name="list_preference_entries">
+        <item>Entry 1</item>
+        <item>Entry 2</item>
+        <item>Entry 3</item>
+    </string-array>
+
+    <string-array name="list_preference_entry_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+
+    <string-array name="multi_select_list_preference_default_value" />
+
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+
+    <!-- Example eye_exercise for Notifications -->
+    <string name="pref_header_notifications">Notifications</string>
+
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_ringtone_silent">Silent</string>
+
+    <string name="pref_title_vibrate">Vibrate</string>
+    <string name="password_incorrect_error_message">Password entered is incorrect.</string>
+    <string name="screen_brightness_label">Extended Screen Darkness</string>
+    <string name="filter_transparency_label">Filter Density</string>
+    <string name="content_description_edit_icon">edit_icon</string>
+    <string name="content_description_reset_icon">reset_icon</string>
+    <string name="reset_to_default_title">Reset to default</string>
+
+
+</resources>

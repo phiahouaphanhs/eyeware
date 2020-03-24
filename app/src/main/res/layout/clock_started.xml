@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+        android:id="@+id/constraintLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:background="@drawable/layout_round_shape_black"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/timer_start_stop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/layout_round_shape_dark_blue_shade_green"
+            android:orientation="horizontal"
+            android:padding="@dimen/activity_vertical_margin"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/current_protection_level_text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="32dp"
+                android:text="@string/main_unknown_mode"
+                android:textColor="@color/eyeware_white"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/timer_minute_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="32dp"
+                android:gravity="center"
+                android:text="@string/default_min_sec"
+                android:textColor="@color/eyeware_white"
+                android:textSize="60sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/separator"
+                app:layout_constraintTop_toBottomOf="@id/current_protection_level_text_view" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:gravity="center"
+                android:text="@string/minute_text"
+                android:textColor="@color/eyeware_white"
+                android:textSize="20sp"
+                app:layout_constraintEnd_toEndOf="@+id/timer_minute_count"
+                app:layout_constraintTop_toBottomOf="@+id/timer_minute_count" />
+
+            <TextView
+                android:id="@+id/separator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="32dp"
+                android:gravity="center"
+                android:text="@string/time_separator"
+                android:textColor="@color/eyeware_white"
+                android:textSize="40sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/current_protection_level_text_view" />
+
+            <TextView
+                android:id="@+id/timer_second_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="32dp"
+                android:gravity="center"
+                android:text="@string/default_min_sec"
+                android:textColor="@color/eyeware_white"
+                android:textSize="60sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/separator"
+                app:layout_constraintTop_toBottomOf="@id/current_protection_level_text_view" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:gravity="center"
+                android:text="@string/second_text"
+                android:textColor="@color/eyeware_white"
+                android:textSize="20sp"
+                app:layout_constraintStart_toStartOf="@+id/timer_second_count"
+                app:layout_constraintTop_toBottomOf="@+id/timer_second_count" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.constraint.ConstraintLayout>
+
+    <Button
+        android:id="@+id/stop_button"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="64dp"
+        android:layout_marginBottom="24dp"
+        android:background="@drawable/layout_round_shape_black"
+        android:text="@string/main_stop_text"
+        android:textColor="@color/eyeware_white"
+        android:textSize="25sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+
+</android.support.constraint.ConstraintLayout>

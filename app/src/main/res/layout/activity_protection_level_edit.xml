@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--<Space
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>-->
+
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:layout_weight="1">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+            <ImageView
+                android:id="@+id/reset_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@string/content_description_reset_icon"
+                android:padding="@dimen/fab_margin"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_settings_backup_restore_black_24dp" />
+
+            <ImageView
+                android:id="@+id/smily_icon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/content_description_setting_icon"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/ic_mood_black_24dp" />
+
+            <EditText
+                android:id="@+id/protection_level_name_edit_text"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:autofillHints="@string/main_customised_mode"
+                android:hint="@string/main_customised_mode"
+                android:inputType="text"
+                android:text="@string/main_customised_mode"
+                android:textAlignment="center"
+                android:textAppearance="@style/TextAppearance.AppCompat.Headline"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/smily_icon" />
+
+
+            <View
+                android:id="@+id/divider6"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="24dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/protection_level_name_edit_text" />
+
+            <Switch
+                android:id="@+id/breaking_activate_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/layout_round_shape_gray"
+                android:padding="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider6" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/constraintLayout4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/breaking_activate_switch">
+
+                <TextView
+                    android:id="@+id/break_every_text_label"
+                    android:layout_width="274dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/break_every_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/eyeware_black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </android.support.constraint.ConstraintLayout>
+
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_break_every"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout4">
+
+                <EditText
+                    android:id="@+id/break_every_input_text"
+                    android:layout_width="274dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:autofillHints="@string/default_break_every"
+                    android:ems="10"
+                    android:hint="@string/hint_input_break_every"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/break_every_unit_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/minute_text"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/break_every_input_text" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <TextView
+                android:id="@+id/break_for_text_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/break_for_label"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/eyeware_black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_break_every" />
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_break_for"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/break_for_text_label">
+
+                <EditText
+                    android:id="@+id/break_for_input_text"
+                    android:layout_width="274dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:autofillHints="@string/default_break_for"
+                    android:ems="10"
+                    android:hint="@string/hint_input_break_for"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/break_for_unit_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/second_text"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/break_for_input_text" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_breaking_mode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_break_for">
+
+                <include layout="@layout/breaking_mode" />
+
+            </LinearLayout>
+
+
+            <View
+                android:id="@+id/divider8"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="24dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_breaking_mode" />
+
+            <Switch
+                android:id="@+id/bluelight_activate_switch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/layout_round_shape_gray"
+                android:padding="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider8" />
+
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/constraintLayout5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/bluelight_activate_switch">
+
+                <TextView
+                    android:id="@+id/bluelight_change_text_label"
+                    android:layout_width="274dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="@string/auto_change_bluelight_every_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    android:textColor="@color/eyeware_black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            </android.support.constraint.ConstraintLayout>
+
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/layout_bluelight_change"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
+
+                <EditText
+                    android:id="@+id/bluelight_change_input_text"
+                    android:layout_width="274dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:autofillHints="@string/default_bluelight_change"
+                    android:ems="10"
+                    android:hint="@string/hint_input_bluelight_change_every"
+                    android:inputType="number"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/bluelight_change_unit_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginBottom="16dp"
+                    android:text="@string/minute_text"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/bluelight_change_input_text" />
+
+            </android.support.constraint.ConstraintLayout>
+
+
+            <TextView
+                android:id="@+id/filter_colors_label"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:text="@string/filter_colors_label"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/eyeware_black"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/layout_bluelight_change" />
+
+            <Button
+                android:id="@+id/button_change_color_gold"
+                android:layout_width="59dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/overlay_color_gold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/filter_colors_label" />
+
+            <Button
+                android:id="@+id/button_change_color_green"
+                android:layout_width="59dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/overlay_color_green"
+                app:layout_constraintStart_toEndOf="@+id/button_change_color_gold"
+                app:layout_constraintTop_toBottomOf="@+id/filter_colors_label" />
+
+            <Button
+                android:id="@+id/button_change_color_pink"
+                android:layout_width="59dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/overlay_color_pink"
+                app:layout_constraintStart_toEndOf="@+id/button_change_color_green"
+                app:layout_constraintTop_toBottomOf="@+id/filter_colors_label" />
+
+            <Button
+                android:id="@+id/button_change_color_brown"
+                android:layout_width="59dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/overlay_color_brown"
+                app:layout_constraintStart_toEndOf="@+id/button_change_color_pink"
+                app:layout_constraintTop_toBottomOf="@+id/filter_colors_label" />
+
+            <Button
+                android:id="@+id/button_change_color_purple"
+                android:layout_width="59dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/overlay_color_purple"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button_change_color_gold" />
+
+            <Button
+                android:id="@+id/button_change_color_red"
+                android:layout_width="59dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/overlay_color_red"
+                app:layout_constraintStart_toEndOf="@+id/button_change_color_purple"
+                app:layout_constraintTop_toBottomOf="@+id/button_change_color_green" />
+
+            <Button
+                android:id="@+id/button_change_color_orange"
+                android:layout_width="59dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/eyeware_black"
+                app:layout_constraintStart_toEndOf="@+id/button_change_color_red"
+                app:layout_constraintTop_toBottomOf="@+id/button_change_color_pink" />
+
+            <Button
+                android:id="@+id/button_change_color_blue"
+                android:layout_width="59dp"
+                android:layout_height="56dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="24dp"
+                android:background="@color/overlay_color_blue"
+                app:layout_constraintStart_toEndOf="@+id/button_change_color_orange"
+                app:layout_constraintTop_toBottomOf="@+id/button_change_color_brown" />
+
+
+            <View
+                android:id="@+id/divider7"
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_marginTop="24dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/button_change_color_purple" />
+
+            <LinearLayout
+                android:id="@+id/linearLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="24dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/divider7">
+
+                <include layout="@layout/brightness" />
+
+            </LinearLayout>
+
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v4.widget.NestedScrollView>
+
+    <!--<Space
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"/>-->
+
+    <TextView
+        android:id="@+id/settings_input_error_message"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingStart="12dp"
+        android:paddingTop="5dp"
+        android:paddingEnd="12dp"
+        android:paddingBottom="5dp"
+        android:textColor="@color/eyeware_red"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/apply_button"
+        style="@style/Widget.AppCompat.Button.Borderless"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SAVE"
+        android:textColor="@color/eyeware_white"
+        android:background="@color/eyeware_green"/>
+
+</LinearLayout>

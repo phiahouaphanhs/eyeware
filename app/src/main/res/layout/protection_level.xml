@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--<TextView
+        android:id="@+id/protection_level_text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/main_protection_level_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />-->
+
+        <Button
+            android:id="@+id/high_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/layout_round_shape_dark_black_shade_blue"
+            android:padding="@dimen/fab_margin"
+            android:text="@string/main_high_mode"
+            android:textAlignment="textStart"
+            android:textColor="@color/eyeware_white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/high_level_check_icon"
+            app:layout_constraintStart_toEndOf="@+id/high_mode_edit_icon"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/high_mode_edit_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:contentDescription="@string/content_description_edit_icon"
+            android:padding="@dimen/fab_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_edit_black_24dp" />
+
+        <ImageView
+            android:id="@+id/high_level_check_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:contentDescription="@string/content_description_high_level_check_icon"
+            android:padding="@dimen/fab_margin"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_check_black_24dp" />
+
+        <Button
+            android:id="@+id/standard_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/layout_round_shape_dark_black_shade_blue"
+            android:padding="@dimen/fab_margin"
+            android:text="@string/main_standard_mode"
+            android:textAlignment="textStart"
+            android:textColor="@color/eyeware_white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/standard_level_check_icon"
+            app:layout_constraintStart_toEndOf="@+id/standard_mode_edit_icon"
+            app:layout_constraintTop_toBottomOf="@+id/high_button" />
+
+        <ImageView
+            android:id="@+id/standard_mode_edit_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/content_description_edit_icon"
+            android:padding="@dimen/fab_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/high_button"
+            app:srcCompat="@drawable/ic_edit_black_24dp" />
+
+        <ImageView
+            android:id="@+id/standard_level_check_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/content_description_standard_level_check_icon"
+            android:padding="@dimen/fab_margin"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/high_button"
+            app:srcCompat="@drawable/ic_check_black_24dp" />
+
+        <ImageView
+            android:id="@+id/low_mode_edit_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/content_description_edit_icon"
+            android:padding="@dimen/fab_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/standard_button"
+            app:srcCompat="@drawable/ic_edit_black_24dp" />
+
+        <Button
+            android:id="@+id/low_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/layout_round_shape_dark_black_shade_blue"
+            android:padding="@dimen/fab_margin"
+            android:text="@string/main_low_mode"
+            android:textAlignment="textStart"
+            android:textColor="@color/eyeware_white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/low_level_check_icon"
+            app:layout_constraintStart_toEndOf="@+id/low_mode_edit_icon"
+            app:layout_constraintTop_toBottomOf="@+id/standard_button" />
+
+        <ImageView
+            android:id="@+id/low_level_check_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/content_description_low_level_check_icon"
+            android:padding="@dimen/fab_margin"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/standard_button"
+            app:srcCompat="@drawable/ic_check_black_24dp" />
+
+        <ImageView
+            android:id="@+id/gamer_mode_edit_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:contentDescription="@string/content_description_edit_icon"
+            android:padding="@dimen/fab_margin"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/low_button"
+            app:srcCompat="@drawable/ic_edit_black_24dp" />
+
+        <Button
+            android:id="@+id/gamer_button"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:background="@drawable/layout_round_shape_dark_black_shade_blue"
+            android:padding="@dimen/fab_margin"
+            android:text="@string/main_gamer_mode"
+            android:textAlignment="textStart"
+            android:textColor="@color/eyeware_white"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/gamer_level_check_icon"
+            app:layout_constraintStart_toEndOf="@+id/gamer_mode_edit_icon"
+            app:layout_constraintTop_toBottomOf="@+id/low_button" />
+
+        <ImageView
+            android:id="@+id/gamer_level_check_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/content_description_gamer_level_check_icon"
+            android:padding="@dimen/fab_margin"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/low_button"
+            app:srcCompat="@drawable/ic_check_black_24dp" />
+
+        <ImageView
+            android:id="@+id/customised_level_check_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:contentDescription="@string/content_description_customised_level_check_icon"
+            android:padding="@dimen/fab_margin"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/gamer_button"
+            app:srcCompat="@drawable/ic_check_black_24dp" />
+
+    </android.support.constraint.ConstraintLayout>
+
+</android.support.constraint.ConstraintLayout>

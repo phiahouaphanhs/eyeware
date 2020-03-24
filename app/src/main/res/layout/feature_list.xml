@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon_check_breaking"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:contentDescription="@string/content_description_check_breaking_icon"
+            android:src="@drawable/ic_check_black_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/firstLine_breaking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@id/icon_check_breaking"
+            android:gravity="center_vertical"
+            android:text="Breaking"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintStart_toEndOf="@+id/icon_check_breaking"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/secondLine_breaking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@id/icon_check_breaking"
+            android:text="@string/main_stay_long_time_consequence_explanation"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/icon_check_breaking"
+            app:layout_constraintTop_toBottomOf="@+id/firstLine_breaking" />
+
+        <TextView
+            android:id="@+id/thirdLine_breaking"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_toEndOf="@id/icon_check_breaking"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/icon_check_breaking"
+            app:layout_constraintTop_toBottomOf="@+id/secondLine_breaking" />
+
+    </android.support.constraint.ConstraintLayout>
+
+    <View
+        android:id="@+id/divider10"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="?android:attr/listDivider" />
+
+    <android.support.constraint.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/icon_check_bluelight"
+            android:layout_width="20dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="10dp"
+            android:contentDescription="@string/content_description_check_breaking_icon"
+            android:src="@drawable/ic_check_black_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/firstLine_bluelight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_toEndOf="@+id/icon_check_bluelight"
+            android:gravity="center_vertical"
+            android:text="@string/main_blue_light_filtering_item_title"
+            android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            app:layout_constraintStart_toEndOf="@+id/icon_check_bluelight"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/secondLine_bluelight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_toEndOf="@+id/icon_check_bluelight"
+            android:text="@string/main_blue_light_consequence_explanation"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@+id/icon_check_bluelight"
+            app:layout_constraintTop_toBottomOf="@+id/firstLine_bluelight" />
+
+        <TextView
+            android:id="@+id/thirdLine_bluelight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:layout_toEndOf="@id/icon_check_bluelight"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/icon_check_bluelight"
+            app:layout_constraintTop_toBottomOf="@+id/secondLine_bluelight" />
+
+    </android.support.constraint.ConstraintLayout>
+
+
+</LinearLayout>
+
+
+
+
