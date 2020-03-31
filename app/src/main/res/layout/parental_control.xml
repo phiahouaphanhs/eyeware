@@ -155,6 +155,7 @@
             android:layout_marginStart="8dp"
             android:text="@string/lock_screen_activate_label"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:autoSizeTextType="uniform"
             android:textColor="@color/eyeware_black"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"

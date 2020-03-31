@@ -104,9 +104,8 @@ public class Main2Activity extends AppCompatActivity {
 
         TextView plTextView = findViewById(R.id.current_protection_level_text_view);
         if (pm.isBreakingActivated()) {
-            ProtectionLevel pl = pm.getProtectionLevel();
-            plTextView.setText(pl.toString());
-            Logger.log(TAG, "current protection level is " + pl.toString());
+            plTextView.setText(pm.getName());
+            Logger.log(TAG, "current protection level is " + pm.getName());
         } else {
             plTextView.setText("DESACTIVATED");
             Logger.log(TAG, "current protection level is deactivated");
