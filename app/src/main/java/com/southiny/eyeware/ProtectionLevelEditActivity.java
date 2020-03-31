@@ -37,9 +37,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
     private EditText breakEveryMinEditText, breakForSecEditText, bluelightChangeEveryMinEditText, plNameEditText;
     private Switch breakingSwitch, bluelightSwitch;
     private ImageView breakingLightIcon, breakingMediumIcon, breakingStrongIcon;
-    private Button goldColorButton, greenColorButton, pinkColorButton, brownColorButton, purpleColorButton,
-    redColorButton, orangeColorButton, blueColorButton;
-    private SeekBar alphaBar, dimBar;
+    private ImageView[] colorIcons = new ImageView[8];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,17 +89,17 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         breakingMediumIcon = findViewById(R.id.unforce_screen_cut_icon);
         breakingStrongIcon = findViewById(R.id.force_screen_cut_icon);
 
-        goldColorButton = findViewById(R.id.button_change_color_gold);
-        greenColorButton = findViewById(R.id.button_change_color_green);
-        pinkColorButton = findViewById(R.id.button_change_color_pink);
-        brownColorButton = findViewById(R.id.button_change_color_brown);
-        purpleColorButton = findViewById(R.id.button_change_color_purple);
-        redColorButton = findViewById(R.id.button_change_color_red);
-        orangeColorButton = findViewById(R.id.button_change_color_orange);
-        blueColorButton = findViewById(R.id.button_change_color_blue);
+        colorIcons[0] = findViewById(R.id.button_change_color_gold);
+        colorIcons[1] = findViewById(R.id.button_change_color_green);
+        colorIcons[2] = findViewById(R.id.button_change_color_pink);
+        colorIcons[3] = findViewById(R.id.button_change_color_brown);
+        colorIcons[4] = findViewById(R.id.button_change_color_purple);
+        colorIcons[5] = findViewById(R.id.button_change_color_red);
+        colorIcons[6] = findViewById(R.id.button_change_color_orange);
+        colorIcons[7] = findViewById(R.id.button_change_color_blue);
 
-        dimBar = findViewById(R.id.brightness_level_seek_bar);
-        alphaBar = findViewById(R.id.transparency_level_seek_bar);
+        SeekBar dimBar = findViewById(R.id.brightness_level_seek_bar);
+        SeekBar alphaBar = findViewById(R.id.transparency_level_seek_bar);
 
 
         setInfoOnScreen();
@@ -125,6 +123,9 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
                 // update
                 if (valid) {
+
+                    sf.save();
+
                     pm.setName(name);
 
                     pm.setBreakingEvery_sec(breakEverySec);
@@ -135,6 +136,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
                     pm.setBluelightFiltering(bluelightSwitch.isChecked());
 
                     pm.save();
+
 
                     run.setCurrentProtectionMode(pm);
                     run.save();
@@ -209,14 +211,10 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             }
         });
 
-        //goldColorButton.setBackgroundColor(Color.);
-        goldColorButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View view) {
-                dialogChangeColorCode(1);
-            }
-        });
+        for(int i = 0; i < colorIcons.length; i++) {
+            ColorChangeListener ln = new ColorChangeListener(i);
+            colorIcons[i].setOnClickListener(ln);
+        }
 
         // screen brightness
         dimBar.setEnabled(true);
@@ -299,6 +297,23 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
         setSelectedBreakingMode(pm.getBreakingMode());
 
+        setActivatedColor(0, sf.isActivated0());
+        setActivatedColor(1, sf.isActivated1());
+        setActivatedColor(2, sf.isActivated2());
+        setActivatedColor(3, sf.isActivated3());
+        setActivatedColor(4, sf.isActivated4());
+        setActivatedColor(5, sf.isActivated5());
+        setActivatedColor(6, sf.isActivated6());
+        setActivatedColor(7, sf.isActivated7());
+    }
+
+    private void setActivatedColor(int index, boolean activated) {
+        Logger.log(TAG, "setActivatedColor(" + index + ", " + activated + ")");
+        if (activated) {
+            colorIcons[index].setImageResource(R.drawable.ic_style_gray_24dp);
+        } else {
+            colorIcons[index].setImageResource(android.R.color.transparent);
+        }
     }
 
     private void setSelectedBreakingMode(BreakingMode breakingMode) {
@@ -368,6 +383,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
                 .setPositiveButton("Reset", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         pm.reset();
+                        sf = pm.getScreenFilter();
                         setInfoOnScreen();
                         Toast.makeText(ProtectionLevelEditActivity.this, "Reset complete", Toast.LENGTH_SHORT).show();
                     }
@@ -412,9 +428,10 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
                 boolean checked = useThisFilterCheckBox.isChecked();
 
                 if (validColorCode(code)) {
-                    sf.setCode(index, code);
+                    //sf.setCode(index, code);
+                    Logger.log(TAG, "setActivated(" + index + ", " + checked + ")");
                     sf.setActivated(index, checked);
-                    sf.save();
+                    setActivatedColor(index, checked);
                     dialog.dismiss();
                 } else {
                     TextView colorCodeNotValidTextView = changeColorCodeLayout.findViewById(R.id.color_code_not_valid_text_view);
@@ -436,6 +453,22 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
     private boolean validColorCode(String code) {
         return true;
+    }
+
+
+    private class ColorChangeListener implements View.OnClickListener {
+
+        public int index = 0;
+
+        public ColorChangeListener(int i) {
+            index = i;
+        }
+
+        @Override
+        public void onClick(View view) {
+            dialogChangeColorCode(index);
+            Logger.log(TAG, "in listener, activated ? " + sf.isActivated(0) + " " + sf.isActivated0());
+        }
     }
 
 }

@@ -102,6 +102,15 @@ public class SettingsActivity extends AppCompatActivity {
                 dialogAboutApp();
             }
         });
+
+        ImageView backIcon = findViewById(R.id.back_icon);
+        backIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logger.log(TAG, "back icon click()");
+                finish();
+            }
+        });
     }
 
     private void dialogResetDefaultConfirmation() {

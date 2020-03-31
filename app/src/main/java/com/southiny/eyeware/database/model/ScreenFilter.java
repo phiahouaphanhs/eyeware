@@ -143,20 +143,28 @@ public class ScreenFilter extends Model {
         switch (index) {
             case 0:
                 code0 = code;
+                break;
             case 1:
                 code1 = code;
+                break;
             case 2:
                 code2 = code;
+                break;
             case 3:
                 code3 = code;
+                break;
             case 4:
                 code4 = code;
+                break;
             case 5:
                 code5 = code;
+                break;
             case 6:
                 code6 = code;
+                break;
             case 7:
                 code7 = code;
+                break;
         }
     }
 
@@ -187,20 +195,27 @@ public class ScreenFilter extends Model {
         switch (index) {
             case 0:
                 isActivated0 = activated;
+                break;
             case 1:
                 isActivated1 = activated;
+                break;
             case 2:
                 isActivated2 = activated;
+                break;
             case 3:
                 isActivated3 = activated;
             case 4:
                 isActivated4 = activated;
+                break;
             case 5:
                 isActivated5 = activated;
+                break;
             case 6:
                 isActivated6 = activated;
+                break;
             case 7:
                 isActivated7 = activated;
+                break;
         }
     }
 
