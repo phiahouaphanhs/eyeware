@@ -114,6 +114,96 @@ public class ScreenFilter extends Model {
         code7 = Constants.DEFAULT_FILTER_COLORS[7];
     }
 
+    public String getCode(int index) {
+
+        switch (index) {
+            case 0:
+                return code0;
+            case 1:
+                return code1;
+            case 2:
+                return code2;
+            case 3:
+                return code3;
+            case 4:
+                return code4;
+            case 5:
+                return code5;
+            case 6:
+                return code6;
+            case 7:
+                return code7;
+            default:
+                return code0;
+        }
+    }
+
+    public void setCode(int index, String code) {
+
+        switch (index) {
+            case 0:
+                code0 = code;
+            case 1:
+                code1 = code;
+            case 2:
+                code2 = code;
+            case 3:
+                code3 = code;
+            case 4:
+                code4 = code;
+            case 5:
+                code5 = code;
+            case 6:
+                code6 = code;
+            case 7:
+                code7 = code;
+        }
+    }
+
+    public boolean isActivated(int index) {
+        switch (index) {
+            case 0:
+                return isActivated0;
+            case 1:
+                return isActivated1;
+            case 2:
+                return isActivated2;
+            case 3:
+                return isActivated3;
+            case 4:
+                return isActivated4;
+            case 5:
+                return isActivated5;
+            case 6:
+                return isActivated6;
+            case 7:
+                return isActivated7;
+            default:
+                return false;
+        }
+    }
+
+    public void setActivated(int index, boolean activated) {
+        switch (index) {
+            case 0:
+                isActivated0 = activated;
+            case 1:
+                isActivated1 = activated;
+            case 2:
+                isActivated2 = activated;
+            case 3:
+                isActivated3 = activated;
+            case 4:
+                isActivated4 = activated;
+            case 5:
+                isActivated5 = activated;
+            case 6:
+                isActivated6 = activated;
+            case 7:
+                isActivated7 = activated;
+        }
+    }
+
     public String getCode0() {
         return code0;
     }

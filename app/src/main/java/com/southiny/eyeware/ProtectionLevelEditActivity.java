@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +20,7 @@ import android.widget.Toast;
 import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
+import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
 import com.southiny.eyeware.tool.ProtectionLevel;
@@ -28,9 +33,13 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
     private Run run;
     private ProtectionMode pm;
+    private ScreenFilter sf;
     private EditText breakEveryMinEditText, breakForSecEditText, bluelightChangeEveryMinEditText, plNameEditText;
     private Switch breakingSwitch, bluelightSwitch;
     private ImageView breakingLightIcon, breakingMediumIcon, breakingStrongIcon;
+    private Button goldColorButton, greenColorButton, pinkColorButton, brownColorButton, purpleColorButton,
+    redColorButton, orangeColorButton, blueColorButton;
+    private SeekBar alphaBar, dimBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +70,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         } else {
             Logger.err(TAG, "ERROR : no protection mode found");
         }
+
+        sf = pm.getScreenFilter();
     }
 
 
@@ -79,6 +90,18 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         breakingLightIcon = findViewById(R.id.notification_cut_icon);
         breakingMediumIcon = findViewById(R.id.unforce_screen_cut_icon);
         breakingStrongIcon = findViewById(R.id.force_screen_cut_icon);
+
+        goldColorButton = findViewById(R.id.button_change_color_gold);
+        greenColorButton = findViewById(R.id.button_change_color_green);
+        pinkColorButton = findViewById(R.id.button_change_color_pink);
+        brownColorButton = findViewById(R.id.button_change_color_brown);
+        purpleColorButton = findViewById(R.id.button_change_color_purple);
+        redColorButton = findViewById(R.id.button_change_color_red);
+        orangeColorButton = findViewById(R.id.button_change_color_orange);
+        blueColorButton = findViewById(R.id.button_change_color_blue);
+
+        dimBar = findViewById(R.id.brightness_level_seek_bar);
+        alphaBar = findViewById(R.id.transparency_level_seek_bar);
 
 
         setInfoOnScreen();
@@ -113,6 +136,9 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
                     pm.save();
 
+                    run.setCurrentProtectionMode(pm);
+                    run.save();
+
                     Logger.log(TAG, "updated.");
                     Intent intent = new Intent(ProtectionLevelEditActivity.this, MainActivity.class);
                     startActivity(intent);
@@ -136,6 +162,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             public void onClick(View view) {
                 pm.setBreakingMode(BreakingMode.LIGHT);
                 setSelectedBreakingMode(BreakingMode.LIGHT);
+                Toast.makeText(ProtectionLevelEditActivity.this, "Light Discipline", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -144,6 +172,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             public void onClick(View view) {
                 pm.setBreakingMode(BreakingMode.MEDIUM);
                 setSelectedBreakingMode(BreakingMode.MEDIUM);
+                Toast.makeText(ProtectionLevelEditActivity.this, "Medium Discipline", Toast.LENGTH_SHORT).show();
+
             }
         });
 
@@ -152,6 +182,82 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             public void onClick(View view) {
                 pm.setBreakingMode(BreakingMode.STRONG);
                 setSelectedBreakingMode(BreakingMode.STRONG);
+                Toast.makeText(ProtectionLevelEditActivity.this, "Strong Discipline", Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        breakingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if (checked) {
+                    Toast.makeText(ProtectionLevelEditActivity.this, "Breaking On", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ProtectionLevelEditActivity.this, "Breaking Off", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        bluelightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+                if (checked) {
+                    Toast.makeText(ProtectionLevelEditActivity.this, "Screen filtering On", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(ProtectionLevelEditActivity.this, "Screen filtering Off", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        //goldColorButton.setBackgroundColor(Color.);
+        goldColorButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                dialogChangeColorCode(1);
+            }
+        });
+
+        // screen brightness
+        dimBar.setEnabled(true);
+        dimBar.setMax(Constants.DEFAULT_DIM_MAX_PERCENT);
+        dimBar.setMin(Constants.DEFAULT_DIM_MIN_PERCENT);
+        dimBar.setProgress(Constants.DEFAULT_DIM_MAX_PERCENT - (int)(pm.getDimAmount() * 100));
+        dimBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Logger.log(TAG, "dim value is " + seekBar.getProgress());
+                float dim = (float) (Constants.DEFAULT_DIM_MAX_PERCENT - seekBar.getProgress()) / 100F;
+                pm.setDimAmount(dim);
+                pm.save();
+                Toast.makeText(ProtectionLevelEditActivity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // filter transparency
+        alphaBar.setEnabled(true);
+        alphaBar.setMax(Constants.DEFAULT_ALPHA_MAX_PERCENT);
+        alphaBar.setMin(Constants.DEFAULT_ALPHA_MIN_PERCENT);
+        alphaBar.setProgress(Constants.DEFAULT_ALPHA_MAX_PERCENT - (int)(pm.getScreenAlpha() * 100));
+        alphaBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Logger.log(TAG, "alpha value is " + seekBar.getProgress());
+                float alpha = (float) (Constants.DEFAULT_ALPHA_MAX_PERCENT - seekBar.getProgress()) / 100F;
+                pm.setScreenAlpha(alpha);
+                pm.save();
+                Toast.makeText(ProtectionLevelEditActivity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
+
             }
         });
     }
@@ -278,4 +384,58 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
     private void _unSelectedBreakingMode(ImageView icon) {
         icon.setBackground(getDrawable(R.drawable.layout_round_shape_gray));
     }
+
+    private void dialogChangeColorCode(final int index) {
+        Logger.log(TAG, "dialogChangeColorCode(" + index + ")");
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View changeColorCodeLayout = inflater.inflate(R.layout.change_color_code, null);
+        final EditText colorCodeEditText = changeColorCodeLayout.findViewById(R.id.color_code_input_text);
+        final CheckBox useThisFilterCheckBox = changeColorCodeLayout.findViewById(R.id.use_this_filter_checkbox);
+        final TextView okButton = changeColorCodeLayout.findViewById(R.id.change_color_code_button_ok);
+        final TextView cancelButton = changeColorCodeLayout.findViewById(R.id.change_color_code_button_cancel);
+
+        colorCodeEditText.setText(sf.getCode(index));
+        useThisFilterCheckBox.setChecked(sf.isActivated(index));
+
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Modify color code")
+                //.setMessage(message)
+                .setView(changeColorCodeLayout)
+                .setIcon(R.drawable.ic_edit_black_24dp)
+                .show();
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String code = colorCodeEditText.getText().toString();
+                boolean checked = useThisFilterCheckBox.isChecked();
+
+                if (validColorCode(code)) {
+                    sf.setCode(index, code);
+                    sf.setActivated(index, checked);
+                    sf.save();
+                    dialog.dismiss();
+                } else {
+                    TextView colorCodeNotValidTextView = changeColorCodeLayout.findViewById(R.id.color_code_not_valid_text_view);
+                    colorCodeNotValidTextView.setText("The code you've entered is not a color code.");
+                    colorCodeNotValidTextView.setVisibility(View.VISIBLE);
+                }
+
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logger.log(TAG, "cancel !");
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private boolean validColorCode(String code) {
+        return true;
+    }
+
 }

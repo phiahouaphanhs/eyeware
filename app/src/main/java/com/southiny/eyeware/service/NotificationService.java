@@ -27,6 +27,7 @@ public class NotificationService extends Service {
     public static final String TAG = NotificationService.class.getSimpleName();
 
     private NotificationManager notificationManager;
+    private Run run;
 
     // Binder given to clients
     private final IBinder binder = new LocalBinder();
@@ -54,6 +55,8 @@ public class NotificationService extends Service {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Logger.log(TAG, "onStartCommand()");
+
+        run = SQLRequest.getRun();
 
         Logger.log(TAG, "push start notification");
         int breakingForSec = SQLRequest.getRun().getCurrentProtectionMode().getBreakingFor_sec();
@@ -113,10 +116,13 @@ public class NotificationService extends Service {
             if (mChannel == null) {
                 mChannel = new NotificationChannel(id, name, importance);
                 mChannel.setDescription(description);
-                mChannel.enableVibration(true);
+                if (run.isVibrationActivated()) {
+                    mChannel.enableVibration(true);
+                    //mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+                    mChannel.setVibrationPattern(new long[]{Constants.DEFAULT_VIBRATION_DURATION_MILLIS});
+                }
                 mChannel.setLightColor(Color.GREEN);
-                //mChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
-                mChannel.setVibrationPattern(new long[]{Constants.DEFAULT_VIBRATION_DURATION_MILLIS});
+
                 notificationManager.createNotificationChannel(mChannel);
             }
             builder = new NotificationCompat.Builder(this, id);
@@ -132,8 +138,10 @@ public class NotificationService extends Service {
                     .setAutoCancel(true)
                     .setContentIntent(pendingIntent)
                     .setTicker(title)
-                    .setShowWhen(false)
-                    .setVibrate(new long[]{Constants.DEFAULT_VIBRATION_DURATION_MILLIS});
+                    .setShowWhen(false);
+            if(run.isVibrationActivated()) {
+                builder.setVibrate(new long[]{Constants.DEFAULT_VIBRATION_DURATION_MILLIS});
+            }
         } else {
             Logger.log(TAG, "SDK <");
             builder = new NotificationCompat.Builder(this);
@@ -150,8 +158,11 @@ public class NotificationService extends Service {
                     .setContentIntent(pendingIntent)
                     .setTicker(title)
                     .setShowWhen(false)
-                    .setVibrate(new long[]{Constants.DEFAULT_VIBRATION_DURATION_MILLIS})
                     .setPriority(Notification.PRIORITY_HIGH);
+            if (run.isVibrationActivated()) {
+                builder.setVibrate(new long[]{Constants.DEFAULT_VIBRATION_DURATION_MILLIS});
+            }
+
         } // else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 
         Notification notification = builder.build();

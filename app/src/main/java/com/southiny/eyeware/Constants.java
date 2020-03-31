@@ -67,7 +67,7 @@ public final class Constants {
     public static final String DEFAULT_PASSWORD = "56777877";
     public static final boolean DEFAULT_PASSWORD_ACTIVATE = false;
 
-    public static final int DEFAULT_LOCK_SCREEN_IN_SEC = 10;
+    public static final int DEFAULT_LOCK_SCREEN_IN_SEC = 60 * 60;
     public static final boolean DEFAULT_LOCK_SCREEN_ACTIVATE = false;
 
     public static final int DEFAULT_UNLOCK_SCREEN_IN_SEC = 10;

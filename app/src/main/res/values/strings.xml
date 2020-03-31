@@ -103,10 +103,10 @@
 
     <string name="content_description_settings_mini_icon">settings mini icon</string>
     <string name="content_description_check_breaking_icon">check breaking icon</string>
-    <string name="main_blue_light_filtering_item_title">Blue light auto filtering</string>
-    <string name="main_blue_light_consequence_explanation">blue light damage light-sensitive cells in the retina.</string>
+    <string name="main_blue_light_filtering_item_title">Screen filtering</string>
+    <string name="main_blue_light_consequence_explanation">Blue light from the phone screen can damage light-sensitive cells in the eye retina.</string>
     <string name="content_description_blue_light_check_icon">blue light check icon</string>
-    <string name="main_stay_long_time_consequence_explanation">staring for long time damage your eyesight.</string>
+    <string name="main_stay_long_time_consequence_explanation">Staring on the lighted screen for a long time can strain your eye and damage your eyesight.</string>
     <string name="title_activity_settings">Settings</string>
 
     <string name="password_activate_label">Lock app with password</string>
@@ -120,7 +120,7 @@
     <string name="button_settings_apply">APPLY</string>
     <string name="break_every_label">Break Every</string>
     <string name="break_for_label">Break For</string>
-    <string name="auto_change_bluelight_every_label">Change Bluelight Filter Every</string>
+    <string name="auto_change_bluelight_every_label">Change Screen Filter Every</string>
     <string name="filter_colors_label">Filter Colors</string>
     <string name="error_message_input_pl_name">The name should not be more than 20 characters</string>
     <string name="error_message_input_break_every">Please enter a number more than 0 minute in "Break Every". </string>

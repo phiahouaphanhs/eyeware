@@ -46,7 +46,7 @@ public class ClockService extends Service {
     private final Handler reInteractHandler = new Handler();
 
     private final Handler lockAndUnlockScreenHandler = new Handler();
-    private boolean isLockScreen = false;
+    private boolean isLockScreenCountDownRunning = false;
 
     private boolean isRunningBreaking = false;
     private boolean isRunningBL = false;
@@ -141,13 +141,14 @@ public class ClockService extends Service {
         Logger.log(TAG, "user interaction receiver registered.");
 
         // initialisation
-        resetTimer();
+        resetBreakingTimer();
+        resetLockScreenCountDown();
+
 
         // start timers
-        startTimer();
-
-        Logger.log(TAG, "post lock screen handler");
-        lockAndUnlockScreenHandler.post(cptLockAndUnlockScreenRunnable);
+        startBreakingTimer();
+        startBLTimer();
+        startLockScreenCountDown();
     }
 
     private final Runnable cptBreakRunnable = new Runnable() {
@@ -211,6 +212,10 @@ public class ClockService extends Service {
                             Logger.log(TAG, "break finished");
                             if (!isRunningNonInteract && !isRunningReInteract) {
                                 startBreakingTimer();
+                            } else {
+                                Logger.log(TAG, "but, is running non-interact or re_interact, so no finish yet");
+                                Logger.log(TAG, "non-in is " + isRunningNonInteract + " re_in is "+ isRunningReInteract);
+                                temporaryHandler.postDelayed(this, 500);
                             }
                         } else {
                             Logger.log(TAG, "break not finished");
@@ -224,7 +229,7 @@ public class ClockService extends Service {
                 //error
                 Logger.err(TAG, "cptBreakSec is less than 0, it is " + cptBreakSec);
             }
-        }
+        };
     };
 
     private final Runnable cptBlueLightChangeRunnable = new Runnable() {
@@ -257,27 +262,27 @@ public class ClockService extends Service {
 
         @Override
         public void run() {
-            if(!isLockScreen) {
+            //if(!isLockScreen) {
 
                 if (cptLockScreenSec > 0) {
-                    Logger.log(TAG, "lock tick ! " + cptBluelightChangeSec);
+                    Logger.log(TAG, "lock tick ! " + cptLockScreenSec);
                     cptLockScreenSec -= 1;
+                    // post runnable
+                    lockAndUnlockScreenHandler.postDelayed(this, 1000);
 
                 } else if (cptLockScreenSec == 0) {
 
-                    // change blue light filter
+                    // lock screen
                     lockScreen();
 
                     // reset
-                    cptLockScreenSec = pctrl.getLockScreenInSec();
+                    resetLockScreenCountDown();
+                    isLockScreenCountDownRunning = false;
                 }
-                // post runnable
-                lockAndUnlockScreenHandler.postDelayed(this, 1000);
 
+            //} else { // unlock
 
-            } else { // unlock
-
-            }
+            //}
         }
     };
 
@@ -298,7 +303,9 @@ public class ClockService extends Service {
         super.onDestroy();
         Logger.log(TAG, "onDestroy()");
 
-        stopTimer();
+        stopBreakingTimer();
+        stopBLTimer();
+        stopLockScreenCountDown();
 
         // remove blue light filter
         removeBlueLightFilter();
@@ -313,25 +320,25 @@ public class ClockService extends Service {
 
     /* ********* METHODS ***************/
 
-    private void resetTimer() {
-        Logger.log(TAG, "resetTimer()");
+    private void resetBreakingTimer() {
+        Logger.log(TAG, "resetBreakingTimer()");
         cptBreakSec = pm.getBreakingEvery_sec();
-        cptBluelightChangeSec = pm.getBlueLightFilterChangeEvery_sec();
-        cptLockScreenSec = pctrl.getLockScreenInSec();
-        cptUnLockScreenSec = pctrl.getLockScreenInSec();
 
         Logger.log(TAG, "break every " + cptBreakSec);
         Logger.log(TAG, "break for " + pm.getBreakingFor_sec());
-        Logger.log(TAG, "change blue light every " + cptBluelightChangeSec);
-        Logger.log(TAG, "lock screen every " + cptLockScreenSec);
-        Logger.log(TAG, "unlock screen every " + cptUnLockScreenSec);
     }
 
-    private void startTimer() {
-        Logger.log(TAG, "startTimer()");
-        startBreakingTimer();
+    private void resetBLTimer() {
+        cptBluelightChangeSec = pm.getBlueLightFilterChangeEvery_sec();
+        Logger.log(TAG, "change blue light every " + cptBluelightChangeSec);
+    }
 
-        startBLTimer();
+    private void resetLockScreenCountDown() {
+        Logger.log(TAG, "reset lock screen cpt");
+        cptLockScreenSec = pctrl.getLockScreenInSec();
+        cptUnLockScreenSec = pctrl.getLockScreenInSec();
+        Logger.log(TAG, "lock screen every " + cptLockScreenSec);
+        Logger.log(TAG, "unlock screen every " + cptUnLockScreenSec);
     }
 
     private void startBreakingTimer() {
@@ -355,15 +362,26 @@ public class ClockService extends Service {
         }
     }
 
-    private void stopTimer() {
-        Logger.log(TAG, "stopTimer()");
+    private void startLockScreenCountDown() {
+        if (pctrl.isLockScreenActivated() && !isLockScreenCountDownRunning) {
+            Logger.log(TAG, "post lock screen handler");
+            lockAndUnlockScreenHandler.post(cptLockAndUnlockScreenRunnable);
+            isLockScreenCountDownRunning = true;
+        } else {
+            Logger.log(TAG, "lock screen runnable is already running");
+        }
+    }
+
+    private void stopBreakingTimer() {
         if (isRunningBreaking) {
             breakEveryHandler.removeCallbacks(cptBreakRunnable);
             isRunningBreaking = false;
         } else {
             Logger.warn(TAG, "breaking runnable is not running");
         }
+    }
 
+    private void stopBLTimer() {
         if (isRunningBL) {
             changeBlueLightEveryHandler.removeCallbacks(cptBlueLightChangeRunnable);
             isRunningBL = false;
@@ -371,6 +389,17 @@ public class ClockService extends Service {
             Logger.log(TAG, "BL runnable is not running");
         }
     }
+
+    private void stopLockScreenCountDown() {
+        if (isLockScreenCountDownRunning) {
+            Logger.log(TAG, "remove lock screen runnable");
+            lockAndUnlockScreenHandler.removeCallbacks(cptLockAndUnlockScreenRunnable);
+            isLockScreenCountDownRunning = false;
+        } else {
+            Logger.log(TAG, "lock screen runnable is already stopped");
+        }
+    }
+
 
     private void changeBlueLightFilter() {
         Logger.log(TAG, "changeBlueLightFilter()");
@@ -411,14 +440,20 @@ public class ClockService extends Service {
         intent.putExtra(LockAndUnlockScreenService.INTENT_EXTRA_LOCK_UNLOCK_CODE,
                 LockAndUnlockScreenService.LOCK_CODE);
         startService(intent);
-
-        isLockScreen = true;
     }
 
     /* ******** PUBLIC METHODS TO BE CALLED BY EXTERNAL */
 
     public long getCptBreakSec() {
         return cptBreakSec;
+    }
+
+    public long getCptBLSec() {
+        return cptBluelightChangeSec;
+    }
+
+    public long getCptLockScreenSec() {
+        return cptLockScreenSec;
     }
 
     public void setFinishedBreaking() {
@@ -434,43 +469,39 @@ public class ClockService extends Service {
         @Override
         public void onReceive(Context context, Intent intent) {
             Logger.log(TAG, "onReceive() user interaction...");
-            if (run.isSmartDetectActivated()) {
-                Logger.log(TAG, "smart detect on");
-                try {
-                    switch(Objects.requireNonNull(intent.getAction())){
-                        case Intent.ACTION_SCREEN_OFF:
-                            Logger.log(TAG, "action : screen off");
-                            screenOffAction();
-                            break;
 
-                        case Intent.ACTION_SCREEN_ON:
-                            Logger.log(TAG, "action : screen on");
-                            screenOnAction();
-                            break;
+            try {
+                switch(Objects.requireNonNull(intent.getAction())){
+                    case Intent.ACTION_SCREEN_OFF:
+                        Logger.log(TAG, "action : screen off");
+                        screenOffAction();
+                        break;
 
-                        case Intent.ACTION_DREAMING_STARTED:
-                            Logger.log(TAG, "action : dreaming start (~ screen off)");
-                            screenOffAction();
-                            break;
+                    case Intent.ACTION_SCREEN_ON:
+                        Logger.log(TAG, "action : screen on");
+                        screenOnAction();
+                        break;
 
-                        case Intent.ACTION_DREAMING_STOPPED:
-                            Logger.log(TAG, "action : dreaming stop (~ screen on)");
-                            screenOnAction();
-                            break;
+                    case Intent.ACTION_DREAMING_STARTED:
+                        Logger.log(TAG, "action : dreaming start (~ screen off)");
+                        screenOffAction();
+                        break;
 
-                        case Intent.ACTION_USER_PRESENT:
-                            Logger.log(TAG, "action : user present");
-                            break;
+                    case Intent.ACTION_DREAMING_STOPPED:
+                        Logger.log(TAG, "action : dreaming stop (~ screen on)");
+                        screenOnAction();
+                        break;
 
-                        default:
-                            Logger.warn(TAG, "action : default");
-                            break;
-                    }
-                } catch (NullPointerException e) {
-                    Logger.err(TAG, "Intent is null");
+                    case Intent.ACTION_USER_PRESENT:
+                        Logger.log(TAG, "action : user present");
+                        break;
+
+                    default:
+                        Logger.warn(TAG, "action : default");
+                        break;
                 }
-            } else {
-                Logger.log(TAG, "smart detect disabled");
+            } catch (NullPointerException e) {
+                Logger.err(TAG, "Intent is null");
             }
         }
 
@@ -478,7 +509,13 @@ public class ClockService extends Service {
             Logger.log(TAG, "screenOffAction()");
 
             // stop timer
-            stopTimer();
+            if (run.isSmartDetectActivated()) {
+                Logger.log(TAG, "smart detect on");
+                stopBreakingTimer();
+            }
+
+            stopBLTimer();
+            stopLockScreenCountDown();
 
             // put non-interact runnable
             if (! isRunningNonInteract) {
@@ -525,9 +562,17 @@ public class ClockService extends Service {
             private final String TAG = "NON-InteractCountDownRunnable";
             @Override
             public void run() {
-                Logger.log(TAG, "run() reset timer...");
-                resetTimer();
-                Logger.log(TAG, "timer reset.");
+                if (run.isSmartDetectActivated()) {
+                    Logger.log(TAG, "run() reset timer...");
+                    Logger.log(TAG, "smart detect on");
+                    resetBreakingTimer();
+                    Logger.log(TAG, "timer reset.");
+                }
+                resetBLTimer();
+                // reset lock screen count down
+                resetLockScreenCountDown();
+
+                isRunningNonInteract = false;
             }
         };
 
@@ -535,8 +580,16 @@ public class ClockService extends Service {
             private final String TAG = "RE-InteractCountDown";
             @Override
             public void run() {
-                Logger.log(TAG, "run() restart timer...");
-                startTimer();
+                if (run.isSmartDetectActivated()) {
+                    Logger.log(TAG, "smart detect on");
+                    Logger.log(TAG, "run() restart timer...");
+                    startBreakingTimer();
+                }
+
+                startBLTimer();
+                startLockScreenCountDown();
+
+                isRunningReInteract = false;
             }
         };
     }

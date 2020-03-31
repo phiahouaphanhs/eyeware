@@ -103,10 +103,10 @@ public class LockAndUnlockScreenService extends Service {
           if (devicePolicyManager.isAdminActive(componentName)) {
             Logger.log(TAG, "admin is active");
 
-            Logger.log(TAG, "start lock phone activity");
+            //Logger.log(TAG, "start lock phone activity");
             devicePolicyManager.lockNow();
-              Intent intent = new Intent(LockAndUnlockScreenService.this, LockPhoneActivity.class);
-              startActivity(intent);
+              //Intent intent = new Intent(LockAndUnlockScreenService.this, LockPhoneActivity.class);
+              //startActivity(intent);
         }
         else {
             Logger.log(TAG, "admin is not active");

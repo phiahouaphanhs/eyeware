@@ -1,13 +1,16 @@
 package com.southiny.eyeware;
 
 import android.app.Activity;
+import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
@@ -30,10 +33,12 @@ import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
 import com.southiny.eyeware.service.ClockService;
-import com.southiny.eyeware.service.LockAndUnlockScreenService;
 import com.southiny.eyeware.tool.AdminReceiver;
+import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
 import com.southiny.eyeware.tool.ProtectionLevel;
+
+import java.util.List;
 
 import static com.southiny.eyeware.tool.Utils.zbs;
 
@@ -47,10 +52,12 @@ public class MainActivity extends AppCompatActivity {
     private ProtectionMode pm;
     private ParentalControl pctrl;
 
+    TextView lockScreenTextView;
     Button standardButton, highButton, lowButton, gamerButton;
     ImageView standardEditIcon, highEditIcon, lowEditIcon, gamerEditIcon;
     ImageView standardCheckIcon, highCheckIcon, lowCheckIcon, gamerCheckIcon;
     Switch passwordActivateSwitch, lockScreenActivateSwitch, unlockScreenActivateSwitch;
+    ConstraintLayout lockScreenLayout;
 
     public static final int RESULT_ENABLE = 11;
     private DevicePolicyManager devicePolicyManager;
@@ -105,6 +112,12 @@ public class MainActivity extends AppCompatActivity {
 
         passwordActivateSwitch = findViewById(R.id.switch_password_activate);
         TextView changePasswordTextView = findViewById(R.id.change_password_for_parental_control);
+        TextView forgetPasswordTextView = findViewById(R.id.forget_password_for_parental_control);
+
+        lockScreenTextView = findViewById(R.id.lock_screen_label);
+        lockScreenLayout = findViewById(R.id.constraintLayout_lock_screen);
+        lockScreenActivateSwitch = findViewById(R.id.switch_lock_screen);
+        TextView changeLockScreenTimeTextView = findViewById(R.id.change_lock_screen_time);
 
         /* *** set info on screen *****/
 
@@ -119,24 +132,28 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Logger.log(TAG, "onClick()");
 
-                if (pm.isBluelightFiltering() && !Settings.canDrawOverlays(getApplicationContext())) { // if BL is on but no "appears on top permission"
-                    dialogAskOverlayPermission();
+                if (pm.isBluelightFiltering() | pm.isBreakingActivated() | pctrl.isLockScreenActivated()) {
+                    if (pm.isBluelightFiltering() && !Settings.canDrawOverlays(getApplicationContext())) { // if BL is on but no "appears on top permission"
+                        dialogAskOverlayPermission();
+                    } else {
+                        Logger.log(TAG, "start " + ClockService.TAG);
+                        Intent intent = new Intent(MainActivity.this, ClockService.class);
+                        startForegroundService(intent);
+
+                        Logger.log(TAG, "start " + Main2Activity.TAG);
+                        Intent in = new Intent(MainActivity.this, Main2Activity.class);
+                        startActivity(in);
+
+                        Toast.makeText(MainActivity.this, getString(R.string.home_timer_start_message), Toast.LENGTH_SHORT).show();
+
+                        Logger.log(TAG, "finished.");
+                        finish();
+                    }
                 } else {
-                    Logger.log(TAG, "start " + ClockService.TAG);
-                    Intent intent = new Intent(MainActivity.this, ClockService.class);
-                    startForegroundService(intent);
-
-                    Logger.log(TAG, "start " + Main2Activity.TAG);
-                    Intent in = new Intent(MainActivity.this, Main2Activity.class);
-                    startActivity(in);
-
-                    Toast.makeText(MainActivity.this, getString(R.string.home_timer_start_message), Toast.LENGTH_SHORT).show();
-
-              /*  Intent in = new Intent(MainActivity.this, NotificationScreen.class);
-                startActivity(in);*/
-                    Logger.log(TAG, "finished.");
-                    finish();
+                    Toast.makeText(MainActivity.this, "Please activate one or more features", Toast.LENGTH_SHORT).show();
                 }
+
+
             }
         });
 
@@ -145,7 +162,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Logger.log(TAG, "onclick() settings icon");
-                Intent intent = new Intent(MainActivity.this, LockPhoneActivity.class);
+                Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
 
                 /*Intent intent = new Intent(MainActivity.this, LockAndUnlockScreenService.class);
@@ -251,9 +268,17 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        forgetPasswordTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logger.log(TAG, "onclick() forget password");
+                dialogForgetPassword();
+            }
+        });
+
         // todo : add others
 
-        lockScreenActivateSwitch = findViewById(R.id.switch_lock_screen);
+
         lockScreenActivateSwitch.setChecked(pctrl.isLockScreenActivated());
         lockScreenActivateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -261,13 +286,32 @@ public class MainActivity extends AppCompatActivity {
                 if (checked && !devicePolicyManager.isAdminActive(compName)) {
                     lockScreenActivateSwitch.setChecked(!checked);
                     dialogAskDeviceAdminPermission();
+                } else if (checked) {
+                    lockScreenLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
+                    pctrl.setLockScreenActivated(true);
+                    pctrl.save();
+                    Toast.makeText(MainActivity.this, "Lock Screen is On", Toast.LENGTH_SHORT).show();
+
+                } else { // not checked
+                    lockScreenLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+                    pctrl.setLockScreenActivated(false);
+                    pctrl.save();
+                    Toast.makeText(MainActivity.this, "Lock Screen is Off", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        changeLockScreenTimeTextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logger.log(TAG, "onclick() change lock screen time text");
+                dialogChangeLockScreenTime();
             }
         });
 
         unlockScreenActivateSwitch = findViewById(R.id.switch_unlock_screen);
         unlockScreenActivateSwitch.setChecked(pctrl.isUnlockScreenActivated());
-        unlockScreenActivateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        /*unlockScreenActivateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
                 if (checked && !devicePolicyManager.isAdminActive(compName)) {
@@ -275,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
                     dialogAskDeviceAdminPermission();
                 }
             }
-        });
+        });*/
 
 
 
@@ -286,6 +330,20 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         Logger.log(TAG, "onResume()");
+        // start main activity
+        if (isServiceRunning(ClockService.class.getName())) {
+            //if (run.isTimerRunning()) {
+            Logger.log(TAG, "ClockService is running !!!");
+            Intent intent;
+            if (run.getParentalControl().isPasswordActivated()) {
+                Logger.log(TAG, "start " + PasswordActivity.class.getSimpleName() + "...");
+                intent = new Intent(MainActivity.this, PasswordActivity.class);
+            } else {
+                Logger.log(TAG, "start " + Main2Activity.class.getSimpleName() + "...");
+                intent = new Intent(MainActivity.this, Main2Activity.class);
+            }
+            finish();
+        }
     }
 
     @Override
@@ -312,14 +370,72 @@ public class MainActivity extends AppCompatActivity {
         Logger.log(TAG, "initInfoOnScreen()");
 
         // set breaking time
-        long breakingTime_sec = pm.getBreakingEvery_sec();
-        int min = (int) (breakingTime_sec / 60);
-        int sec = (int) (breakingTime_sec % 60);
-        Logger.log(TAG, "set breaking time for " + min + "min" + sec + "sec...");
+        long sec = pm.getBreakingEvery_sec();
+        int min = (int) (sec / 60);
+        Logger.log(TAG, "set breaking time every " + min + "min...");
         TextView minuteTextView = findViewById(R.id.timer_minute);
-        TextView secondTextView = findViewById(R.id.timer_second);
         minuteTextView.setText(zbs(min));
-        secondTextView.setText(zbs(sec));
+
+        // set breaking for
+        sec = pm.getBreakingFor_sec();
+        Logger.log(TAG, "set breaking for " + sec + "sec...");
+        TextView breakForSecTextView = findViewById(R.id.break_for_timer_second);
+        breakForSecTextView.setText(zbs((int) sec));
+
+        // set breaking mode
+        int dw = R.drawable.ic_close_white_24dp;
+        BreakingMode mode = pm.getBreakingMode();
+        switch (mode) {
+            case STRONG:
+                dw = R.drawable.ic_camera_rear_white_24dp;
+                break;
+            case MEDIUM:
+                dw = R.drawable.ic_compare_black_24dp;
+                break;
+            case LIGHT:
+                dw = R.drawable.ic_notifications_white_24dp;
+                break;
+        }
+        ImageView breakingModeIcon = findViewById(R.id.breaking_mode_icon);
+        breakingModeIcon.setImageResource(dw);
+
+        // set bluelight time
+        sec = pm.getBlueLightFilterChangeEvery_sec();
+        min = (int) (sec / 60);
+        Logger.log(TAG, "set bluelight time for " + min + "min...");
+        TextView blSecondTextView = findViewById(R.id.bl_timer_second);
+        blSecondTextView.setText(zbs((int) min));
+
+        // set lockscreen time
+        sec = pctrl.getLockScreenInSec();
+        min = (int) (sec / 60);
+        Logger.log(TAG, "set lock screen every " + min + "min...");
+        TextView lockscreenMinuteTextView = findViewById(R.id.lockscreen_timer_minute);
+        lockscreenMinuteTextView.setText(zbs(min));
+
+        // set activated
+        ConstraintLayout breakingLayout = findViewById(R.id.constraintLayout_breaking);
+        ConstraintLayout breakingForLayout = findViewById(R.id.constraintLayout6);
+        if (!pm.isBreakingActivated()) {
+            breakingLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+            breakingModeIcon.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+            breakingForLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+        } else {
+            breakingLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
+            breakingModeIcon.setBackground(getDrawable(R.drawable.layout_round_shape_accent));
+            breakingForLayout.setBackground(getDrawable(R.drawable.layout_round_shape_accent));
+        }
+        ConstraintLayout blLayout = findViewById(R.id.constraintLayout_bl_filter);
+        if (!pm.isBluelightFiltering()) {
+            blLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+        } else {
+            blLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
+        }
+        if(!pctrl.isLockScreenActivated()) {
+            lockScreenLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+        } else {
+            lockScreenLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
+        }
 
         // set button names
         standardButton.setText(run.getProtectionModeStandard().getName());
@@ -332,6 +448,11 @@ public class MainActivity extends AppCompatActivity {
         setSelectedButton(pl);
 
         passwordActivateSwitch.setChecked(pctrl.isPasswordActivated());
+
+        String lockScreenLabel = getString(R.string.lock_screen_activate_label) + " in "
+                + (pctrl.getLockScreenInSec() / 60) + " mins";
+        lockScreenTextView.setText(lockScreenLabel);
+        lockScreenActivateSwitch.setChecked(pctrl.isLockScreenActivated());
     }
 
     private void setSelectedButton(ProtectionLevel pl) {
@@ -405,7 +526,7 @@ public class MainActivity extends AppCompatActivity {
         Logger.log(TAG, "dialogAskOverlayPermission()");
         new AlertDialog.Builder(this)
                 .setTitle("Overlay permission")
-                .setMessage("To apply blue light filter, please grant us the overlay permission (\"Appear on top\")." +
+                .setMessage("To apply blue light filter, please grant us the overlay permission (\"Appear on top\"). You can turn off later on." +
                         "Grant the permission ?")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
@@ -429,7 +550,7 @@ public class MainActivity extends AppCompatActivity {
         Logger.log(TAG, "dialogAskDeviceAdminPermission()");
         new AlertDialog.Builder(this)
                 .setTitle("Device admin permission")
-                .setMessage("To manage lock screen, please grant us the device admin permission. " +
+                .setMessage("To manage lock screen, please grant us the device admin permission. You can turn off later on. " +
                         "Grant the permission ?")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
@@ -501,6 +622,76 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+
+    private void dialogChangeLockScreenTime() {
+        Logger.log(TAG, "dialogChangeLockScreenTime()");
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View changeLockScreenLayout = inflater.inflate(R.layout.change_lockscreen_time_form, null);
+        final EditText lockScreenTimeInputEditText = changeLockScreenLayout.findViewById(R.id.lock_screen_time_input_text);
+        final TextView okButton = changeLockScreenLayout.findViewById(R.id.change_lock_screen_time_button_ok);
+        final TextView cancelButton = changeLockScreenLayout.findViewById(R.id.change_lock_screen_time_button_cancel);
+        final TextView lockScreenTimeNotValidTextView = changeLockScreenLayout.findViewById(R.id.lock_screen_time_not_valid_text_view);
+
+        lockScreenTimeInputEditText.setText(String.valueOf(pctrl.getLockScreenInSec() / 60));
+
+        final AlertDialog dialog = new AlertDialog.Builder(this)
+                .setTitle("Change Lock Screen Time")
+                //.setMessage(message)
+                .setView(changeLockScreenLayout)
+                .setIcon(R.drawable.ic_lock_open_black_24dp)
+                .show();
+
+        okButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int timeInMinute = Integer.valueOf(lockScreenTimeInputEditText.getText().toString());
+                if (timeInMinute < 3) {
+                    lockScreenTimeNotValidTextView.setText("Please enter a number greater than or equals to 3 mins.");
+                    lockScreenTimeNotValidTextView.setVisibility(View.VISIBLE);
+                } else if (timeInMinute > 300) {
+                    lockScreenTimeNotValidTextView.setText("Please enter a number less than or equals to 300 mins (5 hours).");
+                    lockScreenTimeNotValidTextView.setVisibility(View.VISIBLE);
+                } else {
+                    Logger.log(TAG, "new lock screen time is " + timeInMinute + " mins");
+                    pctrl.setLockScreenInSec(timeInMinute * 60);
+                    pctrl.save();
+
+                    String lockScreenLabel = getString(R.string.lock_screen_activate_label) + " in "
+                            + (timeInMinute) + " mins";
+                    lockScreenTextView.setText(lockScreenLabel);
+                    TextView lockscreenMinuteTextView = findViewById(R.id.lockscreen_timer_minute);
+                    lockscreenMinuteTextView.setText(zbs(timeInMinute));
+
+                    dialog.dismiss();
+                    Toast.makeText(MainActivity.this, "lock screen time change to " + timeInMinute + " mins", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logger.log(TAG, "cancel !");
+                dialog.dismiss();
+            }
+        });
+    }
+
+    private void dialogForgetPassword() {
+        Logger.log(TAG, "dialogForgetPassword()");
+        new AlertDialog.Builder(this)
+                .setTitle("Forget password, what to do ?")
+                .setMessage("In order to prevent this being done by children, " +
+                        "we don't support password reset. " +
+                        "A solution is to uninstall and re-install the app. " +
+                        "Factory default password is " + Constants.DEFAULT_PASSWORD)
+                .setPositiveButton("OK", null)
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .show();
+
+    }
+
     private void checkAdminDevicePermission() {
         Logger.log(TAG, "checkAdminDevicePermission()");
 
@@ -512,13 +703,14 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Logger.log(TAG, "on actiivity result()");
+        Logger.log(TAG, "on activity result()");
         switch(requestCode) {
             case RESULT_ENABLE :
                 if (resultCode == Activity.RESULT_OK) {
                     lockScreenActivateSwitch.setChecked(true);
                     pctrl.setLockScreenActivated(true);
                     Toast.makeText(MainActivity.this, "You have enabled the Admin Device features", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Lock Screen is On", Toast.LENGTH_SHORT).show();
                 } else {
                     pctrl.setLockScreenActivated(false);
                     lockScreenActivateSwitch.setChecked(false);
@@ -664,5 +856,25 @@ public class MainActivity extends AppCompatActivity {
             }
         });*/
 
+    private boolean isServiceRunning(String serviceName){
+        boolean isRunning = false;
+
+        ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
+        List<ActivityManager.RunningServiceInfo> runningServiceInfos;
+        if (am != null) {
+            runningServiceInfos = am.getRunningServices(Integer.MAX_VALUE);
+            for (ActivityManager.RunningServiceInfo runningServiceInfo : runningServiceInfos) {
+                if (runningServiceInfo.service.getClassName().equals(serviceName)) {
+                    //service run in foreground
+                    //isRunning = runningServiceInfo.foreground;
+                    isRunning = true;
+                }
+            }
+        } else {
+            Logger.err(TAG, "activityManager is null");
+        }
+
+        return isRunning;
+    }
 
 }

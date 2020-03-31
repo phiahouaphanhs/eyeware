@@ -1,22 +1,16 @@
 package com.southiny.eyeware;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.KeyguardManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -24,8 +18,6 @@ import android.widget.Toast;
 import com.southiny.eyeware.tool.AdminReceiver;
 import com.southiny.eyeware.tool.Logger;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.List;
 
 public class LockPhoneActivity extends AppCompatActivity implements View.OnClickListener {
@@ -43,7 +35,7 @@ public class LockPhoneActivity extends AppCompatActivity implements View.OnClick
         Logger.log(TAG, "onCreate()");
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_lock_phone);
+        //setContentView(R.layout.activity_lock_phone2);
         devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
         compName = new ComponentName(this, AdminReceiver.class);
 

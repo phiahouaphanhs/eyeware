@@ -3,12 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/layout_rectangle_dark_gray_shade"
     android:orientation="vertical">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:paddingStart="@dimen/fab_margin"
+        android:paddingEnd="@dimen/fab_margin">
 
         <ImageView
             android:id="@+id/icon_check_breaking"
@@ -17,7 +21,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="20dp"
             android:contentDescription="@string/content_description_check_breaking_icon"
             android:src="@drawable/ic_check_black_24dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -25,42 +29,32 @@
 
         <TextView
             android:id="@+id/firstLine_breaking"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="16dp"
             android:layout_toEndOf="@id/icon_check_breaking"
             android:gravity="center_vertical"
             android:text="Breaking"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/eyeware_black"
             app:layout_constraintStart_toEndOf="@+id/icon_check_breaking"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/secondLine_breaking"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_toEndOf="@id/icon_check_breaking"
-            android:text="@string/main_stay_long_time_consequence_explanation"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/icon_check_breaking"
-            app:layout_constraintTop_toBottomOf="@+id/firstLine_breaking" />
-
-        <TextView
-            android:id="@+id/thirdLine_breaking"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:layout_toEndOf="@id/icon_check_breaking"
+            android:text="@string/main_stay_long_time_consequence_explanation"
+            android:textColor="@color/eyeware_black"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/icon_check_breaking"
-            app:layout_constraintTop_toBottomOf="@+id/secondLine_breaking" />
+            app:layout_constraintTop_toBottomOf="@+id/firstLine_breaking" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -71,8 +65,11 @@
         android:background="?android:attr/listDivider" />
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="20dp"
+        android:paddingStart="@dimen/fab_margin"
+        android:paddingEnd="@dimen/fab_margin">
 
         <ImageView
             android:id="@+id/icon_check_bluelight"
@@ -81,7 +78,7 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="12dp"
             android:contentDescription="@string/content_description_check_breaking_icon"
             android:src="@drawable/ic_check_black_24dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -89,7 +86,7 @@
 
         <TextView
             android:id="@+id/firstLine_bluelight"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
@@ -98,33 +95,23 @@
             android:gravity="center_vertical"
             android:text="@string/main_blue_light_filtering_item_title"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+            android:textColor="@color/eyeware_black"
             app:layout_constraintStart_toEndOf="@+id/icon_check_bluelight"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/secondLine_bluelight"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:layout_marginBottom="20dp"
             android:layout_toEndOf="@+id/icon_check_bluelight"
             android:text="@string/main_blue_light_consequence_explanation"
-            android:textSize="12sp"
-            app:layout_constraintStart_toEndOf="@+id/icon_check_bluelight"
-            app:layout_constraintTop_toBottomOf="@+id/firstLine_bluelight" />
-
-        <TextView
-            android:id="@+id/thirdLine_bluelight"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="8dp"
-            android:layout_toEndOf="@id/icon_check_bluelight"
+            android:textColor="@color/eyeware_black"
             android:textSize="12sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/icon_check_bluelight"
-            app:layout_constraintTop_toBottomOf="@+id/secondLine_bluelight" />
+            app:layout_constraintTop_toBottomOf="@+id/firstLine_bluelight" />
 
     </android.support.constraint.ConstraintLayout>
 

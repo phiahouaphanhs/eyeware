@@ -150,7 +150,7 @@
 
         <TextView
             android:id="@+id/lock_screen_label"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:text="@string/lock_screen_activate_label"
@@ -212,7 +212,7 @@
             android:layout_marginStart="8dp"
             android:text="@string/unlock_screen_activate_label"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="@color/eyeware_black"
+            android:textColor="@color/eyeware_gray"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -237,7 +237,7 @@
         android:layout_marginBottom="32dp"
         android:text="@string/change_unlock_screen_time_text"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/eyeware_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout5" />
