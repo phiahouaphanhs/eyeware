@@ -8,9 +8,13 @@ import com.reactiveandroid.annotation.PrimaryKey;
 import com.reactiveandroid.annotation.Table;
 import com.southiny.eyeware.Constants;
 import com.southiny.eyeware.database.AppDatabase;
+import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
 import com.southiny.eyeware.tool.ProtectionLevel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = ProtectionMode.TABLE_NAME, database = AppDatabase.class)
 public class ProtectionMode extends Model {
@@ -24,16 +28,20 @@ public class ProtectionMode extends Model {
     public static final String COLUMN_BLUELIGHT_FILTERING = "bluelight_filtering";
     public static final String COLUMN_BLUELIGHT_FILTER_COLOR_CHANGE_EVERY = "blue_light_filter_change_every";
 
-
-    public static final String COLUMN_DIM_AMOUNT = "dim_amount";
-    public static final String COLUMN_SCREEN_ALPHA = "screen_alpha";
-
     public static final String COLUMN_PROTECTION_LEVEL_ORDINAL = "protection_level_ordinal";
-    public static final String COLUMN_SCREEN_FILTER = "screen_filter_id";
 
     public static final String COLUMN_IS_CURRENT_PROTECTION_MODE = "is_current";
 
     public static final String COLUMN_BREAKING_MODE_ORDINAL = "breaking_mode_ordinal";
+
+    public static final String COLUMN_SCREEN_FILTER_0 = "screen_filter_0";
+    public static final String COLUMN_SCREEN_FILTER_1 = "screen_filter_1";
+    public static final String COLUMN_SCREEN_FILTER_2 = "screen_filter_2";
+    public static final String COLUMN_SCREEN_FILTER_3 = "screen_filter_3";
+    public static final String COLUMN_SCREEN_FILTER_4 = "screen_filter_4";
+    public static final String COLUMN_SCREEN_FILTER_5 = "screen_filter_5";
+    public static final String COLUMN_SCREEN_FILTER_6 = "screen_filter_6";
+    public static final String COLUMN_SCREEN_FILTER_7 = "screen_filter_7";
 
     @PrimaryKey
     private Long id;
@@ -59,21 +67,35 @@ public class ProtectionMode extends Model {
     @Column(name = COLUMN_BLUELIGHT_FILTERING)
     private boolean bluelightFiltering;
 
-    @Column(name = COLUMN_DIM_AMOUNT)
-    private float dimAmount;
-
-    @Column(name = COLUMN_SCREEN_ALPHA)
-    private float screenAlpha;
-
     @Column(name = COLUMN_IS_CURRENT_PROTECTION_MODE)
     private boolean isCurrent;
 
     @Column(name = COLUMN_BREAKING_MODE_ORDINAL)
     private int breakingModeOrdinal;
 
+    @Column(name = COLUMN_SCREEN_FILTER_0)
+    private ScreenFilter screenFilter0;
 
-    @Column(name = COLUMN_SCREEN_FILTER)
-    private ScreenFilter screenFilter;
+    @Column(name = COLUMN_SCREEN_FILTER_1)
+    private ScreenFilter screenFilter1;
+
+    @Column(name = COLUMN_SCREEN_FILTER_2)
+    private ScreenFilter screenFilter2;
+
+    @Column(name = COLUMN_SCREEN_FILTER_3)
+    private ScreenFilter screenFilter3;
+
+    @Column(name = COLUMN_SCREEN_FILTER_4)
+    private ScreenFilter screenFilter4;
+
+    @Column(name = COLUMN_SCREEN_FILTER_5)
+    private ScreenFilter screenFilter5;
+
+    @Column(name = COLUMN_SCREEN_FILTER_6)
+    private ScreenFilter screenFilter6;
+
+    @Column(name = COLUMN_SCREEN_FILTER_7)
+    private ScreenFilter screenFilter7;
 
 
     // non utilise, mais necessaire
@@ -115,12 +137,11 @@ public class ProtectionMode extends Model {
         blueLightFilterChangeEvery_sec = Constants.STANDARD_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
         bluelightFiltering = Constants.STANDARD_BLUELIGHT_FILTER_CHANGE;
 
-        dimAmount = Constants.STANDARD_DIM_AMOUNT_PERCENT / 100F;
-        screenAlpha = Constants.STANDARD_SCREEN_ALPHA_PERCENT / 100F;
-
         breakingModeOrdinal = Constants.STANDARD_BREAKING_MODE.ordinal();
 
-        screenFilter = new ScreenFilter();
+        setScreenFilters(Constants.STANDARD_SCREEN_FILTERS_ACTIVATION);
+
+
     }
 
     public void setHigh() {
@@ -132,12 +153,9 @@ public class ProtectionMode extends Model {
         blueLightFilterChangeEvery_sec = Constants.HIGH_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
         bluelightFiltering = Constants.HIGH_BLUELIGHT_FILTER_CHANGE;
 
-        dimAmount = Constants.HIGH_DIM_AMOUNT_PERCENT / 100F;
-        screenAlpha = Constants.HIGH_SCREEN_ALPHA_PERCENT / 100F;
-
         breakingModeOrdinal = Constants.HIGH_BREAKING_MODE.ordinal();
 
-        screenFilter = new ScreenFilter();
+        setScreenFilters(Constants.HIGH_SCREEN_FILTERS_ACTIVATION);
     }
 
     public void setLow() {
@@ -149,12 +167,9 @@ public class ProtectionMode extends Model {
         blueLightFilterChangeEvery_sec = Constants.LOW_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
         bluelightFiltering = Constants.LOW_BLUELIGHT_FILTER_CHANGE;
 
-        dimAmount = Constants.LOW_DIM_AMOUNT_PERCENT / 100F;
-        screenAlpha = Constants.LOW_SCREEN_ALPHA_PERCENT / 100F;
-
         breakingModeOrdinal = Constants.LOW_BREAKING_MODE.ordinal();
 
-        screenFilter = new ScreenFilter();
+        setScreenFilters(Constants.LOW_SCREEN_FILTERS_ACTIVATION);
     }
 
     public void setGamer() {
@@ -166,12 +181,36 @@ public class ProtectionMode extends Model {
         blueLightFilterChangeEvery_sec = Constants.GAMER_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
         bluelightFiltering = Constants.GAMER_BLUELIGHT_FILTER_CHANGE;
 
-        dimAmount = Constants.GAMER_DIM_AMOUNT_PERCENT / 100F;
-        screenAlpha = Constants.GAMER_SCREEN_ALPHA_PERCENT / 100F;
-
         breakingModeOrdinal = Constants.GAMER_BREAKING_MODE.ordinal();
 
-        screenFilter = new ScreenFilter();
+        setScreenFilters(Constants.GAMER_SCREEN_FILTERS_ACTIVATION);
+    }
+
+    private void setScreenFilters (final boolean[] SCREEN_FILTERS_ACTIVATION) {
+
+        screenFilter0 = Constants.DEFAULT_SCREEN_FILTERS[0];
+        screenFilter0.setActivated(SCREEN_FILTERS_ACTIVATION[0]);
+
+        screenFilter1 = Constants.DEFAULT_SCREEN_FILTERS[1];
+        screenFilter1.setActivated(SCREEN_FILTERS_ACTIVATION[1]);
+
+        screenFilter2 = Constants.DEFAULT_SCREEN_FILTERS[2];
+        screenFilter2.setActivated(SCREEN_FILTERS_ACTIVATION[2]);
+
+        screenFilter3 = Constants.DEFAULT_SCREEN_FILTERS[3];
+        screenFilter3.setActivated(SCREEN_FILTERS_ACTIVATION[3]);
+
+        screenFilter4 = Constants.DEFAULT_SCREEN_FILTERS[4];
+        screenFilter4.setActivated(SCREEN_FILTERS_ACTIVATION[4]);
+
+        screenFilter5 = Constants.DEFAULT_SCREEN_FILTERS[5];
+        screenFilter5.setActivated(SCREEN_FILTERS_ACTIVATION[5]);
+
+        screenFilter6 = Constants.DEFAULT_SCREEN_FILTERS[6];
+        screenFilter6.setActivated(SCREEN_FILTERS_ACTIVATION[6]);
+
+        screenFilter7 = Constants.DEFAULT_SCREEN_FILTERS[7];
+        screenFilter7.setActivated(SCREEN_FILTERS_ACTIVATION[7]);
     }
 
     public void reset() {
@@ -186,7 +225,6 @@ public class ProtectionMode extends Model {
     }
 
     /******/
-
 
 
     public String getName() {
@@ -237,30 +275,6 @@ public class ProtectionMode extends Model {
         this.bluelightFiltering = bluelightFiltering;
     }
 
-    public float getDimAmount() {
-        return dimAmount;
-    }
-
-    public void setDimAmount(float dimAmount) {
-        this.dimAmount = dimAmount;
-    }
-
-    public float getScreenAlpha() {
-        return screenAlpha;
-    }
-
-    public void setScreenAlpha(float screenAlpha) {
-        this.screenAlpha = screenAlpha;
-    }
-
-    public ScreenFilter getScreenFilter() {
-        return screenFilter;
-    }
-
-    public void setScreenFilter(ScreenFilter screenFilter) {
-        this.screenFilter = screenFilter;
-    }
-
     public ProtectionLevel getProtectionLevel() {
         return ProtectionLevel.getProtectionLevelByOrdinal(protectionLevelOrdinal);
     }
@@ -283,5 +297,84 @@ public class ProtectionMode extends Model {
 
     public void setBreakingMode(BreakingMode breakingMode) {
         this.breakingModeOrdinal = breakingMode.ordinal();
+    }
+
+    public ArrayList<ScreenFilter> getActivatedScreenFilters() {
+        ArrayList<ScreenFilter> screenFilters = new ArrayList<>();
+
+        if (screenFilter0.isActivated()) screenFilters.add(screenFilter0);
+        if (screenFilter1.isActivated()) screenFilters.add(screenFilter1);
+        if (screenFilter2.isActivated()) screenFilters.add(screenFilter2);
+        if (screenFilter3.isActivated()) screenFilters.add(screenFilter3);
+        if (screenFilter4.isActivated()) screenFilters.add(screenFilter4);
+        if (screenFilter5.isActivated()) screenFilters.add(screenFilter5);
+        if (screenFilter6.isActivated()) screenFilters.add(screenFilter6);
+        if (screenFilter7.isActivated()) screenFilters.add(screenFilter7);
+
+        return screenFilters;
+    }
+
+    public ScreenFilter getScreenFilter0() {
+        return screenFilter0;
+    }
+
+    public void setScreenFilter0(ScreenFilter screenFilter0) {
+        this.screenFilter0 = screenFilter0;
+    }
+
+    public ScreenFilter getScreenFilter1() {
+        return screenFilter1;
+    }
+
+    public void setScreenFilter1(ScreenFilter screenFilter1) {
+        this.screenFilter1 = screenFilter1;
+    }
+
+    public ScreenFilter getScreenFilter2() {
+        return screenFilter2;
+    }
+
+    public void setScreenFilter2(ScreenFilter screenFilter2) {
+        this.screenFilter2 = screenFilter2;
+    }
+
+    public ScreenFilter getScreenFilter3() {
+        return screenFilter3;
+    }
+
+    public void setScreenFilter3(ScreenFilter screenFilter3) {
+        this.screenFilter3 = screenFilter3;
+    }
+
+    public ScreenFilter getScreenFilter4() {
+        return screenFilter4;
+    }
+
+    public void setScreenFilter4(ScreenFilter screenFilter4) {
+        this.screenFilter4 = screenFilter4;
+    }
+
+    public ScreenFilter getScreenFilter5() {
+        return screenFilter5;
+    }
+
+    public void setScreenFilter5(ScreenFilter screenFilter5) {
+        this.screenFilter5 = screenFilter5;
+    }
+
+    public ScreenFilter getScreenFilter6() {
+        return screenFilter6;
+    }
+
+    public void setScreenFilter6(ScreenFilter screenFilter6) {
+        this.screenFilter6 = screenFilter6;
+    }
+
+    public ScreenFilter getScreenFilter7() {
+        return screenFilter7;
+    }
+
+    public void setScreenFilter7(ScreenFilter screenFilter7) {
+        this.screenFilter7 = screenFilter7;
     }
 }

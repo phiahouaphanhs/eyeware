@@ -1,6 +1,5 @@
 package com.southiny.eyeware.service;
 
-import android.app.IntentService;
 import android.app.KeyguardManager;
 import android.app.Service;
 import android.app.admin.DevicePolicyManager;
@@ -8,19 +7,14 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Binder;
-import android.os.Build;
 import android.os.IBinder;
 import android.os.PowerManager;
 
-import com.southiny.eyeware.LockPhoneActivity;
-import com.southiny.eyeware.LockScreenActivity;
 import com.southiny.eyeware.tool.AdminReceiver;
 import com.southiny.eyeware.tool.Logger;
 
-import java.util.concurrent.locks.Lock;
-
-public class LockAndUnlockScreenService extends Service {
-    public static final String TAG = LockAndUnlockScreenService.class.getSimpleName();
+public class LockScreenService extends Service {
+    public static final String TAG = LockScreenService.class.getSimpleName();
     public static final String INTENT_EXTRA_LOCK_UNLOCK_CODE = "lock_unlock_code";
     public static final int LOCK_CODE = 0;
     public static final int UNLOCK_CODE = 1;
@@ -31,17 +25,17 @@ public class LockAndUnlockScreenService extends Service {
     // Binder given to clients
     private final IBinder binder = new LocalBinder();
 
-    public LockAndUnlockScreenService() { }
+    public LockScreenService() { }
 
     /**
      * Class used for the client Binder.  Because we know this service always
      * runs in the same process as its clients, we don't need to deal with IPC.
      */
     public class LocalBinder extends Binder {
-        public LockAndUnlockScreenService getService() {
+        public LockScreenService getService() {
             Logger.log(TAG, "localbinder getservice");
             // Return this instance of service so clients can call public methods
-            return LockAndUnlockScreenService.this;
+            return LockScreenService.this;
         }
     }
 
@@ -84,14 +78,6 @@ public class LockAndUnlockScreenService extends Service {
         return super.onStartCommand(intent, flags, startId);
     }
 
-
-
-   /* private void lockScreen() {
-        Logger.log(TAG, "send intent to " + LockScreenActivity.class.getSimpleName());
-        Intent intent = new Intent(this, LockScreenActivity.class);
-        startActivity(intent);
-    }*/
-
       private void lockMeNow() {
         Logger.log(TAG, "lockMeNow()");
         addDeviceAdminRemainingAttempt--;
@@ -105,7 +91,7 @@ public class LockAndUnlockScreenService extends Service {
 
             //Logger.log(TAG, "start lock phone activity");
             devicePolicyManager.lockNow();
-              //Intent intent = new Intent(LockAndUnlockScreenService.this, LockPhoneActivity.class);
+              //Intent intent = new Intent(LockScreenService.this, LockPhoneActivity.class);
               //startActivity(intent);
         }
         else {

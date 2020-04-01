@@ -32,7 +32,6 @@ public final class SQLRequest {
         Delete.from(ProtectionMode.class).execute();
         Delete.from(ScreenFilter.class).execute();
         Delete.from(ParentalControl.class).execute();
-
     }
 
     public static void whatInDB() {

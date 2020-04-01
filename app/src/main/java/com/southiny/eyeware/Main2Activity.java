@@ -142,10 +142,8 @@ public class Main2Activity extends AppCompatActivity {
             checkedBLIcon.setImageResource(R.drawable.ic_close_black_24dp);
         }
 
-
-
         // screen brightness
-        dimBar = findViewById(R.id.brightness_level_seek_bar);
+        /*dimBar = findViewById(R.id.brightness_level_seek_bar);
         dimBar.setEnabled(false);
         dimBar.setMax(Constants.DEFAULT_DIM_MAX_PERCENT);
         dimBar.setMin(Constants.DEFAULT_DIM_MIN_PERCENT);
@@ -189,6 +187,7 @@ public class Main2Activity extends AppCompatActivity {
                 Toast.makeText(Main2Activity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
             }
         });
+        */
 
         final ImageView vibrationIcon = findViewById(R.id.vibration_icon);
         if (!run.isVibrationActivated()) {
@@ -343,8 +342,8 @@ public class Main2Activity extends AppCompatActivity {
             mBLBound = true;
             Logger.log(TAG, BlueLightFilterService.TAG + " bound.");
 
-            dimBar.setEnabled(true);
-            alphaBar.setEnabled(true);
+            //dimBar.setEnabled(true);
+            //alphaBar.setEnabled(true);
         }
 
         @Override

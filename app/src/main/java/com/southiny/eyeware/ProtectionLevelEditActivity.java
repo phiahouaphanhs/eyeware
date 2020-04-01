@@ -2,6 +2,7 @@ package com.southiny.eyeware;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -20,7 +21,6 @@ import android.widget.Toast;
 import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
-import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
 import com.southiny.eyeware.tool.ProtectionLevel;
@@ -33,7 +33,6 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
     private Run run;
     private ProtectionMode pm;
-    private ScreenFilter sf;
     private EditText breakEveryMinEditText, breakForSecEditText, bluelightChangeEveryMinEditText, plNameEditText;
     private Switch breakingSwitch, bluelightSwitch;
     private ImageView breakingLightIcon, breakingMediumIcon, breakingStrongIcon;
@@ -68,8 +67,6 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         } else {
             Logger.err(TAG, "ERROR : no protection mode found");
         }
-
-        sf = pm.getScreenFilter();
     }
 
 
@@ -123,8 +120,6 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
                 // update
                 if (valid) {
-
-                    sf.save();
 
                     pm.setName(name);
 
@@ -217,7 +212,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         }
 
         // screen brightness
-        dimBar.setEnabled(true);
+        /*dimBar.setEnabled(true);
         dimBar.setMax(Constants.DEFAULT_DIM_MAX_PERCENT);
         dimBar.setMin(Constants.DEFAULT_DIM_MIN_PERCENT);
         dimBar.setProgress(Constants.DEFAULT_DIM_MAX_PERCENT - (int)(pm.getDimAmount() * 100));
@@ -257,7 +252,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
                 Toast.makeText(ProtectionLevelEditActivity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
 
             }
-        });
+        });*/
     }
 
     @Override
@@ -297,14 +292,23 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
         setSelectedBreakingMode(pm.getBreakingMode());
 
-        setActivatedColor(0, sf.isActivated0());
-        setActivatedColor(1, sf.isActivated1());
-        setActivatedColor(2, sf.isActivated2());
-        setActivatedColor(3, sf.isActivated3());
-        setActivatedColor(4, sf.isActivated4());
-        setActivatedColor(5, sf.isActivated5());
-        setActivatedColor(6, sf.isActivated6());
-        setActivatedColor(7, sf.isActivated7());
+        colorIcons[0].setBackgroundColor(Color.parseColor(pm.getScreenFilter0().getColorCode()));
+        colorIcons[1].setBackgroundColor(Color.parseColor(pm.getScreenFilter1().getColorCode()));
+        colorIcons[2].setBackgroundColor(Color.parseColor(pm.getScreenFilter2().getColorCode()));
+        colorIcons[3].setBackgroundColor(Color.parseColor(pm.getScreenFilter3().getColorCode()));
+        colorIcons[4].setBackgroundColor(Color.parseColor(pm.getScreenFilter4().getColorCode()));
+        colorIcons[5].setBackgroundColor(Color.parseColor(pm.getScreenFilter5().getColorCode()));
+        colorIcons[6].setBackgroundColor(Color.parseColor(pm.getScreenFilter6().getColorCode()));
+        colorIcons[7].setBackgroundColor(Color.parseColor(pm.getScreenFilter7().getColorCode()));
+
+        setActivatedColor(0, pm.getScreenFilter0().isActivated());
+        setActivatedColor(1, pm.getScreenFilter1().isActivated());
+        setActivatedColor(2, pm.getScreenFilter2().isActivated());
+        setActivatedColor(3, pm.getScreenFilter3().isActivated());
+        setActivatedColor(4, pm.getScreenFilter4().isActivated());
+        setActivatedColor(5, pm.getScreenFilter5().isActivated());
+        setActivatedColor(6, pm.getScreenFilter6().isActivated());
+        setActivatedColor(7, pm.getScreenFilter7().isActivated());
     }
 
     private void setActivatedColor(int index, boolean activated) {
@@ -383,7 +387,6 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
                 .setPositiveButton("Reset", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         pm.reset();
-                        sf = pm.getScreenFilter();
                         setInfoOnScreen();
                         Toast.makeText(ProtectionLevelEditActivity.this, "Reset complete", Toast.LENGTH_SHORT).show();
                     }
@@ -405,14 +408,14 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         Logger.log(TAG, "dialogChangeColorCode(" + index + ")");
 
         LayoutInflater inflater = this.getLayoutInflater();
-        final View changeColorCodeLayout = inflater.inflate(R.layout.change_color_code, null);
+        final View changeColorCodeLayout = inflater.inflate(R.layout.component_change_color_code, null);
         final EditText colorCodeEditText = changeColorCodeLayout.findViewById(R.id.color_code_input_text);
         final CheckBox useThisFilterCheckBox = changeColorCodeLayout.findViewById(R.id.use_this_filter_checkbox);
         final TextView okButton = changeColorCodeLayout.findViewById(R.id.change_color_code_button_ok);
         final TextView cancelButton = changeColorCodeLayout.findViewById(R.id.change_color_code_button_cancel);
 
-        colorCodeEditText.setText(sf.getCode(index));
-        useThisFilterCheckBox.setChecked(sf.isActivated(index));
+        /*colorCodeEditText.setText(sf.getColorCode(index));
+        useThisFilterCheckBox.setChecked(sf.isActivated(index));*/
 
         final AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Modify color code")
@@ -428,9 +431,9 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
                 boolean checked = useThisFilterCheckBox.isChecked();
 
                 if (validColorCode(code)) {
-                    //sf.setCode(index, code);
+                    //sf.setColorCode(index, code);
                     Logger.log(TAG, "setActivated(" + index + ", " + checked + ")");
-                    sf.setActivated(index, checked);
+                    //sf.setActivated(index, checked);
                     setActivatedColor(index, checked);
                     dialog.dismiss();
                 } else {
@@ -467,7 +470,6 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             dialogChangeColorCode(index);
-            Logger.log(TAG, "in listener, activated ? " + sf.isActivated(0) + " " + sf.isActivated0());
         }
     }
 

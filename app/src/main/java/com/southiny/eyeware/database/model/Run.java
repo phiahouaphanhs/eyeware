@@ -11,6 +11,8 @@ import com.southiny.eyeware.database.AppDatabase;
 import com.southiny.eyeware.tool.Language;
 import com.southiny.eyeware.tool.ProtectionLevel;
 
+import java.util.ArrayList;
+
 @Table(name = Run.TABLE_NAME, database = AppDatabase.class)
 public class Run extends Model {
 
@@ -190,7 +192,6 @@ public class Run extends Model {
                 protectionModeLow.setCurrent(false);
                 protectionModeGamer.setCurrent(true);
                 break;
-
         }
     }
 }

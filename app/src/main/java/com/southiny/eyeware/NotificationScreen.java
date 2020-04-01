@@ -142,7 +142,7 @@ public class NotificationScreen extends AppCompatActivity {
         Logger.log(TAG, "onCreate()");
 
         Logger.log(TAG, "set content view...");
-        setContentView(R.layout.activity_notification_overlay);
+        setContentView(R.layout.activity_notification_screen);
 
         // Bind to ClockService
         Logger.log(TAG, "bind to " + ClockService.TAG);

@@ -34,7 +34,7 @@
             android:id="@+id/start_icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_power_settings_new_black_24dp"
+            android:background="@drawable/ic_power_settings_new_white_24dp"
             android:contentDescription="@string/content_description_start_icon" />
 
     </LinearLayout>

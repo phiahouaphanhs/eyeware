@@ -32,6 +32,7 @@
             android:name=".NotificationScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_notification_screen"
+            android:excludeFromRecents="true"
             android:theme="@style/FullscreenTheme" />
 
         <service
@@ -78,12 +79,11 @@
             android:name=".service.BlueLightFilterService"
             android:exported="false" />
         <service
-            android:name=".service.LockAndUnlockScreenService"
+            android:name=".service.LockScreenService"
             android:exported="false" />
 
         <activity
             android:name=".Main2Activity"
-            android:excludeFromRecents="true"
             android:label="@string/title_activity_main2"
             android:noHistory="true"
             android:taskAffinity=".OnInviteActivity"
@@ -91,7 +91,6 @@
         <activity
             android:name=".ProtectionLevelEditActivity"
             android:label="@string/title_activity_settings" />
-        <activity android:name=".LockScreenActivity" />
     </application>
 
 </manifest>

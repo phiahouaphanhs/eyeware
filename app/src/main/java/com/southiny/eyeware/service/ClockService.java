@@ -436,9 +436,9 @@ public class ClockService extends Service {
 
     private void lockScreen() {
         Logger.log(TAG, "lockScreen()");
-        Intent intent = new Intent(ClockService.this, LockAndUnlockScreenService.class);
-        intent.putExtra(LockAndUnlockScreenService.INTENT_EXTRA_LOCK_UNLOCK_CODE,
-                LockAndUnlockScreenService.LOCK_CODE);
+        Intent intent = new Intent(ClockService.this, LockScreenService.class);
+        intent.putExtra(LockScreenService.INTENT_EXTRA_LOCK_UNLOCK_CODE,
+                LockScreenService.LOCK_CODE);
         startService(intent);
     }
 

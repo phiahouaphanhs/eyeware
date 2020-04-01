@@ -203,7 +203,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_break_for">
 
-                <include layout="@layout/breaking_mode" />
+                <include layout="@layout/component_breaking_mode" />
 
             </LinearLayout>
 
@@ -295,7 +295,7 @@
                 app:layout_constraintTop_toBottomOf="@id/layout_bluelight_change"
                 app:layout_constraintStart_toStartOf="parent">
 
-                <include layout="@layout/filter_color" />
+                <include layout="@layout/component_filter_color_list" />
 
             </LinearLayout>
 
@@ -320,7 +320,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/filter_color_layout">
 
-                <include layout="@layout/brightness" />
+                <include layout="@layout/component_dim_alpha_ajust" />
 
             </LinearLayout>
 

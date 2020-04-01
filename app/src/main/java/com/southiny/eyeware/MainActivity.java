@@ -6,7 +6,6 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -165,9 +164,9 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
 
-                /*Intent intent = new Intent(MainActivity.this, LockAndUnlockScreenService.class);
-                intent.putExtra(LockAndUnlockScreenService.INTENT_EXTRA_LOCK_UNLOCK_CODE,
-                        LockAndUnlockScreenService.LOCK_CODE);
+                /*Intent intent = new Intent(MainActivity.this, LockScreenService.class);
+                intent.putExtra(LockScreenService.INTENT_EXTRA_LOCK_UNLOCK_CODE,
+                        LockScreenService.LOCK_CODE);
                 startService(intent);*/
             }
         });
@@ -574,7 +573,7 @@ public class MainActivity extends AppCompatActivity {
         Logger.log(TAG, "dialogChangePassword()");
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View changePasswordLayout = inflater.inflate(R.layout.change_password_form, null);
+        View changePasswordLayout = inflater.inflate(R.layout.component_change_password_form, null);
         final EditText oldPasswordInputEditText = changePasswordLayout.findViewById(R.id.password_old_input);
         final EditText newPasswordInputEditText = changePasswordLayout.findViewById(R.id.password_new_input);
         final TextView passwordNotMatchTextView = changePasswordLayout.findViewById(R.id.password_not_match_text_view);
@@ -592,7 +591,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Change Password")
                 //.setMessage(message)
                 .setView(changePasswordLayout)
-                .setIcon(R.drawable.ic_security_black_24dp)
+                .setIcon(R.drawable.ic_security_accent_24dp)
                 .show();
 
         okButton.setOnClickListener(new View.OnClickListener() {
@@ -627,7 +626,7 @@ public class MainActivity extends AppCompatActivity {
         Logger.log(TAG, "dialogChangeLockScreenTime()");
 
         LayoutInflater inflater = this.getLayoutInflater();
-        View changeLockScreenLayout = inflater.inflate(R.layout.change_lockscreen_time_form, null);
+        View changeLockScreenLayout = inflater.inflate(R.layout.component_change_lockscreen_time_form, null);
         final EditText lockScreenTimeInputEditText = changeLockScreenLayout.findViewById(R.id.lock_screen_time_input_text);
         final TextView okButton = changeLockScreenLayout.findViewById(R.id.change_lock_screen_time_button_ok);
         final TextView cancelButton = changeLockScreenLayout.findViewById(R.id.change_lock_screen_time_button_cancel);
@@ -639,7 +638,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Change Lock Screen Time")
                 //.setMessage(message)
                 .setView(changeLockScreenLayout)
-                .setIcon(R.drawable.ic_lock_open_black_24dp)
+                .setIcon(R.drawable.ic_lock_open_gray_24dp)
                 .show();
 
         okButton.setOnClickListener(new View.OnClickListener() {

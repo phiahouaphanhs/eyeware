@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Binder;
 import android.os.Build;
@@ -25,7 +26,10 @@ import com.southiny.eyeware.R;
 import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
+import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.tool.Logger;
+
+import java.util.ArrayList;
 
 public class BlueLightFilterService extends Service {
     public static final String TAG = BlueLightFilterService.class.getSimpleName();
@@ -37,13 +41,10 @@ public class BlueLightFilterService extends Service {
     public static final int REMOVE_AND_EXIT_CODE = 0;
     public static final int ADD_NOTIF_CODE = 2;
 
-    private int currentFilterLayoutIndex = layoutIDs.length - 1;
+    private int currentFilterIndex = 0;
 
-    public static final int[] layoutIDs = {R.layout.overlay_gold, R.layout.overlay_green,
-    R.layout.overlay_pink, R.layout.overlay_brown, R.layout.overlay_purple, R.layout.overlay_red,
-    R.layout.overlay_black, R.layout.overlay_blue};
+    public ArrayList<ScreenFilter> sfs;
 
-    private boolean isTransparentOverlay = false;
     private boolean isOnNotification = false;
     private boolean hasFilterOn = false;
 
@@ -76,6 +77,9 @@ public class BlueLightFilterService extends Service {
     public void onCreate() {
         super.onCreate();
         Logger.log(TAG, "onCreate()");
+
+        ProtectionMode pm = SQLRequest.getRun().getCurrentProtectionMode();
+        sfs = pm.getActivatedScreenFilters();
 
         /****** FOREGROUND ************/
 
@@ -113,11 +117,10 @@ public class BlueLightFilterService extends Service {
         switch (code) {
             case ADD_CODE:
                 // change blue light filter color
-                currentFilterLayoutIndex = (currentFilterLayoutIndex + 1) % BlueLightFilterService.layoutIDs.length;
-
-                if (!isOnNotification) {
+                if (!isOnNotification && sfs.size() > 0) {
                     removeFilter();
-                    addFilter(layoutIDs[currentFilterLayoutIndex]);
+                    addFilter(sfs.get(currentFilterIndex));
+                    currentFilterIndex = (currentFilterIndex + 1) % sfs.size();
                 } else {
                     Logger.log(TAG, "is on notification");
                 }
@@ -138,7 +141,7 @@ public class BlueLightFilterService extends Service {
                         vibrate(Constants.DEFAULT_VIBRATION_DURATION_MILLIS);
                         removeFilter();
                         isOnNotification = false;
-                        addFilter(layoutIDs[currentFilterLayoutIndex]);
+                        addFilter(sfs.get(currentFilterIndex));
 
                         Logger.log(TAG, "send intent to " + ClockService.TAG);
                         Intent intent = new Intent(getApplicationContext(), ClockService.class);
@@ -168,8 +171,8 @@ public class BlueLightFilterService extends Service {
 
     /*** METHODS *****/
 
-    private void overlay(final int layoutID, final float alpha, final float dim) {
-        Logger.log(TAG, "overlay() change blue light filter color");
+    private void overlay(final String colorCode, final float alpha, final float dim) {
+        Logger.log(TAG, "overlay() change blue light filter " + colorCode);
 
         // create a handler to run on the main thread (otherwise error)
         /* Handler mHandler = new Handler(getMainLooper());
@@ -208,7 +211,10 @@ public class BlueLightFilterService extends Service {
         LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         assert inflater != null;
-        mOverlayView = inflater.inflate(layoutID, null);
+        mOverlayView = inflater.inflate(R.layout.screen_overlay, null);
+
+        mOverlayView.setBackgroundColor(Color.parseColor(colorCode));
+
         mOverlayView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
 
@@ -228,8 +234,7 @@ public class BlueLightFilterService extends Service {
 
             if (!hasFilterOn)  {
                 vibrate(Constants.DEFAULT_VIBRATION_DURATION_MILLIS);
-                overlay(R.layout.overlay_black, 1.0F, 1.0F); // 0.6F = normal; 1.0F = block the screen
-                isTransparentOverlay = false;
+                overlay("#000000", 1.0F, 1.0F); // 0.6F = normal; 1.0F = block the screen
                 isOnNotification = true;
                 hasFilterOn = true;
             } else {
@@ -241,15 +246,17 @@ public class BlueLightFilterService extends Service {
         }
     }
 
-    private void addFilter(int layoutID) {
+    private void addFilter(ScreenFilter sc) {
+        addFilter(sc.getColorCode(), sc.getScreenAlpha(), sc.getDimAmount());
+    }
+
+    private void addFilter(String colorCode, float alpha, float dim) {
         Logger.log(TAG, "addFilter()");
 
         if (Settings.canDrawOverlays(this)) {
 
             if (!hasFilterOn) {
-                ProtectionMode pm = SQLRequest.getRun().getCurrentProtectionMode(); // get updated pm
-                overlay(layoutID, pm.getScreenAlpha(), pm.getDimAmount()); // 0.6F = normal; 1.0F = block the screen
-                isTransparentOverlay = false;
+                overlay(colorCode, alpha, dim); // 0.6F = normal; 1.0F = block the screen
                 hasFilterOn = true;
             } else {
                 Logger.warn(TAG, "already has filter on");
@@ -287,23 +294,31 @@ public class BlueLightFilterService extends Service {
         }
     }
 
-    public void updateFilterParam() {
+    // save
+    public void updateCurrentFilterParam(String colorCode, float alpha, float dim) {
         Logger.log(TAG, "updateFilterParam()");
-        ProtectionMode pm = SQLRequest.getRun().getCurrentProtectionMode(); // get updated pm
 
         removeFilter();
 
-        if (mOverlayView == null) {
-            addFilter(R.layout.overlay_transparent);
-            isTransparentOverlay = true;
+        if (mOverlayView != null && hasFilterOn) {
+            addFilter(colorCode, alpha, dim);
+            ScreenFilter sc = sfs.get(currentFilterIndex);
+            sc.setColorCode(colorCode);
+            sc.setScreenAlpha(alpha);
+            sc.setDimAmount(dim);
+            sc.save();
         } else {
-            if (isTransparentOverlay) {
-                addFilter(R.layout.overlay_transparent);
-            } else {
-                addFilter(layoutIDs[currentFilterLayoutIndex]);
-            }
+            Logger.log(TAG, "currently, no filter on");
         }
 
+    }
+
+    public ScreenFilter getCurrentScreenFilter() {
+        if (mOverlayView != null) {
+            return sfs.get(currentFilterIndex);
+        } else {
+            return null;
+        }
     }
 
     private void vibrate(long duration) {

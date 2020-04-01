@@ -32,7 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
-                <include layout="@layout/clock_start"/>
+                <include layout="@layout/component_clock_start"/>
 
 
             </android.support.v7.widget.CardView>
@@ -45,7 +45,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <include layout="@layout/protection_level"/>
+                <include layout="@layout/component_protection_level"/>
 
             </android.support.v7.widget.CardView>
 
@@ -57,7 +57,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <include layout="@layout/parental_control"/>
+                <include layout="@layout/component_parental_control"/>
 
             </android.support.v7.widget.CardView>
 
@@ -69,7 +69,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <include layout="@layout/phone_parameters"/>
+                <include layout="@layout/component_phone_parameters"/>
 
             </android.support.v7.widget.CardView>
 
@@ -81,7 +81,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <include layout="@layout/eye_exercise" />
+                <include layout="@layout/component_eye_exercise" />
 
             </android.support.v7.widget.CardView>
 

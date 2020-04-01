@@ -12,338 +12,78 @@ public class ScreenFilter extends Model {
 
     public static final String TABLE_NAME = "filter_color";
 
-    public static final String COLUMN_COLOR_CODE_0 = "color_code_0";
-    public static final String COLUMN_COLOR_ACTIVATED_0 = "color_activated_0";
-
-    public static final String COLUMN_COLOR_CODE_1 = "color_code_1";
-    public static final String COLUMN_COLOR_ACTIVATED_1 = "color_activated_1";
-
-    public static final String COLUMN_COLOR_CODE_2 = "color_code_2";
-    public static final String COLUMN_COLOR_ACTIVATED_2 = "color_activated_2";
-
-    public static final String COLUMN_COLOR_CODE_3 = "color_code_3";
-    public static final String COLUMN_COLOR_ACTIVATED_3 = "color_activated_3";
-
-    public static final String COLUMN_COLOR_CODE_4 = "color_code_4";
-    public static final String COLUMN_COLOR_ACTIVATED_4 = "color_activated_4";
-
-    public static final String COLUMN_COLOR_CODE_5 = "color_code_5";
-    public static final String COLUMN_COLOR_ACTIVATED_5 = "color_activated_5";
-
-    public static final String COLUMN_COLOR_CODE_6 = "color_code_6";
-    public static final String COLUMN_COLOR_ACTIVATED_6 = "color_activated_6";
-
-    public static final String COLUMN_COLOR_CODE_7 = "color_code_7";
-    public static final String COLUMN_COLOR_ACTIVATED_7 = "color_activated_7";
+    public static final String COLUMN_COLOR_CODE = "color_code";
+    public static final String COLUMN_DIM_AMOUNT = "dim_amount";
+    public static final String COLUMN_SCREEN_ALPHA = "screen_alpha";
+    public static final String COLUMN_IS_ACTIVATED = "is_activated";
 
     @PrimaryKey
     private Long id;
 
-    @Column(name = COLUMN_COLOR_CODE_0)
-    private String code0;
+    @Column(name = COLUMN_COLOR_CODE)
+    private String colorCode;
 
-    @Column(name = COLUMN_COLOR_ACTIVATED_0)
-    private boolean isActivated0;
+    @Column(name = COLUMN_DIM_AMOUNT)
+    private float dimAmount;
 
-    @Column(name = COLUMN_COLOR_CODE_1)
-    private String code1;
+    @Column(name = COLUMN_SCREEN_ALPHA)
+    private float screenAlpha;
 
-    @Column(name = COLUMN_COLOR_ACTIVATED_1)
-    private boolean isActivated1;
-
-    @Column(name = COLUMN_COLOR_CODE_2)
-    private String code2;
-
-    @Column(name = COLUMN_COLOR_ACTIVATED_2)
-    private boolean isActivated2;
-
-    @Column(name = COLUMN_COLOR_CODE_3)
-    private String code3;
-
-    @Column(name = COLUMN_COLOR_ACTIVATED_3)
-    private boolean isActivated3;
-
-    @Column(name = COLUMN_COLOR_CODE_4)
-    private String code4;
-
-    @Column(name = COLUMN_COLOR_ACTIVATED_4)
-    private boolean isActivated4;
-
-    @Column(name = COLUMN_COLOR_CODE_5)
-    private String code5;
-
-    @Column(name = COLUMN_COLOR_ACTIVATED_5)
-    private boolean isActivated5;
-
-    @Column(name = COLUMN_COLOR_CODE_6)
-    private String code6;
-
-    @Column(name = COLUMN_COLOR_ACTIVATED_6)
-    private boolean isActivated6;
-
-    @Column(name = COLUMN_COLOR_CODE_7)
-    private String code7;
-
-    @Column(name = COLUMN_COLOR_ACTIVATED_7)
-    private boolean isActivated7;
+    @Column(name = COLUMN_IS_ACTIVATED)
+    private boolean isActivated;
 
 
-
-
+    // should never be called
     public ScreenFilter() {
-        init();
+        ScreenFilter sc = Constants.DEFAULT_SCREEN_FILTERS[0];
+        this.colorCode = sc.colorCode;
+        this.dimAmount = sc.dimAmount;
+        this.screenAlpha = sc.screenAlpha;
+        isActivated = false;
     }
 
-    public void init() {
-        isActivated0 = true;
-        isActivated1 = true;
-        isActivated2 = true;
-        isActivated3 = true;
-        isActivated4 = true;
-        isActivated5 = true;
-        isActivated6 = true;
-        isActivated7 = true;
-
-        code0 = Constants.DEFAULT_FILTER_COLORS[0];
-        code1 = Constants.DEFAULT_FILTER_COLORS[1];
-        code2 = Constants.DEFAULT_FILTER_COLORS[2];
-        code3 = Constants.DEFAULT_FILTER_COLORS[3];
-        code4 = Constants.DEFAULT_FILTER_COLORS[4];
-        code5 = Constants.DEFAULT_FILTER_COLORS[5];
-        code6 = Constants.DEFAULT_FILTER_COLORS[6];
-        code7 = Constants.DEFAULT_FILTER_COLORS[7];
+    public ScreenFilter(String code, float dimAmount, float screenAlpha) {
+        this.colorCode = code;
+        this.dimAmount = dimAmount;
+        this.screenAlpha = screenAlpha;
+        isActivated = false;
     }
 
-    public String getCode(int index) {
+    public String getColorCode() {
+        return colorCode;
+    }
 
-        switch (index) {
-            case 0:
-                return code0;
-            case 1:
-                return code1;
-            case 2:
-                return code2;
-            case 3:
-                return code3;
-            case 4:
-                return code4;
-            case 5:
-                return code5;
-            case 6:
-                return code6;
-            case 7:
-                return code7;
-            default:
-                return code0;
+    public void setColorCode(String colorCode) {
+        this.colorCode = colorCode;
+    }
+
+    public float getDimAmount() {
+        return dimAmount;
+    }
+
+    public void setDimAmount(float dimAmount) {
+        this.dimAmount = dimAmount;
+    }
+
+    public float getScreenAlpha() {
+        return screenAlpha;
+    }
+
+    public void setScreenAlpha(float screenAlpha) {
+        this.screenAlpha = screenAlpha;
+    }
+
+    public boolean isActivated() {
+        return isActivated;
+    }
+
+    public void setActivated(boolean activated) {
+        isActivated = activated;
+    }
+
+    public static void initsave() {
+        for (ScreenFilter sc : Constants.DEFAULT_SCREEN_FILTERS) {
+            sc.save();
         }
-    }
-
-    public void setCode(int index, String code) {
-
-        switch (index) {
-            case 0:
-                code0 = code;
-                break;
-            case 1:
-                code1 = code;
-                break;
-            case 2:
-                code2 = code;
-                break;
-            case 3:
-                code3 = code;
-                break;
-            case 4:
-                code4 = code;
-                break;
-            case 5:
-                code5 = code;
-                break;
-            case 6:
-                code6 = code;
-                break;
-            case 7:
-                code7 = code;
-                break;
-        }
-    }
-
-    public boolean isActivated(int index) {
-        switch (index) {
-            case 0:
-                return isActivated0;
-            case 1:
-                return isActivated1;
-            case 2:
-                return isActivated2;
-            case 3:
-                return isActivated3;
-            case 4:
-                return isActivated4;
-            case 5:
-                return isActivated5;
-            case 6:
-                return isActivated6;
-            case 7:
-                return isActivated7;
-            default:
-                return false;
-        }
-    }
-
-    public void setActivated(int index, boolean activated) {
-        switch (index) {
-            case 0:
-                isActivated0 = activated;
-                break;
-            case 1:
-                isActivated1 = activated;
-                break;
-            case 2:
-                isActivated2 = activated;
-                break;
-            case 3:
-                isActivated3 = activated;
-            case 4:
-                isActivated4 = activated;
-                break;
-            case 5:
-                isActivated5 = activated;
-                break;
-            case 6:
-                isActivated6 = activated;
-                break;
-            case 7:
-                isActivated7 = activated;
-                break;
-        }
-    }
-
-    public String getCode0() {
-        return code0;
-    }
-
-    public void setCode0(String code0) {
-        this.code0 = code0;
-    }
-
-    public boolean isActivated0() {
-        return isActivated0;
-    }
-
-    public void setActivated0(boolean activated0) {
-        isActivated0 = activated0;
-    }
-
-    public String getCode1() {
-        return code1;
-    }
-
-    public void setCode1(String code1) {
-        this.code1 = code1;
-    }
-
-    public boolean isActivated1() {
-        return isActivated1;
-    }
-
-    public void setActivated1(boolean activated1) {
-        isActivated1 = activated1;
-    }
-
-    public String getCode2() {
-        return code2;
-    }
-
-    public void setCode2(String code2) {
-        this.code2 = code2;
-    }
-
-    public boolean isActivated2() {
-        return isActivated2;
-    }
-
-    public void setActivated2(boolean activated2) {
-        isActivated2 = activated2;
-    }
-
-    public String getCode3() {
-        return code3;
-    }
-
-    public void setCode3(String code3) {
-        this.code3 = code3;
-    }
-
-    public boolean isActivated3() {
-        return isActivated3;
-    }
-
-    public void setActivated3(boolean activated3) {
-        isActivated3 = activated3;
-    }
-
-    public String getCode4() {
-        return code4;
-    }
-
-    public void setCode4(String code4) {
-        this.code4 = code4;
-    }
-
-    public boolean isActivated4() {
-        return isActivated4;
-    }
-
-    public void setActivated4(boolean activated4) {
-        isActivated4 = activated4;
-    }
-
-    public String getCode5() {
-        return code5;
-    }
-
-    public void setCode5(String code5) {
-        this.code5 = code5;
-    }
-
-    public boolean isActivated5() {
-        return isActivated5;
-    }
-
-    public void setActivated5(boolean activated5) {
-        isActivated5 = activated5;
-    }
-
-    public String getCode6() {
-        return code6;
-    }
-
-    public void setCode6(String code6) {
-        this.code6 = code6;
-    }
-
-    public boolean isActivated6() {
-        return isActivated6;
-    }
-
-    public void setActivated6(boolean activated6) {
-        isActivated6 = activated6;
-    }
-
-    public String getCode7() {
-        return code7;
-    }
-
-    public void setCode7(String code7) {
-        this.code7 = code7;
-    }
-
-    public boolean isActivated7() {
-        return isActivated7;
-    }
-
-    public void setActivated7(boolean activated7) {
-        isActivated7 = activated7;
     }
 }
