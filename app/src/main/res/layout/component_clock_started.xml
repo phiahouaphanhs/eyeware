@@ -181,11 +181,11 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
-                android:id="@+id/change_next_color_icon"
+                android:id="@+id/filter_icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@color/colorAccent"
                 android:src="@drawable/ic_style_gray_24dp"
+                android:background="@color/eyeware_black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -201,7 +201,7 @@
                 android:textColor="@color/eyeware_white"
                 android:textSize="25sp"
                 app:layout_constraintEnd_toStartOf="@id/separator_bl"
-                app:layout_constraintTop_toBottomOf="@id/change_next_color_icon" />
+                app:layout_constraintTop_toBottomOf="@id/filter_icon" />
 
 
             <TextView
@@ -217,7 +217,7 @@
                 android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/change_next_color_icon" />
+                app:layout_constraintTop_toBottomOf="@+id/filter_icon" />
 
             <TextView
                 android:id="@+id/bl_second_count"
@@ -230,7 +230,7 @@
                 android:textColor="@color/eyeware_white"
                 android:textSize="25sp"
                 app:layout_constraintStart_toEndOf="@+id/separator_bl"
-                app:layout_constraintTop_toBottomOf="@id/change_next_color_icon" />
+                app:layout_constraintTop_toBottomOf="@id/filter_icon" />
 
             <TextView
                 android:layout_width="100dp"
@@ -262,6 +262,7 @@
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:src="@drawable/ic_lock_open_gray_24dp"
+                android:background="@color/eyeware_black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

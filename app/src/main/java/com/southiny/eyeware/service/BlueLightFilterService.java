@@ -42,6 +42,7 @@ public class BlueLightFilterService extends Service {
     public static final int ADD_NOTIF_CODE = 2;
 
     private int currentFilterIndex = 0;
+    private String currentFilterColorCode = "#000000"; // pas necessaire mais pour optimiser la performance
 
     public ArrayList<ScreenFilter> sfs;
 
@@ -80,6 +81,7 @@ public class BlueLightFilterService extends Service {
 
         ProtectionMode pm = SQLRequest.getRun().getCurrentProtectionMode();
         sfs = pm.getActivatedScreenFilters();
+        currentFilterIndex = sfs.size();
 
         /****** FOREGROUND ************/
 
@@ -118,9 +120,10 @@ public class BlueLightFilterService extends Service {
             case ADD_CODE:
                 // change blue light filter color
                 if (!isOnNotification && sfs.size() > 0) {
+                    currentFilterIndex = (currentFilterIndex + 1) % sfs.size();
                     removeFilter();
                     addFilter(sfs.get(currentFilterIndex));
-                    currentFilterIndex = (currentFilterIndex + 1) % sfs.size();
+
                 } else {
                     Logger.log(TAG, "is on notification");
                 }
@@ -214,6 +217,7 @@ public class BlueLightFilterService extends Service {
         mOverlayView = inflater.inflate(R.layout.screen_overlay, null);
 
         mOverlayView.setBackgroundColor(Color.parseColor(colorCode));
+        currentFilterColorCode = colorCode;
 
         mOverlayView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
@@ -313,12 +317,8 @@ public class BlueLightFilterService extends Service {
 
     }
 
-    public ScreenFilter getCurrentScreenFilter() {
-        if (mOverlayView != null) {
-            return sfs.get(currentFilterIndex);
-        } else {
-            return null;
-        }
+    public String getCurrentFilterColor() {
+        return currentFilterColorCode;
     }
 
     private void vibrate(long duration) {

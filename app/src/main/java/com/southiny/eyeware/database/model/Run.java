@@ -29,6 +29,8 @@ public class Run extends Model {
 
     public static final String COLUMN_PARENTAL_CONTROL = "parental_control_id";
 
+    public static final String COLUMN_PERMISSION_IS_CHANGED = "permission_is_changed";
+
     @PrimaryKey
     private Long id;
 
@@ -56,6 +58,9 @@ public class Run extends Model {
     @Column(name = COLUMN_PROTECTION_MODE_GAMER)
     private ProtectionMode protectionModeGamer;
 
+    @Column(name = COLUMN_PERMISSION_IS_CHANGED)
+    private boolean isPermissionChanged;
+
     public Run() {
         init();
     }
@@ -72,6 +77,7 @@ public class Run extends Model {
 
         protectionModeStandard.setCurrent(true);
         parentalControl = new ParentalControl();
+        isPermissionChanged = false;
     }
 
     public Long getId() {
@@ -193,5 +199,13 @@ public class Run extends Model {
                 protectionModeGamer.setCurrent(true);
                 break;
         }
+    }
+
+    public boolean isPermissionChanged() {
+        return isPermissionChanged;
+    }
+
+    public void setPermissionChanged(boolean permissionChanged) {
+        isPermissionChanged = permissionChanged;
     }
 }

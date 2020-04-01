@@ -290,10 +290,13 @@
 
             <LinearLayout
                 android:id="@+id/filter_color_layout"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/layout_bluelight_change"
-                app:layout_constraintStart_toStartOf="parent">
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_bluelight_change">
 
                 <include layout="@layout/component_filter_color_list" />
 
@@ -309,20 +312,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/filter_color_layout"/>
-
-            <LinearLayout
-                android:id="@+id/linearLayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/filter_color_layout">
-
-                <include layout="@layout/component_dim_alpha_ajust" />
-
-            </LinearLayout>
 
 
         </android.support.constraint.ConstraintLayout>

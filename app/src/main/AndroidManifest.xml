@@ -23,16 +23,14 @@
         android:roundIcon="@mipmap/ic_laucher_miracle_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-        <activity android:name=".LockPhoneActivity"/>
-
+        <activity android:name=".TestActivity"></activity>
+        <activity android:name=".LockPhoneActivity" />
         <activity android:name=".SettingsActivity" />
-
         <activity
             android:name=".NotificationScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label="@string/title_activity_notification_screen"
             android:excludeFromRecents="true"
+            android:label="@string/title_activity_notification_screen"
             android:theme="@style/FullscreenTheme" />
 
         <service
@@ -41,7 +39,6 @@
             android:exported="true" />
 
         <activity android:name=".PasswordActivity" />
-
         <activity
             android:name=".MainActivity"
             android:excludeFromRecents="true"

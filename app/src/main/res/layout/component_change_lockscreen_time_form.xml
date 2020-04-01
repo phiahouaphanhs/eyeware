@@ -5,14 +5,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/fab_margin">
+    android:background="@drawable/layout_rectangle_dark_gray_shade">
 
     <TextView
         android:id="@+id/change_color_code_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="64dp"
         android:text="Lock screen in : "
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/eyeware_black"
@@ -23,21 +23,25 @@
         android:id="@+id/layout_change_lock_screen_time"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/change_color_code_label">
 
         <EditText
             android:id="@+id/lock_screen_time_input_text"
-            android:layout_width="274dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
             android:ems="10"
             android:hint="20"
             android:inputType="number"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/lock_screen_unit_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -45,12 +49,12 @@
             android:id="@+id/lock_screen_unit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginEnd="32dp"
             android:layout_marginBottom="16dp"
             android:text="@string/minute_text"
             android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@id/lock_screen_time_input_text" />
+            app:layout_constraintEnd_toEndOf="parent" />
 
     </android.support.constraint.ConstraintLayout>
 
@@ -65,10 +69,12 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/layout_change_lock_screen_time" />
 
-    <LinearLayout
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="8dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/lock_screen_time_not_valid_text_view">
@@ -77,6 +83,7 @@
             android:id="@+id/change_lock_screen_time_button_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:paddingStart="25dp"
             android:paddingTop="15dp"
@@ -84,21 +91,28 @@
             android:paddingBottom="15dp"
             android:text="@string/password_form_ok_button"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            app:layout_constraintEnd_toStartOf="@+id/change_password_button_cancel"
-            app:layout_constraintTop_toBottomOf="@+id/password_new_input" />
+            app:layout_constraintEnd_toStartOf="@+id/divider9"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <View
             android:id="@+id/divider9"
             android:layout_width="1dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
             android:background="?android:attr/listDivider"
-            tools:layout_editor_absoluteX="118dp"
-            tools:layout_editor_absoluteY="8dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/change_lock_screen_time_button_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:background="@android:color/transparent"
             android:paddingStart="25dp"
             android:paddingTop="15dp"
@@ -106,10 +120,10 @@
             android:paddingBottom="15dp"
             android:text="@string/password_form_cancel_button"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/password_new_input" />
+            app:layout_constraintStart_toEndOf="@+id/divider9"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 
 </android.support.constraint.ConstraintLayout>

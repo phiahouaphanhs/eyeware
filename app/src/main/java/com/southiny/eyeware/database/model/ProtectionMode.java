@@ -314,6 +314,21 @@ public class ProtectionMode extends Model {
         return screenFilters;
     }
 
+    public int getNbActivatedScreenFilters() {
+        int nb = 0;
+
+        if (screenFilter0.isActivated()) nb ++;
+        if (screenFilter1.isActivated()) nb ++;
+        if (screenFilter2.isActivated()) nb ++;
+        if (screenFilter3.isActivated()) nb ++;
+        if (screenFilter4.isActivated()) nb ++;
+        if (screenFilter5.isActivated()) nb ++;
+        if (screenFilter6.isActivated()) nb ++;
+        if (screenFilter7.isActivated()) nb ++;
+
+        return nb;
+    }
+
     public ScreenFilter getScreenFilter0() {
         return screenFilter0;
     }
@@ -376,5 +391,21 @@ public class ProtectionMode extends Model {
 
     public void setScreenFilter7(ScreenFilter screenFilter7) {
         this.screenFilter7 = screenFilter7;
+    }
+
+    public ScreenFilter[] getScreenFilters() {
+        ScreenFilter[] screenFilters = new ScreenFilter[8];
+
+        screenFilters[0] = screenFilter0;
+        screenFilters[1] = screenFilter1;
+        screenFilters[2] = screenFilter2;
+        screenFilters[3] = screenFilter3;
+        screenFilters[4] = screenFilter4;
+        screenFilters[5] = screenFilter5;
+        screenFilters[6] = screenFilter6;
+        screenFilters[7] = screenFilter7;
+
+        return screenFilters;
+
     }
 }

@@ -2,6 +2,7 @@ package com.southiny.eyeware;
 
 import android.app.Activity;
 import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -90,7 +91,7 @@ public class SplashScreen extends Activity {
                 Intent intent;
 
                 // start main activity
-                if (isServiceRunning(ClockService.class.getName())) {
+                if (isServiceRunning(ClockService.class.getName(), SplashScreen.this)) {
                   //if (run.isTimerRunning()) {
                     Logger.log(TAG, "ClockService is running !!!");
 
@@ -138,10 +139,10 @@ public class SplashScreen extends Activity {
         Logger.log(TAG, "onDestroy()");
     }
 
-    private boolean isServiceRunning(String serviceName){
+    public static boolean isServiceRunning(String serviceName, Context context){
         boolean isRunning = false;
 
-        ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
+        ActivityManager am = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningServiceInfo> runningServiceInfos;
         if (am != null) {
             runningServiceInfos = am.getRunningServices(Integer.MAX_VALUE);

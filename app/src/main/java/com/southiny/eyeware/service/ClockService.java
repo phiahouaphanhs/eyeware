@@ -5,7 +5,9 @@ import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.app.admin.DevicePolicyManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -13,6 +15,7 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
 
 import com.southiny.eyeware.Constants;
@@ -23,6 +26,7 @@ import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
+import com.southiny.eyeware.tool.AdminReceiver;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
 
@@ -141,6 +145,7 @@ public class ClockService extends Service {
         Logger.log(TAG, "user interaction receiver registered.");
 
         // initialisation
+        resetBLTimer();
         resetBreakingTimer();
         resetLockScreenCountDown();
 
@@ -183,10 +188,19 @@ public class ClockService extends Service {
                         break;
 
                     case STRONG:
-                        Logger.log(TAG, "Strong : Send intent to " + BlueLightFilterService.TAG);
-                        intent = new Intent(getApplicationContext(), BlueLightFilterService.class);
-                        intent.putExtra(BlueLightFilterService.INTENT_EXTRA_CODE, BlueLightFilterService.ADD_NOTIF_CODE);
-                        startForegroundService(intent);
+
+                        if (Settings.canDrawOverlays(ClockService.this)) {
+                            Logger.log(TAG, "Strong : Send intent to " + BlueLightFilterService.TAG);
+                            intent = new Intent(getApplicationContext(), BlueLightFilterService.class);
+                            intent.putExtra(BlueLightFilterService.INTENT_EXTRA_CODE, BlueLightFilterService.ADD_NOTIF_CODE);
+                            startForegroundService(intent);
+                        } else {
+                            Logger.err(TAG, "cannot change filter, no overlay permission");
+                            run.setPermissionChanged(true);
+                            run.save();
+                        }
+
+
                         break;
                 }
 
@@ -246,10 +260,16 @@ public class ClockService extends Service {
             } else if (cptBluelightChangeSec == 0) {
 
                 // change blue light filter
-                changeBlueLightFilter();
+                boolean success = changeBlueLightFilter();
 
                 // reset
                 cptBluelightChangeSec = pm.getBlueLightFilterChangeEvery_sec();
+
+                // post runnable
+                if (!success) {
+                    run.setPermissionChanged(true);
+                    run.save();
+                }
             }
 
             // post runnable
@@ -273,11 +293,16 @@ public class ClockService extends Service {
                 } else if (cptLockScreenSec == 0) {
 
                     // lock screen
-                    lockScreen();
+                    boolean success = lockScreen();
 
                     // reset
                     resetLockScreenCountDown();
                     isLockScreenCountDownRunning = false;
+
+                    if (!success) {
+                        run.setPermissionChanged(true);
+                        run.save();
+                    }
                 }
 
             //} else { // unlock
@@ -309,6 +334,8 @@ public class ClockService extends Service {
 
         // remove blue light filter
         removeBlueLightFilter();
+
+
         Logger.log(TAG, "blue light filter removed.");
 
         // unregister receivers
@@ -354,8 +381,13 @@ public class ClockService extends Service {
     private void startBLTimer() {
         Logger.log(TAG, "startBLTimer()");
         if (pm.isBluelightFiltering() && !isRunningBL) {
-            changeBlueLightEveryHandler.post(cptBlueLightChangeRunnable);
-            isRunningBL = true;
+            if (pm.getNbActivatedScreenFilters() > 1) {
+                changeBlueLightEveryHandler.post(cptBlueLightChangeRunnable);
+                isRunningBL = true;
+            } else {
+                Logger.log(TAG, "pm has less than 2 activated screen filters");
+            }
+
             changeBlueLightFilter();
         } else {
             Logger.log(TAG, "bluelight auto change is not activated or already running");
@@ -401,17 +433,19 @@ public class ClockService extends Service {
     }
 
 
-    private void changeBlueLightFilter() {
+    private boolean changeBlueLightFilter() {
         Logger.log(TAG, "changeBlueLightFilter()");
-        Logger.log(TAG, "send intent to " + BlueLightFilterService.TAG);
-        Intent intent = new Intent(this, BlueLightFilterService.class);
-        intent.putExtra(BlueLightFilterService.INTENT_EXTRA_CODE, BlueLightFilterService.ADD_CODE);
-        //intent.putExtra(BlueLightFilterService.INTENT_EXTRA_LAYOUT_INDEX, nextFilterLayoutIndex);
 
-        //startService(intent);
-        startForegroundService(intent);
-
-        //nextFilterLayoutIndex = (nextFilterLayoutIndex + 1) % BlueLightFilterService.layoutIDs.length;
+        if (Settings.canDrawOverlays(this)) {
+            Logger.log(TAG, "send intent to " + BlueLightFilterService.TAG);
+            Intent intent = new Intent(this, BlueLightFilterService.class);
+            intent.putExtra(BlueLightFilterService.INTENT_EXTRA_CODE, BlueLightFilterService.ADD_CODE);
+            startForegroundService(intent);
+            return true;
+        } else {
+            Logger.err(TAG, "cannot change filter, no overlay permission");
+            return false;
+        }
     }
 
     private void removeBlueLightFilter() {
@@ -434,12 +468,23 @@ public class ClockService extends Service {
         }
     }
 
-    private void lockScreen() {
+    private boolean lockScreen() {
         Logger.log(TAG, "lockScreen()");
-        Intent intent = new Intent(ClockService.this, LockScreenService.class);
-        intent.putExtra(LockScreenService.INTENT_EXTRA_LOCK_UNLOCK_CODE,
-                LockScreenService.LOCK_CODE);
-        startService(intent);
+
+        ComponentName componentName = new ComponentName(this, AdminReceiver.class);
+        DevicePolicyManager devicePolicyManager = (DevicePolicyManager) getSystemService(DEVICE_POLICY_SERVICE);
+
+        assert devicePolicyManager != null;
+        if (devicePolicyManager.isAdminActive(componentName)) {
+            Intent intent = new Intent(ClockService.this, LockScreenService.class);
+            intent.putExtra(LockScreenService.INTENT_EXTRA_LOCK_UNLOCK_CODE,
+                    LockScreenService.LOCK_CODE);
+            startService(intent);
+            return true;
+        } else {
+            Logger.err(TAG, "cannot lock screen, no device admin permission");
+            return false;
+        }
     }
 
     /* ******** PUBLIC METHODS TO BE CALLED BY EXTERNAL */

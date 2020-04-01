@@ -21,6 +21,7 @@ import android.widget.Toast;
 import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
+import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
 import com.southiny.eyeware.tool.ProtectionLevel;
@@ -33,10 +34,13 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
     private Run run;
     private ProtectionMode pm;
+    private ScreenFilter[] scs = new ScreenFilter[8];
+
     private EditText breakEveryMinEditText, breakForSecEditText, bluelightChangeEveryMinEditText, plNameEditText;
     private Switch breakingSwitch, bluelightSwitch;
     private ImageView breakingLightIcon, breakingMediumIcon, breakingStrongIcon;
     private ImageView[] colorIcons = new ImageView[8];
+    private ImageView[] colorEditIcons = new ImageView[8];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +71,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         } else {
             Logger.err(TAG, "ERROR : no protection mode found");
         }
+
+        scs = pm.getScreenFilters();
     }
 
 
@@ -94,6 +100,15 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         colorIcons[5] = findViewById(R.id.button_change_color_red);
         colorIcons[6] = findViewById(R.id.button_change_color_orange);
         colorIcons[7] = findViewById(R.id.button_change_color_blue);
+
+        colorEditIcons[0] = findViewById(R.id.edit_icon_gold);
+        colorEditIcons[1] = findViewById(R.id.edit_icon_green);
+        colorEditIcons[2] = findViewById(R.id.edit_icon_pink);
+        colorEditIcons[3] = findViewById(R.id.edit_icon_brown);
+        colorEditIcons[4] = findViewById(R.id.edit_icon_purple);
+        colorEditIcons[5] = findViewById(R.id.edit_icon_red);
+        colorEditIcons[6] = findViewById(R.id.edit_icon_orange);
+        colorEditIcons[7] = findViewById(R.id.edit_icon_blue);
 
         SeekBar dimBar = findViewById(R.id.brightness_level_seek_bar);
         SeekBar alphaBar = findViewById(R.id.transparency_level_seek_bar);
@@ -132,9 +147,12 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
                     pm.save();
 
-
                     run.setCurrentProtectionMode(pm);
                     run.save();
+
+                    for (int i = 0; i < scs.length; i++) {
+                        scs[i].save();
+                    }
 
                     Logger.log(TAG, "updated.");
                     Intent intent = new Intent(ProtectionLevelEditActivity.this, MainActivity.class);
@@ -206,8 +224,13 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             }
         });
 
-        for(int i = 0; i < colorIcons.length; i++) {
+        for (int i = 0; i < colorEditIcons.length; i++) {
             ColorChangeListener ln = new ColorChangeListener(i);
+            colorEditIcons[i].setOnClickListener(ln);
+        }
+
+        for (int i = 0; i < colorIcons.length; i++) {
+            ColorActivateListener ln = new ColorActivateListener(i);
             colorIcons[i].setOnClickListener(ln);
         }
 
@@ -292,7 +315,12 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
         setSelectedBreakingMode(pm.getBreakingMode());
 
-        colorIcons[0].setBackgroundColor(Color.parseColor(pm.getScreenFilter0().getColorCode()));
+        for (int i = 0; i < scs.length; i++) {
+            colorIcons[i].setBackgroundColor(Color.parseColor(scs[i].getColorCode()));
+            setActivatedColor(i, scs[i].isActivated());
+        }
+
+        /*colorIcons[0].setBackgroundColor(Color.parseColor(pm.getScreenFilter0().getColorCode()));
         colorIcons[1].setBackgroundColor(Color.parseColor(pm.getScreenFilter1().getColorCode()));
         colorIcons[2].setBackgroundColor(Color.parseColor(pm.getScreenFilter2().getColorCode()));
         colorIcons[3].setBackgroundColor(Color.parseColor(pm.getScreenFilter3().getColorCode()));
@@ -308,7 +336,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         setActivatedColor(4, pm.getScreenFilter4().isActivated());
         setActivatedColor(5, pm.getScreenFilter5().isActivated());
         setActivatedColor(6, pm.getScreenFilter6().isActivated());
-        setActivatedColor(7, pm.getScreenFilter7().isActivated());
+        setActivatedColor(7, pm.getScreenFilter7().isActivated());*/
     }
 
     private void setActivatedColor(int index, boolean activated) {
@@ -410,16 +438,13 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         final View changeColorCodeLayout = inflater.inflate(R.layout.component_change_color_code, null);
         final EditText colorCodeEditText = changeColorCodeLayout.findViewById(R.id.color_code_input_text);
-        final CheckBox useThisFilterCheckBox = changeColorCodeLayout.findViewById(R.id.use_this_filter_checkbox);
         final TextView okButton = changeColorCodeLayout.findViewById(R.id.change_color_code_button_ok);
         final TextView cancelButton = changeColorCodeLayout.findViewById(R.id.change_color_code_button_cancel);
 
-        /*colorCodeEditText.setText(sf.getColorCode(index));
-        useThisFilterCheckBox.setChecked(sf.isActivated(index));*/
+        colorCodeEditText.setText(scs[index].getColorCode());
 
         final AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Modify color code")
-                //.setMessage(message)
                 .setView(changeColorCodeLayout)
                 .setIcon(R.drawable.ic_edit_black_24dp)
                 .show();
@@ -428,13 +453,10 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 String code = colorCodeEditText.getText().toString();
-                boolean checked = useThisFilterCheckBox.isChecked();
 
                 if (validColorCode(code)) {
-                    //sf.setColorCode(index, code);
-                    Logger.log(TAG, "setActivated(" + index + ", " + checked + ")");
-                    //sf.setActivated(index, checked);
-                    setActivatedColor(index, checked);
+                    scs[index].setColorCode(code);
+                    colorIcons[index].setBackgroundColor(Color.parseColor(code));
                     dialog.dismiss();
                 } else {
                     TextView colorCodeNotValidTextView = changeColorCodeLayout.findViewById(R.id.color_code_not_valid_text_view);
@@ -455,7 +477,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
     }
 
     private boolean validColorCode(String code) {
-        return true;
+        return (code.length() == 9 | code.length() == 7) && code.charAt(0) == '#';
     }
 
 
@@ -470,6 +492,23 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             dialogChangeColorCode(index);
+        }
+    }
+
+    private class ColorActivateListener implements View.OnClickListener {
+
+        public int index = 0;
+
+        public ColorActivateListener(int i) {
+            index = i;
+        }
+
+        @Override
+        public void onClick(View view) {
+            scs[index].setActivated(!scs[index].isActivated());
+            setActivatedColor(index, scs[index].isActivated());
+            Toast.makeText(ProtectionLevelEditActivity.this, index + " is activated ?" + scs[index].isActivated(), Toast.LENGTH_SHORT).show();
+
         }
     }
 

@@ -5,15 +5,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginEnd="@dimen/fab_margin">
+    android:background="@drawable/layout_rectangle_blue_shade_green">
 
     <TextView
         android:id="@+id/change_color_code_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:text="Color colorCode :"
+        android:layout_marginTop="64dp"
+        android:text="Color Code :"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/eyeware_black"
         app:layout_constraintStart_toStartOf="parent"
@@ -23,9 +23,9 @@
         android:id="@+id/color_code_input_text"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="32dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="32dp"
         android:ems="10"
         android:hint="#8FAF8903"
         android:inputType="text"
@@ -44,28 +44,33 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/color_code_input_text" />
 
-    <CheckBox
-        android:id="@+id/use_this_filter_checkbox"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:text="Use this filter"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/color_code_not_valid_text_view" />
-
     <LinearLayout
+        android:id="@+id/linearLayout_ajust_brightness"
+        android:layout_width="match_parent"
+        android:layout_height="196dp"
+        android:layout_marginTop="8dp"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/color_code_not_valid_text_view">
+
+        <include layout="@layout/component_dim_alpha_ajust" />
+
+    </LinearLayout>
+
+    <android.support.constraint.ConstraintLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="100dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/use_this_filter_checkbox">
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout_ajust_brightness">
 
         <TextView
             android:id="@+id/change_color_code_button_ok"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:background="@android:color/transparent"
             android:paddingStart="25dp"
             android:paddingTop="15dp"
@@ -73,21 +78,28 @@
             android:paddingBottom="15dp"
             android:text="@string/password_form_ok_button"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            app:layout_constraintEnd_toStartOf="@+id/change_password_button_cancel"
-            app:layout_constraintTop_toBottomOf="@+id/password_new_input" />
+            app:layout_constraintEnd_toStartOf="@+id/divider9"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <View
             android:id="@+id/divider9"
             android:layout_width="1dp"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
             android:background="?android:attr/listDivider"
-            tools:layout_editor_absoluteX="118dp"
-            tools:layout_editor_absoluteY="8dp" />
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/change_color_code_button_cancel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:background="@android:color/transparent"
             android:paddingStart="25dp"
             android:paddingTop="15dp"
@@ -95,10 +107,10 @@
             android:paddingBottom="15dp"
             android:text="@string/password_form_cancel_button"
             android:textAppearance="@style/TextAppearance.AppCompat.Button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/password_new_input" />
+            app:layout_constraintStart_toEndOf="@+id/divider9"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    </LinearLayout>
+    </android.support.constraint.ConstraintLayout>
 
 
 </android.support.constraint.ConstraintLayout>

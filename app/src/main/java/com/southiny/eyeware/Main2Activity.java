@@ -2,14 +2,12 @@ package com.southiny.eyeware;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.drawable.Drawable;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
-import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -23,11 +21,11 @@ import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
+import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.service.BlueLightFilterService;
 import com.southiny.eyeware.service.ClockService;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
-import com.southiny.eyeware.tool.ProtectionLevel;
 
 import static com.southiny.eyeware.tool.Utils.zbs;
 
@@ -50,7 +48,10 @@ public class Main2Activity extends AppCompatActivity {
             blMinuteTextView, blSecondTextView,
             lockScreenMinuteTextView, lockScreenSecondTextView;
 
+    private ImageView filterIcon;
+
     Handler updateTimerHandler = new Handler();
+    Handler updateFilterHandler = new Handler();
 
     // this is for update UI
     Runnable updateTimerRunnable = new Runnable() {
@@ -69,6 +70,7 @@ public class Main2Activity extends AppCompatActivity {
             sec = (int) (time_sec % 60);
             blMinuteTextView.setText(zbs(min));
             blSecondTextView.setText(zbs(sec));
+            updateCurrentFilterColorIcon();
 
             time_sec = mCService.getCptLockScreenSec();
             min = (int) (time_sec / 60);
@@ -96,6 +98,8 @@ public class Main2Activity extends AppCompatActivity {
         lockScreenMinuteTextView = findViewById(R.id.lockscreen_minute_count);
         lockScreenSecondTextView = findViewById(R.id.lockscreen_second_count);
 
+        filterIcon = findViewById(R.id.filter_icon);
+
 
         Logger.log(TAG, "set current protection level...");
         run = SQLRequest.getRun();
@@ -120,10 +124,6 @@ public class Main2Activity extends AppCompatActivity {
                 Logger.log(TAG, "stop " + ClockService.TAG);
                 Intent intent = new Intent(Main2Activity.this, ClockService.class);
                 stopService(intent);
-
-                Logger.log(TAG, "start " + MainActivity.TAG);
-                Intent in = new Intent(Main2Activity.this, MainActivity.class);
-                startActivity(in);
 
                 Toast.makeText(Main2Activity.this, getString(R.string.home_timer_stop_message), Toast.LENGTH_SHORT).show();
 
@@ -283,6 +283,18 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        Logger.log(TAG, "onResume()");
+        run = SQLRequest.getRun();
+        if (run.isPermissionChanged()) {
+            dialogPermissionChangedInfo();
+            run.setPermissionChanged(false);
+            run.save();
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         Logger.log(TAG, "onStop()");
@@ -294,6 +306,7 @@ public class Main2Activity extends AppCompatActivity {
         Logger.log(TAG, "onDestroy()");
 
         stopUpdateTimer();
+        stopUpdateFilter();
 
         Logger.log(TAG, "unbind " + ClockService.TAG + "...");
         unbindService(cConnection);
@@ -367,9 +380,22 @@ public class Main2Activity extends AppCompatActivity {
 
     private void stopUpdateTimer() {
         Logger.log(TAG, "stopUpdateTimer()");
-        if (pm.isBreakingActivated()) {
+        if (pm.isBreakingActivated()| pm.isBluelightFiltering() | pctrl.isLockScreenActivated()) {
             updateTimerHandler.removeCallbacks(updateTimerRunnable);
         }
+    }
+
+    private void stopUpdateFilter() {
+        Logger.log(TAG, "stopUpdateFilter()");
+        if (pm.isBluelightFiltering() && pm.getNbActivatedScreenFilters() > 1) {
+            updateTimerHandler.removeCallbacks(updateTimerRunnable);
+        }
+    }
+
+    private void updateCurrentFilterColorIcon() {
+        String colorCode = mBLService.getCurrentFilterColor();
+        Logger.log(TAG, "updateCurrentFilterColorIcon(" + colorCode + ")");
+        filterIcon.setBackgroundColor(Color.parseColor(colorCode));
     }
 
     private void dialogBreakingModeInfo(String title, String message) {
@@ -390,6 +416,16 @@ public class Main2Activity extends AppCompatActivity {
                         "© 2020 - All right reserved.\n" +
                         getString(R.string.version_text))
                 .setPositiveButton("OK", null)
+                .setIcon(R.drawable.ic_miracle_head2)
+                .show();
+    }
+
+    private void dialogPermissionChangedInfo() {
+        Logger.log(TAG, "dialogPermissionChangedInfo()");
+        new AlertDialog.Builder(this)
+                .setTitle("App Permission Has Been Changed")
+                .setMessage("Some functions might not work properly. Restart the app is recommended.")
+                .setPositiveButton("Understood", null)
                 .setIcon(R.drawable.ic_miracle_head2)
                 .show();
     }

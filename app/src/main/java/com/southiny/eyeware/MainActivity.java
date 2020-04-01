@@ -23,10 +23,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-/*import com.flask.colorpicker.ColorPickerView;
-import com.flask.colorpicker.OnColorSelectedListener;
-import com.flask.colorpicker.builder.ColorPickerClickListener;
-import com.flask.colorpicker.builder.ColorPickerDialogBuilder;*/
+
 import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
@@ -42,8 +39,6 @@ import java.util.List;
 import static com.southiny.eyeware.tool.Utils.zbs;
 
 public class MainActivity extends AppCompatActivity {
-
-   // int currentBackgroundColor = 0xffffffff;
 
     public static final String TAG = MainActivity.class.getSimpleName();
 
@@ -62,17 +57,10 @@ public class MainActivity extends AppCompatActivity {
     private DevicePolicyManager devicePolicyManager;
     private ComponentName compName;
 
-    //private boolean showPermissionGrantedIndication = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Logger.log(TAG, "onCreate()");
-
-        // set toolbar
-        /*Logger.log(TAG, "set tool bar...");
-        Toolbar mainToolbar = findViewById(R.id.main_toolbar);
-        setSupportActionBar(mainToolbar);*/
 
         Logger.log(TAG, "set content view to overlay_view activity_main");
         setContentView(R.layout.activity_main);
@@ -91,6 +79,9 @@ public class MainActivity extends AppCompatActivity {
         pm = run.getCurrentProtectionMode();
         pctrl = run.getParentalControl();
 
+        run.setPermissionChanged(false);
+        run.save();
+
         standardCheckIcon = findViewById(R.id.standard_level_check_icon);
         highCheckIcon = findViewById(R.id.high_level_check_icon);
         lowCheckIcon = findViewById(R.id.low_level_check_icon);
@@ -107,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
         gamerEditIcon = findViewById(R.id.gamer_mode_edit_icon);
 
         LinearLayout startStopTimerLayout = findViewById(R.id.timer_start_stop);
-        ImageView settingsIcon = findViewById(R.id.settings_icon);
+        final ImageView settingsIcon = findViewById(R.id.settings_icon);
 
         passwordActivateSwitch = findViewById(R.id.switch_password_activate);
         TextView changePasswordTextView = findViewById(R.id.change_password_for_parental_control);
@@ -132,9 +123,27 @@ public class MainActivity extends AppCompatActivity {
                 Logger.log(TAG, "onClick()");
 
                 if (pm.isBluelightFiltering() | pm.isBreakingActivated() | pctrl.isLockScreenActivated()) {
-                    if (pm.isBluelightFiltering() && !Settings.canDrawOverlays(getApplicationContext())) { // if BL is on but no "appears on top permission"
-                        dialogAskOverlayPermission();
-                    } else {
+                    boolean start = true;
+
+                    if (!Settings.canDrawOverlays(getApplicationContext())) { // if BL is on but no "appears on top permission"
+                        if (pm.isBluelightFiltering()) {
+                            dialogAskOverlayPermissionForBL();
+                            start = false;
+                        } else {
+                            if (pm.getBreakingMode() == BreakingMode.STRONG) {
+                                dialogAskOverlayPermissionForStrongBM();
+                                start = false;
+                            }
+                        }
+                    }
+
+                    if (pctrl.isLockScreenActivated() && !devicePolicyManager.isAdminActive(compName)) {
+                        lockScreenActivateSwitch.setChecked(false);
+                        dialogAskDeviceAdminPermission();
+                        start = false;
+                    }
+
+                    if (start) {
                         Logger.log(TAG, "start " + ClockService.TAG);
                         Intent intent = new Intent(MainActivity.this, ClockService.class);
                         startForegroundService(intent);
@@ -163,11 +172,6 @@ public class MainActivity extends AppCompatActivity {
                 Logger.log(TAG, "onclick() settings icon");
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
-
-                /*Intent intent = new Intent(MainActivity.this, LockScreenService.class);
-                intent.putExtra(LockScreenService.INTENT_EXTRA_LOCK_UNLOCK_CODE,
-                        LockScreenService.LOCK_CODE);
-                startService(intent);*/
             }
         });
 
@@ -209,7 +213,6 @@ public class MainActivity extends AppCompatActivity {
                 changeProtectionMode(protectionMode);
             }
         });
-
 
         // set on click to edit icons
 
@@ -310,18 +313,6 @@ public class MainActivity extends AppCompatActivity {
 
         unlockScreenActivateSwitch = findViewById(R.id.switch_unlock_screen);
         unlockScreenActivateSwitch.setChecked(pctrl.isUnlockScreenActivated());
-        /*unlockScreenActivateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if (checked && !devicePolicyManager.isAdminActive(compName)) {
-                    lockScreenActivateSwitch.setChecked(!checked);
-                    dialogAskDeviceAdminPermission();
-                }
-            }
-        });*/
-
-
-
 
     }
 
@@ -330,8 +321,7 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Logger.log(TAG, "onResume()");
         // start main activity
-        if (isServiceRunning(ClockService.class.getName())) {
-            //if (run.isTimerRunning()) {
+       /* if (SplashScreen.isServiceRunning(ClockService.class.getName(), this)) {
             Logger.log(TAG, "ClockService is running !!!");
             Intent intent;
             if (run.getParentalControl().isPasswordActivated()) {
@@ -341,8 +331,10 @@ public class MainActivity extends AppCompatActivity {
                 Logger.log(TAG, "start " + Main2Activity.class.getSimpleName() + "...");
                 intent = new Intent(MainActivity.this, Main2Activity.class);
             }
+
+            startActivity(intent);
             finish();
-        }
+        }*/
     }
 
     @Override
@@ -521,11 +513,11 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void dialogAskOverlayPermission() {
-        Logger.log(TAG, "dialogAskOverlayPermission()");
+    private void dialogAskOverlayPermissionForStrongBM() {
+        Logger.log(TAG, "dialogAskOverlayPermissionForStrongBM()");
         new AlertDialog.Builder(this)
                 .setTitle("Overlay permission")
-                .setMessage("To apply blue light filter, please grant us the overlay permission (\"Appear on top\"). You can turn off later on." +
+                .setMessage("To apply strong discipline mode, please grant us the overlay permission (\"Appear on top\"). You can turn off later on. " +
                         "Grant the permission ?")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
@@ -538,11 +530,44 @@ public class MainActivity extends AppCompatActivity {
                 })
 
                 // A null listener allows the button to dismiss the dialog and take no further action.
-                .setNegativeButton("No, I don't need blue light filter", null)
+                .setNegativeButton("No, I don't need strong discipline mode", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        dialogChangeBreakingMode();
+                    }
+                })
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .show();
+    }
 
-        //showPermissionGrantedIndication = true;
+    private void dialogAskOverlayPermissionForBL() {
+        Logger.log(TAG, "dialogAskOverlayPermissionForBL()");
+        new AlertDialog.Builder(this)
+                .setTitle("Overlay permission")
+                .setMessage("To apply blue light filter, please grant us the overlay permission (\"Appear on top\"). You can turn off later on. " +
+                        "Grant the permission ?")
+
+                // Specifying a listener allows you to take an action before dismissing the dialog.
+                // The dialog is automatically dismissed when a dialog button is clicked.
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                        startActivityForResult(intent, 0);
+                    }
+                })
+
+                // A null listener allows the button to dismiss the dialog and take no further action.
+                .setNegativeButton("No, I don't need blue light filter", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        pm.setBluelightFiltering(false);
+                        pm.save();
+                        ConstraintLayout blLayout = findViewById(R.id.constraintLayout_bl_filter);
+                        blLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+                    }
+                })
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .show();
     }
 
     private void dialogAskDeviceAdminPermission() {
@@ -564,10 +589,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("No, I don't need auto lock screen", null)
                 .setIcon(android.R.drawable.ic_dialog_info)
                 .show();
-
-        //showPermissionGrantedIndication = true;
     }
-
 
     private void dialogChangePassword() {
         Logger.log(TAG, "dialogChangePassword()");
@@ -691,6 +713,28 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    private void dialogChangeBreakingMode() {
+        Logger.log(TAG, "dialogChangeBreakingMode()");
+        new AlertDialog.Builder(this)
+                .setTitle("Want to change breaking mode ?")
+                .setMessage("Change to Medium Discipline")
+                .setPositiveButton("Change", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        pm.setBreakingMode(BreakingMode.MEDIUM);
+                        pm.save();
+                        ImageView breakingModeIcon = findViewById(R.id.breaking_mode_icon);
+                        breakingModeIcon.setImageResource(R.drawable.ic_compare_black_24dp);
+
+                        Toast.makeText(MainActivity.this, "Change to Medium discipline", Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setNegativeButton("No", null)
+                .setIcon(android.R.drawable.ic_dialog_info)
+                .show();
+
+    }
+
     private void checkAdminDevicePermission() {
         Logger.log(TAG, "checkAdminDevicePermission()");
 
@@ -720,160 +764,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         super.onActivityResult(requestCode, resultCode, data);
-    }
-
-
-
-
-
-
-
-
-
-    /*private void dialogOverlayPermissionGrantedInfo(String message) {
-        Logger.log(TAG, "dialogOverlayPermissionGrantedInfo()");
-
-        new AlertDialog.Builder(this)
-                .setTitle("Overlay permission")
-                .setMessage(message)
-
-                // Specifying a listener allows you to take an action before dismissing the dialog.
-                // The dialog is automatically dismissed when a dialog button is clicked.
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                    }
-                })
-                .setIcon(android.R.drawable.ic_dialog_info)
-                .show();
-    }*/
-
-
-
-   /* private void highButtonClick() {
-        Logger.log(TAG, "highButtonClick()");
-
-        String title = "High Protection";
-        String message = "High protection is recommended for people who really care for their eyes or people who already have vision problem.\n" +
-                "This mode will : \n" +
-                "- Cut your screen every " + (Constants.HIGH_BREAKING_EVERY_SEC / 60) + " minutes, \n" +
-                "- Cut for " + Constants.HIGH_BREAKING_FOR_SEC + " seconds then resume, \n" +
-                "- Change screen filter color every " + (Constants.HIGH_BLUELIGHT_FILTER_CHANGE_EVERY_SEC / 60) +" minutes.";
-
-        dialogProtectionButton(title, message, ProtectionLevel.HIGH);
-    }
-
-    private void standardButtonClick() {
-        Logger.log(TAG, "standardButtonClick()");
-
-        String title = "Standard Protection";
-        String message = "Standard protection is recommended for normal people.\n" +
-                "This mode will : \n" +
-                "- Cut your screen every " + (Constants.STANDARD_BREAKING_EVERY_SEC / 60) + " minutes, \n" +
-                "- Cut for " + Constants.STANDARD_BREAKING_FOR_SEC + " seconds then resume, \n" +
-                "- Change screen filter color every " + (Constants.STANDARD_BLUELIGHT_FILTER_CHANGE_EVERY_SEC / 60) +" minutes.";
-
-        dialogProtectionButton(title, message, ProtectionLevel.STANDARD);
-    }
-
-    private void lowButtonClick() {
-        Logger.log(TAG, "lowButtonClick()");
-
-        String title = "Low Protection";
-        String message = "Low protection is recommended for people who must focus on the screen." +
-                "Therefore, we try to disturb you as less as possible.\n" +
-                "This mode will : \n" +
-                "- Cut your screen every " + (Constants.LOW_BREAKING_EVERY_SEC /60) + " minutes, \n" +
-                "- Cut for " + Constants.LOW_BREAKING_FOR_SEC + " seconds then resume, \n" +
-                "- Change screen filter color every " + (Constants.LOW_BLUELIGHT_FILTER_CHANGE_EVERY_SEC / 60) +" minutes.";
-
-        dialogProtectionButton(title, message, ProtectionLevel.LOW);
-    }
-
-    private void gamerButtonClick() {
-        Logger.log(TAG, "gamerButtonClick()");
-
-        String title = "Gamer Protection";
-        String message = "this is testùmlesrkùqsmlfdlqsùllrlerzl!kdfjqslkdfjsqdflksf:lksdjqsdk!mlqaozieaozeiae";
-        dialogProtectionButton(title, message, ProtectionLevel.GAMER);
-    }*/
-
-
-
-
-
-
-    /* private void checkAppearOnTopPermission() {
-        // check "appear on top permission" grant
-        Logger.log(TAG, "check \"appear on top permission\" grant...");
-        if (!Settings.canDrawOverlays(this)) {
-            Logger.log(TAG, "permission not granted.");
-            if (showPermissionGrantedIndication) {
-                dialogOverlayPermissionGrantedInfo("Permission not granted, blue light filter deactivated.");
-            } else {
-                Logger.log(TAG, "ask for permission...");
-                dialogAskOverlayPermission();
-            }
-        } else {
-            Logger.log(TAG, "permission granted.");
-            if (showPermissionGrantedIndication) {
-                dialogOverlayPermissionGrantedInfo("Permission granted, thank you.");
-            }
-        }
-    }*/
-
-
-
-    //Button goldButton = findViewById(R.id.button_change_color_gold);
-        /*settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                ColorPickerDialogBuilder
-                        .with(getApplicationContext())
-                        .setTitle("Choose color")
-                        .initialColor(currentBackgroundColor)
-                        .wheelType(ColorPickerView.WHEEL_TYPE.FLOWER)
-                        .density(12)
-                        .setOnColorSelectedListener(new OnColorSelectedListener() {
-                            @Override
-                            public void onColorSelected(int selectedColor) {
-                                Toast.makeText(MainActivity.this, "onColorSelected: 0x" + Integer.toHexString(selectedColor), Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setPositiveButton("ok", new ColorPickerClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int selectedColor, Integer[] allColors) {
-                                Toast.makeText(MainActivity.this, "onColorSelected: " + selectedColor, Toast.LENGTH_SHORT).show();
-                            }
-                        })
-                        .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .build()
-                        .show();
-            }
-        });*/
-
-    private boolean isServiceRunning(String serviceName){
-        boolean isRunning = false;
-
-        ActivityManager am = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
-        List<ActivityManager.RunningServiceInfo> runningServiceInfos;
-        if (am != null) {
-            runningServiceInfos = am.getRunningServices(Integer.MAX_VALUE);
-            for (ActivityManager.RunningServiceInfo runningServiceInfo : runningServiceInfos) {
-                if (runningServiceInfo.service.getClassName().equals(serviceName)) {
-                    //service run in foreground
-                    //isRunning = runningServiceInfo.foreground;
-                    isRunning = true;
-                }
-            }
-        } else {
-            Logger.err(TAG, "activityManager is null");
-        }
-
-        return isRunning;
     }
 
 }

@@ -14,7 +14,7 @@ import java.util.Map;
 public final class Constants {
 
     public static final String CHANNEL_ID = "NoMoreEyeStrainChannel";
-    public static final long SPLASH_TIME = 1000;
+    public static final long SPLASH_TIME = 500;
     public static final boolean DEFAULT_SMART_DETECT = true;
     public static final boolean DEFAULT_VIBRATION = true;
     public static final long DEFAULT_VIBRATION_DURATION_MILLIS = 500;
