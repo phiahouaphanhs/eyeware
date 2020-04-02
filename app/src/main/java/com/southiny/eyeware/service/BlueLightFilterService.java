@@ -15,6 +15,7 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
+import android.support.constraint.ConstraintSet;
 import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,7 +43,10 @@ public class BlueLightFilterService extends Service {
     public static final int ADD_NOTIF_CODE = 2;
 
     private int currentFilterIndex = 0;
+
     private String currentFilterColorCode = "#000000"; // pas necessaire mais pour optimiser la performance
+    private float currentFilterDimAmount = 0;
+    private float currentFilterScreenAlpha = 0;
 
     public ArrayList<ScreenFilter> sfs;
 
@@ -81,7 +85,7 @@ public class BlueLightFilterService extends Service {
 
         ProtectionMode pm = SQLRequest.getRun().getCurrentProtectionMode();
         sfs = pm.getActivatedScreenFilters();
-        currentFilterIndex = sfs.size();
+        currentFilterIndex = sfs.size() - 1;
 
         /****** FOREGROUND ************/
 
@@ -121,6 +125,7 @@ public class BlueLightFilterService extends Service {
                 // change blue light filter color
                 if (!isOnNotification && sfs.size() > 0) {
                     currentFilterIndex = (currentFilterIndex + 1) % sfs.size();
+                    Logger.log(TAG, "current filter index " + currentFilterIndex);
                     removeFilter();
                     addFilter(sfs.get(currentFilterIndex));
 
@@ -218,6 +223,8 @@ public class BlueLightFilterService extends Service {
 
         mOverlayView.setBackgroundColor(Color.parseColor(colorCode));
         currentFilterColorCode = colorCode;
+        currentFilterDimAmount = dim;
+        currentFilterScreenAlpha = alpha;
 
         mOverlayView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
@@ -299,26 +306,45 @@ public class BlueLightFilterService extends Service {
     }
 
     // save
-    public void updateCurrentFilterParam(String colorCode, float alpha, float dim) {
-        Logger.log(TAG, "updateFilterParam()");
-
+    public void updateCurrentFilterDim(float dim) {
+        Logger.log(TAG, "updateCurrentFilterDim()");
         removeFilter();
+        addFilter(currentFilterColorCode, currentFilterScreenAlpha, dim);
+        ScreenFilter sc = sfs.get(currentFilterIndex);
+        sc.setDimAmount(dim);
+        sc.save();
+    }
 
-        if (mOverlayView != null && hasFilterOn) {
-            addFilter(colorCode, alpha, dim);
-            ScreenFilter sc = sfs.get(currentFilterIndex);
-            sc.setColorCode(colorCode);
-            sc.setScreenAlpha(alpha);
-            sc.setDimAmount(dim);
-            sc.save();
-        } else {
-            Logger.log(TAG, "currently, no filter on");
-        }
+    public void updateCurrentFilterAlpha(float alpha) {
+        Logger.log(TAG, "updateCurrentFilterAlpha()");
+        removeFilter();
+        addFilter(currentFilterColorCode, alpha, currentFilterDimAmount);
+        ScreenFilter sc = sfs.get(currentFilterIndex);
+        sc.setScreenAlpha(alpha);
+        sc.save();
+    }
 
+    public void updateCurrentFilter(int index) {
+        Logger.log(TAG, "updateCurrentFilter()");
+        removeFilter();
+        addFilter(sfs.get(index));
+        currentFilterIndex = index;
+    }
+
+    public float getCurrentFilterDim() {
+        return currentFilterDimAmount;
+    }
+
+    public float getCurrentFilterAlpha() {
+        return currentFilterScreenAlpha;
     }
 
     public String getCurrentFilterColor() {
         return currentFilterColorCode;
+    }
+
+    public int getCurrentFilterIndex() {
+        return currentFilterIndex;
     }
 
     private void vibrate(long duration) {

@@ -4,15 +4,18 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.HorizontalScrollView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,7 +28,10 @@ import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.service.BlueLightFilterService;
 import com.southiny.eyeware.service.ClockService;
 import com.southiny.eyeware.tool.BreakingMode;
+import com.southiny.eyeware.tool.ColorFilterLinearLayout;
 import com.southiny.eyeware.tool.Logger;
+
+import java.util.ArrayList;
 
 import static com.southiny.eyeware.tool.Utils.zbs;
 
@@ -48,10 +54,10 @@ public class Main2Activity extends AppCompatActivity {
             blMinuteTextView, blSecondTextView,
             lockScreenMinuteTextView, lockScreenSecondTextView;
 
-    private ImageView filterIcon;
+    private ArrayList<ColorFilterLinearLayout> filterCards = new ArrayList<>();
+    private int currentSelectedFilterIndex;
 
     Handler updateTimerHandler = new Handler();
-    Handler updateFilterHandler = new Handler();
 
     // this is for update UI
     Runnable updateTimerRunnable = new Runnable() {
@@ -98,8 +104,6 @@ public class Main2Activity extends AppCompatActivity {
         lockScreenMinuteTextView = findViewById(R.id.lockscreen_minute_count);
         lockScreenSecondTextView = findViewById(R.id.lockscreen_second_count);
 
-        filterIcon = findViewById(R.id.filter_icon);
-
 
         Logger.log(TAG, "set current protection level...");
         run = SQLRequest.getRun();
@@ -142,12 +146,13 @@ public class Main2Activity extends AppCompatActivity {
             checkedBLIcon.setImageResource(R.drawable.ic_close_black_24dp);
         }
 
+        addFilterCards();
+
         // screen brightness
-        /*dimBar = findViewById(R.id.brightness_level_seek_bar);
+        dimBar = findViewById(R.id.brightness_level_seek_bar);
         dimBar.setEnabled(false);
         dimBar.setMax(Constants.DEFAULT_DIM_MAX_PERCENT);
         dimBar.setMin(Constants.DEFAULT_DIM_MIN_PERCENT);
-        dimBar.setProgress(Constants.DEFAULT_DIM_MAX_PERCENT - (int)(pm.getDimAmount() * 100));
         dimBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { }
@@ -158,9 +163,7 @@ public class Main2Activity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Logger.log(TAG, "dim value is " + seekBar.getProgress());
                 float dim = (float) (Constants.DEFAULT_DIM_MAX_PERCENT - seekBar.getProgress()) / 100F;
-                pm.setDimAmount(dim);
-                pm.save();
-                mBLService.updateFilterParam();
+                mBLService.updateCurrentFilterDim(dim);
                 Toast.makeText(Main2Activity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
             }
         });
@@ -170,7 +173,6 @@ public class Main2Activity extends AppCompatActivity {
         alphaBar.setEnabled(false);
         alphaBar.setMax(Constants.DEFAULT_ALPHA_MAX_PERCENT);
         alphaBar.setMin(Constants.DEFAULT_ALPHA_MIN_PERCENT);
-        alphaBar.setProgress(Constants.DEFAULT_ALPHA_MAX_PERCENT - (int)(pm.getScreenAlpha() * 100));
         alphaBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { }
@@ -181,18 +183,15 @@ public class Main2Activity extends AppCompatActivity {
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Logger.log(TAG, "alpha value is " + seekBar.getProgress());
                 float alpha = (float) (Constants.DEFAULT_ALPHA_MAX_PERCENT - seekBar.getProgress()) / 100F;
-                pm.setScreenAlpha(alpha);
-                pm.save();
-                mBLService.updateFilterParam();
+                mBLService.updateCurrentFilterAlpha(alpha);
                 Toast.makeText(Main2Activity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
             }
         });
-        */
+
 
         final ImageView vibrationIcon = findViewById(R.id.vibration_icon);
         if (!run.isVibrationActivated()) {
             vibrationIcon.setImageResource(R.drawable.ic_vibration_grey_24dp);
-            vibrationIcon.setPadding(8,8,8,8);
         }
         // set on click to vibration icon
         vibrationIcon.setOnClickListener(new View.OnClickListener() {
@@ -264,6 +263,20 @@ public class Main2Activity extends AppCompatActivity {
                 dialogAboutApp();
             }
         });
+
+        if (pm.isBluelightFiltering()) {
+            ImageView filterIcon = findViewById(R.id.filter_icon);
+            filterIcon.setImageResource(R.drawable.ic_style_cream_24dp);
+        }
+
+        if (pctrl.isLockScreenActivated()) {
+            ImageView lockIcon = findViewById(R.id.lock_icon);
+            lockIcon.setImageResource(R.drawable.ic_lock_open_cream_24dp);
+        }
+
+
+
+
     }
 
     @Override
@@ -355,8 +368,25 @@ public class Main2Activity extends AppCompatActivity {
             mBLBound = true;
             Logger.log(TAG, BlueLightFilterService.TAG + " bound.");
 
-            //dimBar.setEnabled(true);
-            //alphaBar.setEnabled(true);
+
+
+            if (pm.isBluelightFiltering()) {
+                dimBar.setEnabled(true);
+                dimBar.setProgress(Constants.DEFAULT_DIM_MAX_PERCENT - (int)(mBLService.getCurrentFilterDim() * 100));
+                alphaBar.setEnabled(true);
+                alphaBar.setProgress(Constants.DEFAULT_ALPHA_MAX_PERCENT - (int)(mBLService.getCurrentFilterAlpha() * 100));
+
+                currentSelectedFilterIndex = mBLService.getCurrentFilterIndex();
+                filterCards.get(currentSelectedFilterIndex).setSelected();
+            } else {
+                dimBar.setEnabled(false);
+                alphaBar.setEnabled(false);
+            }
+
+            for (int i = 0; i < filterCards.size(); i++) {
+                ImageView image = filterCards.get(i).getImage();
+                image.setOnClickListener(new FilterCardClickListener(i));
+            }
         }
 
         @Override
@@ -393,9 +423,12 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     private void updateCurrentFilterColorIcon() {
-        String colorCode = mBLService.getCurrentFilterColor();
-        Logger.log(TAG, "updateCurrentFilterColorIcon(" + colorCode + ")");
-        filterIcon.setBackgroundColor(Color.parseColor(colorCode));
+        float dim = mBLService.getCurrentFilterDim();
+        float alpha = mBLService.getCurrentFilterAlpha();
+
+        Logger.log(TAG, "updateCurrentFilterColorIcon(" + dim + "," + alpha + ")");
+        dimBar.setProgress(Constants.DEFAULT_DIM_MAX_PERCENT - (int)(dim * 100));
+        alphaBar.setProgress(Constants.DEFAULT_ALPHA_MAX_PERCENT - (int)(alpha * 100));
     }
 
     private void dialogBreakingModeInfo(String title, String message) {
@@ -428,6 +461,52 @@ public class Main2Activity extends AppCompatActivity {
                 .setPositiveButton("Understood", null)
                 .setIcon(R.drawable.ic_miracle_head2)
                 .show();
+    }
+
+    private void addFilterCards() {
+        Logger.log(TAG, "addFilterCards()");
+
+        LinearLayout filterGlobeLayout = new LinearLayout(this);
+        filterGlobeLayout.setLayoutParams(new LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT));
+        filterGlobeLayout.setGravity(Gravity.CENTER);
+
+        ArrayList<ScreenFilter> activatedSCs = pm.getActivatedScreenFilters();
+
+        for (int i = 0; i < activatedSCs.size(); i++) {
+            ColorFilterLinearLayout filterCard = new ColorFilterLinearLayout(this, i, activatedSCs.get(i).getColorCode());
+            filterGlobeLayout.addView(filterCard);
+            filterCards.add(filterCard);
+        }
+
+        HorizontalScrollView testview = findViewById(R.id.filter_layout);
+        testview.addView(filterGlobeLayout);
+    }
+
+
+    private class FilterCardClickListener implements View.OnClickListener {
+
+        private int index;
+
+        public FilterCardClickListener(int i) {
+            index = i;
+        }
+
+        @Override
+        public void onClick(View view) {
+            if (pm.isBluelightFiltering()) {
+                filterCards.get(currentSelectedFilterIndex).setUnSelected();
+                filterCards.get(index).setSelected();
+                currentSelectedFilterIndex = index;
+                mBLService.updateCurrentFilter(index);
+                Toast.makeText(Main2Activity.this, "filter changed !", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(Main2Activity.this, "Screen filter is not activated", Toast.LENGTH_SHORT).show();
+
+            }
+
+        }
     }
 
 }

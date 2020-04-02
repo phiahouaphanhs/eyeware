@@ -1,7 +1,6 @@
 package com.southiny.eyeware;
 
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.DialogInterface;
@@ -33,8 +32,6 @@ import com.southiny.eyeware.tool.AdminReceiver;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
 import com.southiny.eyeware.tool.ProtectionLevel;
-
-import java.util.List;
 
 import static com.southiny.eyeware.tool.Utils.zbs;
 
@@ -405,7 +402,7 @@ public class MainActivity extends AppCompatActivity {
         lockscreenMinuteTextView.setText(zbs(min));
 
         // set activated
-        ConstraintLayout breakingLayout = findViewById(R.id.constraintLayout_breaking);
+        ConstraintLayout breakingLayout = findViewById(R.id.linearLayout_breaking);
         ConstraintLayout breakingForLayout = findViewById(R.id.constraintLayout6);
         if (!pm.isBreakingActivated()) {
             breakingLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));

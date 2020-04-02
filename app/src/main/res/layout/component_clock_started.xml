@@ -28,121 +28,134 @@
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_vibration_white_24dp" />
 
-    <android.support.constraint.ConstraintLayout
-        android:id="@+id/constraintLayout2"
+    <LinearLayout
+        android:id="@+id/linearLayout_breaking"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
-        android:background="@drawable/layout_round_shape_black"
+        android:orientation="vertical"
+        android:background="@drawable/layout_round_shape_accent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <android.support.constraint.ConstraintLayout
-            android:id="@+id/timer_start_stop"
+        <LinearLayout
+            android:id="@+id/constraintLayout_breaking_inside"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:background="@drawable/layout_round_shape_yellow_shade_blue"
-            android:orientation="horizontal"
-            android:padding="@dimen/activity_vertical_margin"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:background="@drawable/layout_round_shape_black"
+            android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/current_protection_level_text_view"
-                android:layout_width="0dp"
+            <android.support.constraint.ConstraintLayout
+                android:id="@+id/timer_start_stop"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:text="@string/main_unknown_mode"
-                android:textColor="@color/eyeware_black"
-                android:textSize="20sp"
-                android:textAlignment="center"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <TextView
-                android:id="@+id/timer_minute_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="32dp"
-                android:gravity="center"
-                android:text="@string/default_min_sec"
-                android:textColor="@color/eyeware_white"
-                android:textSize="55sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/separator"
-                app:layout_constraintTop_toBottomOf="@id/current_protection_level_text_view" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:gravity="center"
-                android:text="@string/minute_text"
-                android:textColor="@color/eyeware_white"
-                android:textSize="15sp"
-                app:layout_constraintEnd_toEndOf="@+id/timer_minute_count"
-                app:layout_constraintTop_toBottomOf="@+id/timer_minute_count" />
-
-            <TextView
-                android:id="@+id/separator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="32dp"
-                android:gravity="center"
-                android:text="@string/time_separator"
-                android:textColor="@color/eyeware_white"
-                android:textSize="35sp"
+                android:layout_marginStart="4dp"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/layout_round_shape_yellow_shade_blue"
+                android:orientation="horizontal"
+                android:padding="@dimen/activity_vertical_margin"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/current_protection_level_text_view" />
+                app:layout_constraintTop_toTopOf="parent">
 
-            <TextView
-                android:id="@+id/timer_second_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="32dp"
-                android:gravity="center"
-                android:text="@string/default_min_sec"
-                android:textColor="@color/eyeware_white"
-                android:textSize="55sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@+id/separator"
-                app:layout_constraintTop_toBottomOf="@id/current_protection_level_text_view" />
+                <TextView
+                    android:id="@+id/current_protection_level_text_view"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:text="@string/main_unknown_mode"
+                    android:textColor="@color/eyeware_black"
+                    android:textSize="20sp"
+                    android:textAlignment="center"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:gravity="center"
-                android:text="@string/second_text"
-                android:textColor="@color/eyeware_white"
-                android:textSize="15sp"
-                app:layout_constraintStart_toStartOf="@+id/timer_second_count"
-                app:layout_constraintTop_toBottomOf="@+id/timer_second_count" />
+                <TextView
+                    android:id="@+id/timer_minute_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="32dp"
+                    android:gravity="center"
+                    android:text="@string/default_min_sec"
+                    android:textColor="@color/eyeware_white"
+                    android:textSize="55sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@id/separator"
+                    app:layout_constraintTop_toBottomOf="@id/current_protection_level_text_view" />
 
-        </android.support.constraint.ConstraintLayout>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:gravity="center"
+                    android:text="@string/minute_text"
+                    android:textColor="@color/eyeware_white"
+                    android:textSize="15sp"
+                    app:layout_constraintEnd_toEndOf="@+id/timer_minute_count"
+                    app:layout_constraintTop_toBottomOf="@+id/timer_minute_count" />
 
-    </android.support.constraint.ConstraintLayout>
+                <TextView
+                    android:id="@+id/separator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="32dp"
+                    android:gravity="center"
+                    android:text="@string/time_separator"
+                    android:textColor="@color/eyeware_white"
+                    android:textSize="35sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/current_protection_level_text_view" />
+
+                <TextView
+                    android:id="@+id/timer_second_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="32dp"
+                    android:gravity="center"
+                    android:text="@string/default_min_sec"
+                    android:textColor="@color/eyeware_white"
+                    android:textSize="55sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toEndOf="@+id/separator"
+                    app:layout_constraintTop_toBottomOf="@id/current_protection_level_text_view" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:gravity="center"
+                    android:text="@string/second_text"
+                    android:textColor="@color/eyeware_white"
+                    android:textSize="15sp"
+                    app:layout_constraintStart_toStartOf="@+id/timer_second_count"
+                    app:layout_constraintTop_toBottomOf="@+id/timer_second_count" />
+
+            </android.support.constraint.ConstraintLayout>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/miracle_icon_in_clock"
@@ -154,7 +167,7 @@
         android:background="@drawable/layout_round_shape_black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout_breaking"
         app:srcCompat="@mipmap/ic_launcher_miracle_foreground" />
 
     <android.support.constraint.ConstraintLayout
@@ -184,8 +197,9 @@
                 android:id="@+id/filter_icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:src="@drawable/ic_style_gray_24dp"
-                android:background="@color/eyeware_black"
+                android:background="@drawable/layout_round_shape_black"
+                android:padding="4dp"
+                android:src="@drawable/ic_style_grey_24dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -261,8 +275,9 @@
                 android:id="@+id/lock_icon"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:padding="4dp"
                 android:src="@drawable/ic_lock_open_gray_24dp"
-                android:background="@color/eyeware_black"
+                android:background="@drawable/layout_round_shape_black"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

@@ -30,6 +30,7 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardCornerRadius="10dp"
                 android:layout_weight="1">
 
             <include layout="@layout/component_clock_started"/>
@@ -42,10 +43,22 @@
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1">
+                android:layout_height="match_parent"
+                app:cardCornerRadius="10dp">
 
-                <include layout="@layout/component_dim_alpha_ajust" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <HorizontalScrollView
+                        android:id="@+id/filter_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"/>
+
+                    <include layout="@layout/component_dim_alpha_ajust" />
+
+                </LinearLayout>
 
             </android.support.v7.widget.CardView>
 
@@ -56,6 +69,7 @@
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:cardCornerRadius="10dp"
                 android:layout_weight="1">
 
                 <include layout="@layout/component_feature_list" />
@@ -68,16 +82,12 @@
 
             <android.support.v7.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:cardCornerRadius="10dp">
 
                 <include layout="@layout/component_eye_exercise" />
 
             </android.support.v7.widget.CardView>
-
-
-            <android.support.v4.widget.Space
-                android:layout_width="match_parent"
-                android:layout_height="10dp" />
 
             <TextView
                 android:layout_width="match_parent"

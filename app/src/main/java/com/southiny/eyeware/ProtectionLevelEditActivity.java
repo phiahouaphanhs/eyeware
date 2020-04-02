@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -41,6 +40,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
     private ImageView breakingLightIcon, breakingMediumIcon, breakingStrongIcon;
     private ImageView[] colorIcons = new ImageView[8];
     private ImageView[] colorEditIcons = new ImageView[8];
+    private TextView[] filterNumberTextViews = new TextView[8];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -110,8 +110,14 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         colorEditIcons[6] = findViewById(R.id.edit_icon_orange);
         colorEditIcons[7] = findViewById(R.id.edit_icon_blue);
 
-        SeekBar dimBar = findViewById(R.id.brightness_level_seek_bar);
-        SeekBar alphaBar = findViewById(R.id.transparency_level_seek_bar);
+        filterNumberTextViews[0] = findViewById(R.id.textView1);
+        filterNumberTextViews[1] = findViewById(R.id.textView2);
+        filterNumberTextViews[2] = findViewById(R.id.textView3);
+        filterNumberTextViews[3] = findViewById(R.id.textView4);
+        filterNumberTextViews[4] = findViewById(R.id.textView5);
+        filterNumberTextViews[5] = findViewById(R.id.textView6);
+        filterNumberTextViews[6] = findViewById(R.id.textView7);
+        filterNumberTextViews[7] = findViewById(R.id.textView8);
 
 
         setInfoOnScreen();
@@ -233,49 +239,6 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             ColorActivateListener ln = new ColorActivateListener(i);
             colorIcons[i].setOnClickListener(ln);
         }
-
-        // screen brightness
-        /*dimBar.setEnabled(true);
-        dimBar.setMax(Constants.DEFAULT_DIM_MAX_PERCENT);
-        dimBar.setMin(Constants.DEFAULT_DIM_MIN_PERCENT);
-        dimBar.setProgress(Constants.DEFAULT_DIM_MAX_PERCENT - (int)(pm.getDimAmount() * 100));
-        dimBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                Logger.log(TAG, "dim value is " + seekBar.getProgress());
-                float dim = (float) (Constants.DEFAULT_DIM_MAX_PERCENT - seekBar.getProgress()) / 100F;
-                pm.setDimAmount(dim);
-                pm.save();
-                Toast.makeText(ProtectionLevelEditActivity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        // filter transparency
-        alphaBar.setEnabled(true);
-        alphaBar.setMax(Constants.DEFAULT_ALPHA_MAX_PERCENT);
-        alphaBar.setMin(Constants.DEFAULT_ALPHA_MIN_PERCENT);
-        alphaBar.setProgress(Constants.DEFAULT_ALPHA_MAX_PERCENT - (int)(pm.getScreenAlpha() * 100));
-        alphaBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { }
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) { }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                Logger.log(TAG, "alpha value is " + seekBar.getProgress());
-                float alpha = (float) (Constants.DEFAULT_ALPHA_MAX_PERCENT - seekBar.getProgress()) / 100F;
-                pm.setScreenAlpha(alpha);
-                pm.save();
-                Toast.makeText(ProtectionLevelEditActivity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
-
-            }
-        });*/
     }
 
     @Override
@@ -318,33 +281,16 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         for (int i = 0; i < scs.length; i++) {
             colorIcons[i].setBackgroundColor(Color.parseColor(scs[i].getColorCode()));
             setActivatedColor(i, scs[i].isActivated());
+            filterNumberTextViews[i].setText(String.valueOf(i+1));
         }
-
-        /*colorIcons[0].setBackgroundColor(Color.parseColor(pm.getScreenFilter0().getColorCode()));
-        colorIcons[1].setBackgroundColor(Color.parseColor(pm.getScreenFilter1().getColorCode()));
-        colorIcons[2].setBackgroundColor(Color.parseColor(pm.getScreenFilter2().getColorCode()));
-        colorIcons[3].setBackgroundColor(Color.parseColor(pm.getScreenFilter3().getColorCode()));
-        colorIcons[4].setBackgroundColor(Color.parseColor(pm.getScreenFilter4().getColorCode()));
-        colorIcons[5].setBackgroundColor(Color.parseColor(pm.getScreenFilter5().getColorCode()));
-        colorIcons[6].setBackgroundColor(Color.parseColor(pm.getScreenFilter6().getColorCode()));
-        colorIcons[7].setBackgroundColor(Color.parseColor(pm.getScreenFilter7().getColorCode()));
-
-        setActivatedColor(0, pm.getScreenFilter0().isActivated());
-        setActivatedColor(1, pm.getScreenFilter1().isActivated());
-        setActivatedColor(2, pm.getScreenFilter2().isActivated());
-        setActivatedColor(3, pm.getScreenFilter3().isActivated());
-        setActivatedColor(4, pm.getScreenFilter4().isActivated());
-        setActivatedColor(5, pm.getScreenFilter5().isActivated());
-        setActivatedColor(6, pm.getScreenFilter6().isActivated());
-        setActivatedColor(7, pm.getScreenFilter7().isActivated());*/
     }
 
     private void setActivatedColor(int index, boolean activated) {
         Logger.log(TAG, "setActivatedColor(" + index + ", " + activated + ")");
         if (activated) {
-            colorIcons[index].setImageResource(R.drawable.ic_style_gray_24dp);
+            colorIcons[index].setImageResource(R.drawable.ic_style_cream_24dp);
         } else {
-            colorIcons[index].setImageResource(android.R.color.transparent);
+            colorIcons[index].setImageResource(R.drawable.ic_style_grey_24dp);
         }
     }
 
@@ -440,6 +386,47 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         final EditText colorCodeEditText = changeColorCodeLayout.findViewById(R.id.color_code_input_text);
         final TextView okButton = changeColorCodeLayout.findViewById(R.id.change_color_code_button_ok);
         final TextView cancelButton = changeColorCodeLayout.findViewById(R.id.change_color_code_button_cancel);
+        final SeekBar dimBar = changeColorCodeLayout.findViewById(R.id.brightness_level_seek_bar);
+        final SeekBar alphaBar = changeColorCodeLayout.findViewById(R.id.transparency_level_seek_bar);
+
+        // screen brightness
+        dimBar.setMax(Constants.DEFAULT_DIM_MAX_PERCENT);
+        dimBar.setMin(Constants.DEFAULT_DIM_MIN_PERCENT);
+        dimBar.setProgress(Constants.DEFAULT_DIM_MAX_PERCENT - (int)(scs[index].getDimAmount() * 100));
+        dimBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Logger.log(TAG, "dim value is " + seekBar.getProgress());
+                float dim = (float) (Constants.DEFAULT_DIM_MAX_PERCENT - seekBar.getProgress()) / 100F;
+                scs[index].setDimAmount(dim);
+                Toast.makeText(ProtectionLevelEditActivity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        // filter transparency
+        alphaBar.setMax(Constants.DEFAULT_ALPHA_MAX_PERCENT);
+        alphaBar.setMin(Constants.DEFAULT_ALPHA_MIN_PERCENT);
+        alphaBar.setProgress(Constants.DEFAULT_ALPHA_MAX_PERCENT - (int)(scs[index].getScreenAlpha() * 100));
+        alphaBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) { }
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                Logger.log(TAG, "alpha value is " + seekBar.getProgress());
+                float alpha = (float) (Constants.DEFAULT_ALPHA_MAX_PERCENT - seekBar.getProgress()) / 100F;
+                scs[index].setScreenAlpha(alpha);
+                Toast.makeText(ProtectionLevelEditActivity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
+
+            }
+        });
 
         colorCodeEditText.setText(scs[index].getColorCode());
 
@@ -507,7 +494,6 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         public void onClick(View view) {
             scs[index].setActivated(!scs[index].isActivated());
             setActivatedColor(index, scs[index].isActivated());
-            Toast.makeText(ProtectionLevelEditActivity.this, index + " is activated ?" + scs[index].isActivated(), Toast.LENGTH_SHORT).show();
 
         }
     }

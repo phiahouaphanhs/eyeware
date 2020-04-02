@@ -119,7 +119,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/constraintLayout1" />
 
                 <android.support.constraint.ConstraintLayout
-                    android:id="@+id/constraintLayout2"
+                    android:id="@+id/linearLayout_breaking"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="32dp"
@@ -156,7 +156,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+                    app:layout_constraintTop_toBottomOf="@+id/linearLayout_breaking" />
 
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/constraintLayout3"
