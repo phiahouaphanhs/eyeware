@@ -10,6 +10,7 @@ import android.os.IBinder;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -217,39 +218,40 @@ public class Main2Activity extends AppCompatActivity {
         BreakingMode mode = pm.getBreakingMode();
         switch (mode) {
             case STRONG:
-                dw = R.drawable.ic_camera_rear_white_24dp;
+                dw = R.drawable.ic_bm_strong_white_24dp;
                 breakingModeIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String title = "Strong Discipline";
-                        String message = "This will cover your screen with complete opaque filter " +
-                                "during the break time, with no possibility to close the filter.\nThis is the forcing-cut mode.";
-                        dialogBreakingModeInfo(title, message);
+                        String title = "Strong Discipline (Force-Cut)";
+                        String message = "This mode will cover your screen with complete opaque filter during the break time.\n" +
+                                "(!) There's no possibility to close the filter until the break time is ended.";
+                        dialogBreakingModeInfo(title, message, R.drawable.ic_bm_strong_accent_24dp);
                     }
                 });
                 break;
             case MEDIUM:
-                dw = R.drawable.ic_compare_black_24dp;
+                dw = R.drawable.ic_bm_medium_white_24dp;
                 breakingModeIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String title = "Medium Discipline";
-                        String message = "This will cut your screen with our closable notification screen " +
-                                "during the break time.\nThis is the unforcing-cut mode.";
-                        dialogBreakingModeInfo(title, message);
+                        String title = "Medium Discipline (Unforce-Cut)";
+                        String message = "This mode will cover your screen with a notification screen during the break time.\n" +
+                                "(!) You can close the notification screen at anytime.";
+                        dialogBreakingModeInfo(title, message, R.drawable.ic_bm_medium_accent_24dp);
                     }
                 });
                 break;
             case LIGHT:
-                dw = R.drawable.ic_notifications_white_24dp;
+                dw = R.drawable.ic_bm_light_white_24dp;
                 breakingModeIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        String title = "Light Discipline";
-                        String message = "This will notify with our floating notification when the break time starts, " +
-                                "and notify again when the break time ends. Note that this mode will not work when 'Do Not Disturb' mode is turn on " +
-                                "or phone notification has been deactivated.\nThis is the no-cut mode.";
-                        dialogBreakingModeInfo(title, message);
+                        String title = "Light Discipline (No-Cut)";
+                        String message = "This mode will notify you with our floating notification when the break time starts, " +
+                                "and will notify you again when the break time ends.\n" +
+                                "Note that this mode will not work when 'Do Not Disturb' is turn on " +
+                                "or the notification has been deactivated.";
+                        dialogBreakingModeInfo(title, message, R.drawable.ic_bm_light_accent_24dp);
                     }
                 });
                 break;
@@ -431,35 +433,36 @@ public class Main2Activity extends AppCompatActivity {
         alphaBar.setProgress(Constants.DEFAULT_ALPHA_MAX_PERCENT - (int)(alpha * 100));
     }
 
-    private void dialogBreakingModeInfo(String title, String message) {
+    private void dialogBreakingModeInfo(String title, String message, int dw) {
         Logger.log(TAG, "dialogBreakingModeInfo()");
         new AlertDialog.Builder(this)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Alright", null)
-                .setIcon(android.R.drawable.ic_dialog_info)
+                .setIcon(dw)
                 .show();
     }
 
     private void dialogAboutApp() {
         Logger.log(TAG, "dialogAboutApp()");
+        LayoutInflater inflater = this.getLayoutInflater();
+        View layout = inflater.inflate(R.layout.component_about_app, null);
+
         new AlertDialog.Builder(this)
                 .setTitle("About App")
-                .setMessage("This app is developed for fighting against the world vision impairment.\n" +
-                        "© 2020 - All right reserved.\n" +
-                        getString(R.string.version_text))
+                .setView(layout)
                 .setPositiveButton("OK", null)
-                .setIcon(R.drawable.ic_miracle_head2)
+                .setIcon(R.drawable.ic_info_black_24dp)
                 .show();
     }
 
     private void dialogPermissionChangedInfo() {
         Logger.log(TAG, "dialogPermissionChangedInfo()");
         new AlertDialog.Builder(this)
-                .setTitle("App Permission Has Been Changed")
+                .setTitle("App Permissions Have Been Changed")
                 .setMessage("Some functions might not work properly. Restart the app is recommended.")
                 .setPositiveButton("Understood", null)
-                .setIcon(R.drawable.ic_miracle_head2)
+                .setIcon(R.drawable.ic_report_black_24dp)
                 .show();
     }
 

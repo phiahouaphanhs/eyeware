@@ -375,13 +375,13 @@ public class MainActivity extends AppCompatActivity {
         BreakingMode mode = pm.getBreakingMode();
         switch (mode) {
             case STRONG:
-                dw = R.drawable.ic_camera_rear_white_24dp;
+                dw = R.drawable.ic_bm_strong_white_24dp;
                 break;
             case MEDIUM:
-                dw = R.drawable.ic_compare_black_24dp;
+                dw = R.drawable.ic_bm_medium_white_24dp;
                 break;
             case LIGHT:
-                dw = R.drawable.ic_notifications_white_24dp;
+                dw = R.drawable.ic_bm_light_white_24dp;
                 break;
         }
         ImageView breakingModeIcon = findViewById(R.id.breaking_mode_icon);
@@ -513,8 +513,8 @@ public class MainActivity extends AppCompatActivity {
     private void dialogAskOverlayPermissionForStrongBM() {
         Logger.log(TAG, "dialogAskOverlayPermissionForStrongBM()");
         new AlertDialog.Builder(this)
-                .setTitle("Overlay permission")
-                .setMessage("To apply strong discipline mode, please grant us the overlay permission (\"Appear on top\"). You can turn off later on. " +
+                .setTitle("Overlay Permission")
+                .setMessage("To apply strong discipline mode, please grant us the overlay permission (\"Appear on top\"). You can turn this off later on. " +
                         "Grant the permission ?")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
@@ -533,15 +533,15 @@ public class MainActivity extends AppCompatActivity {
                         dialogChangeBreakingMode();
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_info)
+                .setIcon(R.drawable.ic_face_black_24dp)
                 .show();
     }
 
     private void dialogAskOverlayPermissionForBL() {
         Logger.log(TAG, "dialogAskOverlayPermissionForBL()");
         new AlertDialog.Builder(this)
-                .setTitle("Overlay permission")
-                .setMessage("To apply blue light filter, please grant us the overlay permission (\"Appear on top\"). You can turn off later on. " +
+                .setTitle("Overlay Permission")
+                .setMessage("To apply blue light filter, please grant us the overlay permission (\"Appear on top\"). You can turn this off later on. " +
                         "Grant the permission ?")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
@@ -563,15 +563,15 @@ public class MainActivity extends AppCompatActivity {
                         blLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_info)
+                .setIcon(R.drawable.ic_face_black_24dp)
                 .show();
     }
 
     private void dialogAskDeviceAdminPermission() {
         Logger.log(TAG, "dialogAskDeviceAdminPermission()");
         new AlertDialog.Builder(this)
-                .setTitle("Device admin permission")
-                .setMessage("To manage lock screen, please grant us the device admin permission. You can turn off later on. " +
+                .setTitle("Device Admin Permission")
+                .setMessage("To manage lock screen, please grant us the device admin permission. You can turn this off later on. " +
                         "Grant the permission ?")
 
                 // Specifying a listener allows you to take an action before dismissing the dialog.
@@ -584,7 +584,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton("No, I don't need auto lock screen", null)
-                .setIcon(android.R.drawable.ic_dialog_info)
+                .setIcon(R.drawable.ic_face_black_24dp)
                 .show();
     }
 
@@ -608,7 +608,6 @@ public class MainActivity extends AppCompatActivity {
 
         final AlertDialog dialog = new AlertDialog.Builder(this)
                 .setTitle("Change Password")
-                //.setMessage(message)
                 .setView(changePasswordLayout)
                 .setIcon(R.drawable.ic_security_accent_24dp)
                 .show();
@@ -657,7 +656,7 @@ public class MainActivity extends AppCompatActivity {
                 .setTitle("Change Lock Screen Time")
                 //.setMessage(message)
                 .setView(changeLockScreenLayout)
-                .setIcon(R.drawable.ic_lock_open_gray_24dp)
+                .setIcon(R.drawable.ic_lock_open_black_24dp)
                 .show();
 
         okButton.setOnClickListener(new View.OnClickListener() {
@@ -705,7 +704,7 @@ public class MainActivity extends AppCompatActivity {
                         "A solution is to uninstall and re-install the app. " +
                         "Factory default password is " + Constants.DEFAULT_PASSWORD)
                 .setPositiveButton("OK", null)
-                .setIcon(android.R.drawable.ic_dialog_info)
+                .setIcon(R.drawable.ic_info_black_24dp)
                 .show();
 
     }
@@ -713,21 +712,21 @@ public class MainActivity extends AppCompatActivity {
     private void dialogChangeBreakingMode() {
         Logger.log(TAG, "dialogChangeBreakingMode()");
         new AlertDialog.Builder(this)
-                .setTitle("Want to change breaking mode ?")
-                .setMessage("Change to Medium Discipline")
+                .setTitle("Do you want to change the current breaking mode ?")
+                .setMessage("Change to Medium Discipline Mode")
                 .setPositiveButton("Change", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         pm.setBreakingMode(BreakingMode.MEDIUM);
                         pm.save();
                         ImageView breakingModeIcon = findViewById(R.id.breaking_mode_icon);
-                        breakingModeIcon.setImageResource(R.drawable.ic_compare_black_24dp);
+                        breakingModeIcon.setImageResource(R.drawable.ic_bm_medium_white_24dp);
 
                         Toast.makeText(MainActivity.this, "Change to Medium discipline", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .setNegativeButton("No", null)
-                .setIcon(android.R.drawable.ic_dialog_info)
+                .setIcon(R.drawable.ic_face_black_24dp)
                 .show();
 
     }

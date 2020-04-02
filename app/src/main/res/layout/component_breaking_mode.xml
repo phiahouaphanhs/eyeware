@@ -27,7 +27,7 @@
         android:padding="11dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/unforce_screen_cut_icon"
-        app:srcCompat="@drawable/ic_notifications_white_24dp" />
+        app:srcCompat="@drawable/ic_bm_light_white_24dp" />
 
     <ImageView
         android:id="@+id/unforce_screen_cut_icon"
@@ -45,7 +45,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/screen_cut_label"
         app:layout_constraintVertical_bias="1.0"
-        app:srcCompat="@drawable/ic_compare_black_24dp" />
+        app:srcCompat="@drawable/ic_bm_medium_white_24dp" />
 
     <ImageView
         android:id="@+id/force_screen_cut_icon"
@@ -58,7 +58,7 @@
         android:padding="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/unforce_screen_cut_icon"
-        app:srcCompat="@drawable/ic_camera_rear_white_24dp" />
+        app:srcCompat="@drawable/ic_bm_strong_white_24dp" />
 
 
 </android.support.constraint.ConstraintLayout>

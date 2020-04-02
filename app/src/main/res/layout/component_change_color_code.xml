@@ -29,7 +29,7 @@
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/layout_rectangle_blue_shade_green">
+                android:background="@drawable/layout_rectangle_yellow_shade_blue">
 
                 <TextView
                     android:id="@+id/change_color_code_label"

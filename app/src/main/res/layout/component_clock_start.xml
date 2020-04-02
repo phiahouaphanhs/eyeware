@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/layout_rectangle_dark_blue_shade_vertical_inverse">
+    android:background="@drawable/layout_rectangle_dark_accent_shade_vertical_inverse">
 
     <ImageView
         android:id="@+id/settings_icon"

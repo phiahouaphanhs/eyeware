@@ -1,7 +1,6 @@
 package com.southiny.eyeware;
 
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -12,14 +11,12 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.SeekBar;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ParentalControl;
-import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
 import com.southiny.eyeware.tool.Logger;
 
@@ -126,6 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Toast.makeText(SettingsActivity.this, "Reset to default complete", Toast.LENGTH_SHORT).show();
                     }
                 })
+                .setIcon(R.drawable.ic_report_black_24dp)
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
 
@@ -179,7 +177,7 @@ public class SettingsActivity extends AppCompatActivity {
         Logger.log(TAG, "dialogComputerModeInfo()");
         new AlertDialog.Builder(this)
                 .setTitle("Computer Mode")
-                .setMessage("When this mode is turn on, we will notify you the break time even when the phone screen is off. " +
+                .setMessage("When the break time arrive, we will notify you even if you are not looking at the phone screen right now (the phone screen is off). " +
                         "This is useful when you want our app to discipline you while using other device such as computer, gaming console,...etc. " +
                         "Note that this mode will not work when the vibration is turn Off.")
                 .setPositiveButton("Alright, turn it on", new DialogInterface.OnClickListener() {
@@ -206,7 +204,7 @@ public class SettingsActivity extends AppCompatActivity {
                         computerModeSwitch.setChecked(false);*/
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_info)
+                .setIcon(R.drawable.ic_computer_blue_24dp)
                 .show();
     }
 
@@ -214,8 +212,8 @@ public class SettingsActivity extends AppCompatActivity {
     private void dialogAskIfWishToAlsoActivateVibrate() {
         Logger.log(TAG, "dialogAskIfWishToAlsoActivateVibrate()");
         new AlertDialog.Builder(this)
-                .setTitle("Do you wish to also turn on vibration ?")
-                .setMessage("Computer mode will not work without the vibration.")
+                .setTitle("Do you wish to turn on vibration ?")
+                .setMessage("Computer mode will not work without vibration on.")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
@@ -239,13 +237,14 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void dialogAboutApp() {
         Logger.log(TAG, "dialogAboutApp()");
+        LayoutInflater inflater = this.getLayoutInflater();
+        View layout = inflater.inflate(R.layout.component_about_app, null);
+
         new AlertDialog.Builder(this)
                 .setTitle("About App")
-                .setMessage("This app is developed for fighting against the world vision impairment.\n" +
-                        "© 2020 - All right reserved.\n" +
-                        getString(R.string.version_text))
+                .setView(layout)
                 .setPositiveButton("OK", null)
-                .setIcon(R.drawable.ic_miracle_head2)
+                .setIcon(R.drawable.ic_info_black_24dp)
                 .show();
     }
 
