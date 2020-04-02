@@ -29,6 +29,8 @@
         <activity
             android:name=".NotificationScreen"
             android:configChanges="orientation|keyboardHidden|screenSize"
+            android:noHistory="true"
+            android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_notification_screen"
             android:theme="@style/FullscreenTheme" />
@@ -83,6 +85,8 @@
             android:name=".Main2Activity"
             android:label="@string/title_activity_main2"
             android:noHistory="true"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
             android:taskAffinity=".OnInviteActivity"
             android:theme="@style/AppTheme" />
         <activity

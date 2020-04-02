@@ -69,7 +69,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <include layout="@layout/component_phone_parameters"/>
+                <include layout="@layout/component_phone_parameters"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"/>
 
             </android.support.v7.widget.CardView>
 

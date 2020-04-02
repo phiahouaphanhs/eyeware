@@ -8,9 +8,8 @@
     android:orientation="vertical">
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
         android:paddingStart="@dimen/fab_margin"
         android:paddingEnd="@dimen/fab_margin">
 
@@ -49,11 +48,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="8dp"
             android:layout_toEndOf="@id/icon_check_breaking"
+            android:autoSizeTextType="uniform"
             android:text="@string/main_stay_long_time_consequence_explanation"
             android:textColor="@color/eyeware_black"
             android:textSize="12sp"
-            android:autoSizeTextType="uniform"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/icon_check_breaking"
             app:layout_constraintTop_toBottomOf="@+id/firstLine_breaking" />
 
@@ -66,9 +66,8 @@
         android:background="?android:attr/listDivider" />
 
     <android.support.constraint.ConstraintLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="20dp"
         android:paddingStart="@dimen/fab_margin"
         android:paddingEnd="@dimen/fab_margin">
 
@@ -107,11 +106,12 @@
             android:layout_marginStart="8dp"
             android:layout_marginBottom="20dp"
             android:layout_toEndOf="@+id/icon_check_bluelight"
+            android:autoSizeTextType="uniform"
             android:text="@string/main_blue_light_consequence_explanation"
             android:textColor="@color/eyeware_black"
             android:textSize="12sp"
-            android:autoSizeTextType="uniform"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/icon_check_bluelight"
             app:layout_constraintTop_toBottomOf="@+id/firstLine_bluelight" />
 

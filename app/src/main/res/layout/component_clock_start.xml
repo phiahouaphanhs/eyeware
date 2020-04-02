@@ -25,17 +25,27 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="32dp"
         android:layout_marginEnd="8dp"
-        android:background="@drawable/layout_round_shape_dark_blue_shade_green"
+        android:background="@drawable/layout_round_shape_accent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:id="@+id/start_icon"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/ic_power_settings_new_white_24dp"
-            android:contentDescription="@string/content_description_start_icon" />
+            android:layout_margin="10dp"
+            android:background="@drawable/layout_round_shape_pink_shade_yellow_and_blue">
+
+            <ImageView
+                android:id="@+id/start_icon"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/ic_power_settings_new_white_24dp"
+                android:contentDescription="@string/content_description_start_icon" />
+
+        </LinearLayout>
+
+
 
     </LinearLayout>
 
