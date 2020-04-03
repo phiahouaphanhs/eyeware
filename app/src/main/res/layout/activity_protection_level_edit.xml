@@ -19,6 +19,7 @@
         android:layout_weight="1">
 
         <android.support.constraint.ConstraintLayout
+            android:id="@+id/main_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="8dp">
@@ -311,7 +312,7 @@
                 android:background="?android:attr/listDivider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/filter_color_layout"/>
+                app:layout_constraintTop_toBottomOf="@+id/filter_color_layout" />
 
 
         </android.support.constraint.ConstraintLayout>

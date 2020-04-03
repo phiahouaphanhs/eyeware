@@ -23,11 +23,12 @@
         android:roundIcon="@mipmap/ic_laucher_miracle_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".WaitActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/title_activity_wait"
-            android:theme="@style/FullscreenTheme"></activity>
+            android:theme="@style/FullscreenTheme" />
         <activity android:name=".TestActivity" />
         <activity android:name=".LockPhoneActivity" />
         <activity android:name=".SettingsActivity" />
@@ -48,7 +49,6 @@
         <activity android:name=".PasswordActivity" />
         <activity
             android:name=".MainActivity"
-            android:excludeFromRecents="true"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".SplashScreen"

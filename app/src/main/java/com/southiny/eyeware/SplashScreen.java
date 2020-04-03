@@ -6,8 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.constraint.ConstraintLayout;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 
 import com.reactiveandroid.ReActiveAndroid;
 import com.reactiveandroid.ReActiveConfig;
@@ -20,6 +22,7 @@ import com.southiny.eyeware.database.model.Run;
 import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.service.ClockService;
 import com.southiny.eyeware.tool.Logger;
+import com.southiny.eyeware.tool.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,7 +35,6 @@ public class SplashScreen extends Activity {
             .disableMigrationsChecking()
             .addModelClasses(Run.class, ProtectionMode.class, ScreenFilter.class, ParentalControl.class)
             .build();
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,6 +75,22 @@ public class SplashScreen extends Activity {
         // set content AFTER ABOVE sequence (to avoid crash)
         Logger.log(TAG, "set content view to overlay_view splash screen...");
         this.setContentView(R.layout.activity_splash_screen);
+
+        final ProgressBar progressBar = findViewById(R.id.progress_bar_splash);
+        Utils.blinkblink(progressBar, getApplicationContext());
+        final Handler handler = new Handler();
+        handler.post(new Runnable() {
+            private int percent = 0;
+            @Override
+            public void run() {
+                progressBar.setProgress(percent);
+                percent = (percent + 20) % 101;
+                handler.post(this);
+            }
+        });
+
+        ConstraintLayout mainLayout = findViewById(R.id.main_layout);
+        Utils.fade(mainLayout, getApplicationContext());
 
     }
 

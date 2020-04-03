@@ -1,9 +1,12 @@
 package com.southiny.eyeware;
 
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
@@ -13,6 +16,7 @@ import android.widget.TextView;
 import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.tool.Logger;
+import com.southiny.eyeware.tool.Utils;
 
 public class PasswordActivity extends AppCompatActivity {
 
@@ -22,6 +26,7 @@ public class PasswordActivity extends AppCompatActivity {
     TextView passwordErrorTextView;
 
     ParentalControl pctrl;
+    AudioManager audioManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +41,8 @@ public class PasswordActivity extends AppCompatActivity {
         super.onStart();
 
         pctrl = SQLRequest.getRun().getParentalControl();
+        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+
 
         passwordInputEditText = findViewById(R.id.password_input);
         passwordErrorTextView = findViewById(R.id.password_error_message_text);
@@ -43,6 +50,8 @@ public class PasswordActivity extends AppCompatActivity {
         unlockImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clickAnimate(view);
+                playClickSound();
                 onDone();
             }
         });
@@ -80,6 +89,14 @@ public class PasswordActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Logger.log(TAG, "onDestroy()");
+    }
+
+    private void clickAnimate(View view) {
+        Utils.fade(view, getApplicationContext());
+    }
+
+    private void playClickSound() {
+        audioManager.playSoundEffect(SoundEffectConstants.CLICK,1.0f);
     }
 
     private void onDone() {

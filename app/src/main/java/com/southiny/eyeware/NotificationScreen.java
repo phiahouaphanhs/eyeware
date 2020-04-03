@@ -159,7 +159,7 @@ public class NotificationScreen extends AppCompatActivity {
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        mContentView = findViewById(R.id.fullscreen_content);
+        mContentView = findViewById(R.id.wait_text);
 
 
         // Set up the user interaction to manually show or hide the system UI.

@@ -1,16 +1,20 @@
 package com.southiny.eyeware;
 
+import android.content.Context;
 import android.content.DialogInterface;
+import android.media.AudioManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,12 +23,14 @@ import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.Run;
 import com.southiny.eyeware.tool.Logger;
+import com.southiny.eyeware.tool.Utils;
 
 public class SettingsActivity extends AppCompatActivity {
     public static final String TAG = SettingsActivity.class.getSimpleName();
 
     private Run run;
     private ParentalControl pctrl;
+    private AudioManager audioManager;
 
     private Switch computerModeSwitch, vibrateActivateSwitch;
 
@@ -34,12 +40,15 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         run = SQLRequest.getRun();
-        pctrl =run.getParentalControl();
+        pctrl = run.getParentalControl();
+        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 
         TextView resetToDefaultTextView = findViewById(R.id.reset_to_default_text);
         resetToDefaultTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clickAnimate(view);
+                playClickSound();
                 Logger.log(TAG, "onClick() reset to default");
                 dialogRequestPassword();
             }
@@ -57,6 +66,12 @@ public class SettingsActivity extends AppCompatActivity {
                 } else {
                     Toast.makeText(SettingsActivity.this, "Vibration Off", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+        vibrateActivateSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playClickSound();
             }
         });
 
@@ -83,11 +98,19 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             }
         });
+        computerModeSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                playClickSound();
+            }
+        });
 
         TextView computerModeTextView = findViewById(R.id.computer_mode_text_label);
         computerModeTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clickAnimate(view);
+                playClickSound();
                 dialogComputerModeInfo();
             }
         });
@@ -96,6 +119,8 @@ public class SettingsActivity extends AppCompatActivity {
         aboutAppTextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clickAnimate(view);
+                playClickSound();
                 dialogAboutApp();
             }
         });
@@ -104,6 +129,8 @@ public class SettingsActivity extends AppCompatActivity {
         backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                clickAnimate(view);
+                playClickSound();
                 Logger.log(TAG, "back icon click()");
                 finish();
             }
@@ -117,6 +144,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setMessage("This action cannot be undone.")
                 .setPositiveButton("Reset", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        playClickSound();
                         SQLRequest.deleteAllData();
                         SQLRequest.whatInDB();
                         SQLRequest.getRun();
@@ -124,7 +152,12 @@ public class SettingsActivity extends AppCompatActivity {
                     }
                 })
                 .setIcon(R.drawable.ic_report_yellow_24dp)
-                .setNegativeButton(android.R.string.cancel, null)
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        playClickSound();
+                    }
+                })
                 .show();
 
     }
@@ -147,9 +180,12 @@ public class SettingsActivity extends AppCompatActivity {
             final EditText passwordInputEditText = passwordLayout.findViewById(R.id.password_input);
             final TextView passwordErrorTextView = passwordLayout.findViewById(R.id.password_error_message_text);
             ImageView unlockImageView = passwordLayout.findViewById(R.id.unlock_icon);
+            Utils.blinkButterfly(unlockImageView, getApplicationContext());
             unlockImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    clickAnimate(view);
+                    playClickSound();
                     boolean passed = onDone(passwordInputEditText, passwordErrorTextView);
                     if (passed) {
                         dialog.dismiss();
@@ -183,25 +219,15 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton("Alright, turn it on", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        playClickSound();
                         computerModeSwitch.setChecked(true);
-                        /*if (!run.isVibrationActivated()) {
-                            dialogAskIfWishToAlsoActivateVibrate();
-                        } else {
-                            run.setSmartDetectActivated(true);
-                            run.save();
-                            Toast.makeText(SettingsActivity.this, "Computer Mode On", Toast.LENGTH_SHORT).show();
-                            computerModeSwitch.setChecked(true);
-                        }*/
                     }
                 })
                 .setNegativeButton("No, turn it off", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        playClickSound();
                         computerModeSwitch.setChecked(false);
-                        /*run.setSmartDetectActivated(false);
-                        run.save();
-                        Toast.makeText(SettingsActivity.this, "Computer Mode Off", Toast.LENGTH_SHORT).show();
-                        computerModeSwitch.setChecked(false);*/
                     }
                 })
                 .setIcon(R.drawable.ic_computer_blue_24dp)
@@ -217,6 +243,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        playClickSound();
                         run.setSmartDetectActivated(true);
                         run.setVibrationActivated(true);
                         run.save();
@@ -228,6 +255,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
+                        playClickSound();
                         computerModeSwitch.setChecked(false);
                     }
                 })
@@ -239,11 +267,24 @@ public class SettingsActivity extends AppCompatActivity {
         Logger.log(TAG, "dialogAboutApp()");
         LayoutInflater inflater = this.getLayoutInflater();
         View layout = inflater.inflate(R.layout.component_about_app, null);
+        ImageView appIcon = layout.findViewById(R.id.app_icon);
+        Utils.clockwiseLeftRight(appIcon, getApplicationContext());
+        LinearLayout card1 = layout.findViewById(R.id.about_card1);
+        LinearLayout card2 = layout.findViewById(R.id.about_card2);
+        LinearLayout card3 = layout.findViewById(R.id.about_card3);
+        Utils.moveLeftRight(card1, getApplicationContext());
+        Utils.moveLeftRight(card2, getApplicationContext());
+        Utils.moveLeftRight(card3, getApplicationContext());
 
         new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("About App")
                 .setView(layout)
-                .setPositiveButton("OK", null)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        playClickSound();
+                    }
+                })
                 .show();
     }
 
@@ -279,5 +320,13 @@ public class SettingsActivity extends AppCompatActivity {
             }
             return true;
         }
+    }
+
+    private void playClickSound() {
+        audioManager.playSoundEffect(SoundEffectConstants.CLICK,1.0f);
+    }
+
+    private void clickAnimate(View view) {
+        Utils.fade(view, getApplicationContext());
     }
 }

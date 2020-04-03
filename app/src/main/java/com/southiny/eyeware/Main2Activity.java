@@ -2,8 +2,10 @@ package com.southiny.eyeware;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
@@ -11,6 +13,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -31,6 +34,7 @@ import com.southiny.eyeware.service.ClockService;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.ColorFilterLinearLayout;
 import com.southiny.eyeware.tool.Logger;
+import com.southiny.eyeware.tool.Utils;
 
 import java.util.ArrayList;
 
@@ -42,6 +46,7 @@ public class Main2Activity extends AppCompatActivity {
     private Run run;
     private ProtectionMode pm;
     private ParentalControl pctrl;
+    private AudioManager audioManager;
 
     private SeekBar dimBar, alphaBar;
 
@@ -54,6 +59,8 @@ public class Main2Activity extends AppCompatActivity {
     private TextView breakMinuteTextView, breakSecondTextView,
             blMinuteTextView, blSecondTextView,
             lockScreenMinuteTextView, lockScreenSecondTextView;
+
+    private ImageView breakingModeIcon, vibrationIcon;
 
     private ArrayList<ColorFilterLinearLayout> filterCards = new ArrayList<>();
     private int currentSelectedFilterIndex;
@@ -96,6 +103,8 @@ public class Main2Activity extends AppCompatActivity {
 
         Logger.log(TAG, "onCreate()");
 
+        audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+
         breakMinuteTextView = findViewById(R.id.timer_minute_count);
         breakSecondTextView = findViewById(R.id.timer_second_count);
 
@@ -105,28 +114,37 @@ public class Main2Activity extends AppCompatActivity {
         lockScreenMinuteTextView = findViewById(R.id.lockscreen_minute_count);
         lockScreenSecondTextView = findViewById(R.id.lockscreen_second_count);
 
+        LinearLayout mainLayout = findViewById(R.id.main_layout);
+        Utils.moveTopDown(mainLayout, getApplicationContext());
+
+
+        /***************************/
+
 
         Logger.log(TAG, "set current protection level...");
         run = SQLRequest.getRun();
         pm = run.getCurrentProtectionMode();
         pctrl = run.getParentalControl();
 
-        TextView plTextView = findViewById(R.id.current_protection_level_text_view);
+        final TextView plTextView = findViewById(R.id.current_protection_level_text_view);
         if (pm.isBreakingActivated()) {
             plTextView.setText(pm.getName());
             Logger.log(TAG, "current protection level is " + pm.getName());
         } else {
-            plTextView.setText("DESACTIVATED");
+            plTextView.setText("DEACTIVATED");
             Logger.log(TAG, "current protection level is deactivated");
         }
 
         Logger.log(TAG, "set on click to stop button");
-        Button stopButton = findViewById(R.id.stop_button);
+        final Button stopButton = findViewById(R.id.stop_button);
+        Utils.blinkblink(stopButton, getApplicationContext());
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Logger.log(TAG, "onClick() stop button");
                 Logger.log(TAG, "stop " + ClockService.TAG);
+                clickAnimate(view);
+                playClickSound();
                 Intent intent = new Intent(Main2Activity.this, ClockService.class);
                 stopService(intent);
 
@@ -140,15 +158,104 @@ public class Main2Activity extends AppCompatActivity {
             }
         });
 
-        if (!pm.isBreakingActivated()) {
-            ImageView checkedBreakingIcon = findViewById(R.id.icon_check_breaking);
-            checkedBreakingIcon.setImageResource(R.drawable.ic_close_black_24dp);
+        vibrationIcon = findViewById(R.id.vibration_icon);
+        Utils.blinkblink(vibrationIcon, getApplicationContext());
+        if (!run.isVibrationActivated()) {
+            vibrationIcon.setImageResource(R.drawable.ic_vibration_grey_24dp);
+        }
+        // set on click to vibration icon);
+        vibrationIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Logger.log(TAG, "onclick() vibration icon");
+                clickAnimate(view);
+                playClickSound();
+                run.setVibrationActivated(!run.isVibrationActivated());
+                run.save();
+                if (run.isVibrationActivated()) {
+                    Toast.makeText(Main2Activity.this, "Vibration On", Toast.LENGTH_SHORT).show();
+                    vibrationIcon.setImageResource(R.drawable.ic_vibration_white_24dp);
+                } else {
+                    Toast.makeText(Main2Activity.this, "Vibration Off", Toast.LENGTH_SHORT).show();
+                    vibrationIcon.setImageResource(R.drawable.ic_vibration_grey_24dp);
+                }
+            }
+        });
+
+        breakingModeIcon = findViewById(R.id.breaking_mode_icon_started);
+        Utils.blinkblink(breakingModeIcon, getApplicationContext());
+        int dw = R.drawable.ic_close_white_24dp;
+        BreakingMode mode = pm.getBreakingMode();
+        switch (mode) {
+            case STRONG:
+                dw = R.drawable.ic_bm_strong_white_24dp;
+                breakingModeIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        clickAnimate(view);
+                        playClickSound();
+                        String title = "Strong Discipline (Force-Cut)";
+                        String message = "This mode will cover your screen with complete opaque filter during the break time.\n" +
+                                "(!) There's no possibility to close the filter until the break time is ended.";
+                        dialogBreakingModeInfo(title, message, R.drawable.ic_bm_strong_accent_24dp);
+                    }
+                });
+                break;
+            case MEDIUM:
+                dw = R.drawable.ic_bm_medium_white_24dp;
+                breakingModeIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        clickAnimate(view);
+                        playClickSound();
+                        String title = "Medium Discipline (Unforce-Cut)";
+                        String message = "This mode will cover your screen with a notification screen during the break time.\n" +
+                                "(!) You can close the notification screen at anytime.";
+                        dialogBreakingModeInfo(title, message, R.drawable.ic_bm_medium_accent_24dp);
+                    }
+                });
+                break;
+            case LIGHT:
+                dw = R.drawable.ic_bm_light_white_24dp;
+                breakingModeIcon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        clickAnimate(view);
+                        playClickSound();
+                        String title = "Light Discipline (No-Cut)";
+                        String message = "This mode will notify you with our floating notification when the break time starts, " +
+                                "and will notify you again when the break time ends.\n" +
+                                "Note that this mode will not work when 'Do Not Disturb' is turn on " +
+                                "or the notification has been deactivated.";
+                        dialogBreakingModeInfo(title, message, R.drawable.ic_bm_light_accent_24dp);
+                    }
+                });
+                break;
+        }
+        breakingModeIcon.setImageResource(dw);
+
+        final ImageView miracleIcon = findViewById(R.id.miracle_icon_in_clock);
+        Utils.move(miracleIcon, getApplicationContext());
+        miracleIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                clickAnimate(view);
+                playClickSound();
+                dialogAboutApp();
+            }
+        });
+
+        if (pm.isBluelightFiltering()) {
+            ImageView filterIcon = findViewById(R.id.filter_icon);
+            filterIcon.setImageResource(R.drawable.ic_style_cream_24dp);
         }
 
-        if (!pm.isBluelightFiltering()) {
-            ImageView checkedBLIcon = findViewById(R.id.icon_check_bluelight);
-            checkedBLIcon.setImageResource(R.drawable.ic_close_black_24dp);
+        if (pctrl.isLockScreenActivated()) {
+            ImageView lockIcon = findViewById(R.id.lock_icon);
+            lockIcon.setImageResource(R.drawable.ic_lock_open_cream_24dp);
         }
+
+        /***************************/
 
         addFilterCards();
 
@@ -166,6 +273,7 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Logger.log(TAG, "dim value is " + seekBar.getProgress());
+                playClickSound();
                 float dim = (float) (Constants.DEFAULT_DIM_MAX_PERCENT - seekBar.getProgress()) / 100F;
                 mBLService.updateCurrentFilterDim(dim);
                 Toast.makeText(Main2Activity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
@@ -185,6 +293,7 @@ public class Main2Activity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                playClickSound();
                 Logger.log(TAG, "alpha value is " + seekBar.getProgress());
                 float alpha = (float) (Constants.DEFAULT_ALPHA_MAX_PERCENT - seekBar.getProgress()) / 100F;
                 mBLService.updateCurrentFilterAlpha(alpha);
@@ -195,95 +304,17 @@ public class Main2Activity extends AppCompatActivity {
             }
         });
 
+        /***********************/
 
-        final ImageView vibrationIcon = findViewById(R.id.vibration_icon);
-        if (!run.isVibrationActivated()) {
-            vibrationIcon.setImageResource(R.drawable.ic_vibration_grey_24dp);
-        }
-        // set on click to vibration icon
-        vibrationIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Logger.log(TAG, "onclick() vibration icon");
-                run.setVibrationActivated(!run.isVibrationActivated());
-                run.save();
-                if (run.isVibrationActivated()) {
-                    Toast.makeText(Main2Activity.this, "Vibration On", Toast.LENGTH_SHORT).show();
-                    vibrationIcon.setImageResource(R.drawable.ic_vibration_white_24dp);
-                    vibrationIcon.setPadding(8,8,8,8);
-                } else {
-                    Toast.makeText(Main2Activity.this, "Vibration Off", Toast.LENGTH_SHORT).show();
-                    vibrationIcon.setImageResource(R.drawable.ic_vibration_grey_24dp);
-                    vibrationIcon.setPadding(8,8,8,8);
-                }
-            }
-        });
-
-        ImageView breakingModeIcon = findViewById(R.id.breaking_mode_icon_started);
-        int dw = R.drawable.ic_close_white_24dp;
-        BreakingMode mode = pm.getBreakingMode();
-        switch (mode) {
-            case STRONG:
-                dw = R.drawable.ic_bm_strong_white_24dp;
-                breakingModeIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String title = "Strong Discipline (Force-Cut)";
-                        String message = "This mode will cover your screen with complete opaque filter during the break time.\n" +
-                                "(!) There's no possibility to close the filter until the break time is ended.";
-                        dialogBreakingModeInfo(title, message, R.drawable.ic_bm_strong_accent_24dp);
-                    }
-                });
-                break;
-            case MEDIUM:
-                dw = R.drawable.ic_bm_medium_white_24dp;
-                breakingModeIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String title = "Medium Discipline (Unforce-Cut)";
-                        String message = "This mode will cover your screen with a notification screen during the break time.\n" +
-                                "(!) You can close the notification screen at anytime.";
-                        dialogBreakingModeInfo(title, message, R.drawable.ic_bm_medium_accent_24dp);
-                    }
-                });
-                break;
-            case LIGHT:
-                dw = R.drawable.ic_bm_light_white_24dp;
-                breakingModeIcon.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        String title = "Light Discipline (No-Cut)";
-                        String message = "This mode will notify you with our floating notification when the break time starts, " +
-                                "and will notify you again when the break time ends.\n" +
-                                "Note that this mode will not work when 'Do Not Disturb' is turn on " +
-                                "or the notification has been deactivated.";
-                        dialogBreakingModeInfo(title, message, R.drawable.ic_bm_light_accent_24dp);
-                    }
-                });
-                break;
-        }
-        breakingModeIcon.setImageResource(dw);
-
-        ImageView miracleIcon = findViewById(R.id.miracle_icon_in_clock);
-        miracleIcon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialogAboutApp();
-            }
-        });
-
-        if (pm.isBluelightFiltering()) {
-            ImageView filterIcon = findViewById(R.id.filter_icon);
-            filterIcon.setImageResource(R.drawable.ic_style_cream_24dp);
+        if (!pm.isBreakingActivated()) {
+            ImageView checkedBreakingIcon = findViewById(R.id.icon_check_breaking);
+            checkedBreakingIcon.setImageResource(R.drawable.ic_close_black_24dp);
         }
 
-        if (pctrl.isLockScreenActivated()) {
-            ImageView lockIcon = findViewById(R.id.lock_icon);
-            lockIcon.setImageResource(R.drawable.ic_lock_open_cream_24dp);
+        if (!pm.isBluelightFiltering()) {
+            ImageView checkedBLIcon = findViewById(R.id.icon_check_bluelight);
+            checkedBLIcon.setImageResource(R.drawable.ic_close_black_24dp);
         }
-
-
-
 
     }
 
@@ -338,14 +369,14 @@ public class Main2Activity extends AppCompatActivity {
         mBLBound = false;
     }
 
-    /** Defines callbacks for service binding, passed to bindService() */
+    /************* Service bind connection ************************/
+
     private ServiceConnection cConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName className,
                                        IBinder service) {
             Logger.log(TAG, "onServiceConnected() Clock");
-            // We've bound to LocalService, cast the IBinder and get LocalService instance
             ClockService.LocalBinder binder = (ClockService.LocalBinder) service;
             mCService = binder.getService();
             mCBound = true;
@@ -363,7 +394,6 @@ public class Main2Activity extends AppCompatActivity {
         }
     };
 
-    /** Defines callbacks for service binding, passed to bindService() */
     private ServiceConnection blConnection = new ServiceConnection() {
 
         @Override
@@ -375,8 +405,6 @@ public class Main2Activity extends AppCompatActivity {
             mBLService = binder.getService();
             mBLBound = true;
             Logger.log(TAG, BlueLightFilterService.TAG + " bound.");
-
-
 
             if (pm.isBluelightFiltering()) {
                 dimBar.setEnabled(true);
@@ -405,6 +433,16 @@ public class Main2Activity extends AppCompatActivity {
 
         }
     };
+
+    /*********** PRIVATE METHODS ********************/
+
+    private void clickAnimate(View view) {
+        Utils.fade(view, getApplicationContext());
+    }
+
+    private void playClickSound() {
+        audioManager.playSoundEffect(SoundEffectConstants.CLICK,1.0f);
+    }
 
     /**
      * pre-require : activity is bound to Watch service
@@ -439,7 +477,7 @@ public class Main2Activity extends AppCompatActivity {
             alphaBar.setProgress(Constants.DEFAULT_ALPHA_MAX_PERCENT - (int)(alpha * 100));
 
             int index = mBLService.getCurrentFilterIndex();
-            if (index != currentSelectedFilterIndex) {
+            if (pm.isBluelightFiltering() && index != currentSelectedFilterIndex) {
                 filterCards.get(currentSelectedFilterIndex).setUnSelected();
                 currentSelectedFilterIndex = index;
                 filterCards.get(currentSelectedFilterIndex).setSelected();
@@ -450,43 +488,16 @@ public class Main2Activity extends AppCompatActivity {
 
     }
 
-    private void dialogBreakingModeInfo(String title, String message, int dw) {
-        Logger.log(TAG, "dialogBreakingModeInfo()");
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Alright", null)
-                .setIcon(dw)
-                .show();
-    }
-
-    private void dialogAboutApp() {
-        Logger.log(TAG, "dialogAboutApp()");
-        LayoutInflater inflater = this.getLayoutInflater();
-        View layout = inflater.inflate(R.layout.component_about_app, null);
-
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
-                .setTitle("About App")
-                .setView(layout)
-                .setPositiveButton("OK", null)
-                .setIcon(R.drawable.ic_info_accent_24dp)
-                .show();
-    }
-
-    private void dialogPermissionChangedInfo() {
-        Logger.log(TAG, "dialogPermissionChangedInfo()");
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
-                .setTitle("App Permissions Have Been Changed")
-                .setMessage("Some functions might not work properly. Restart the app is recommended.")
-                .setPositiveButton("Understood", null)
-                .setIcon(R.drawable.ic_report_yellow_24dp)
-                .show();
-    }
-
     private void addFilterCards() {
         Logger.log(TAG, "addFilterCards()");
 
         LinearLayout filterGlobeLayout = new LinearLayout(this);
+        filterGlobeLayout.setOnScrollChangeListener(new View.OnScrollChangeListener() {
+            @Override
+            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
+                audioManager.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT,1.0f);
+            }
+        });
         filterGlobeLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -503,7 +514,80 @@ public class Main2Activity extends AppCompatActivity {
 
         HorizontalScrollView testview = findViewById(R.id.filter_layout);
         testview.addView(filterGlobeLayout);
+
+        (new Handler()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (View card : filterCards) {
+                    Utils.moveLeftRight(card, Main2Activity.this.getApplicationContext());
+                }
+            }
+        }, 400);
     }
+
+
+    /******* DIALOGS ******************/
+
+    private void dialogBreakingModeInfo(String title, String message, int dw) {
+        Logger.log(TAG, "dialogBreakingModeInfo()");
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Alright", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+
+                        playClickSound();
+                    }
+                })
+                .setIcon(dw)
+                .show();
+    }
+
+    private void dialogAboutApp() {
+        Logger.log(TAG, "dialogAboutApp()");
+        LayoutInflater inflater = this.getLayoutInflater();
+        View layout = inflater.inflate(R.layout.component_about_app, null);
+        ImageView appIcon = layout.findViewById(R.id.app_icon);
+        Utils.clockwiseLeftRight(appIcon, getApplicationContext());
+        LinearLayout card1 = layout.findViewById(R.id.about_card1);
+        LinearLayout card2 = layout.findViewById(R.id.about_card2);
+        LinearLayout card3 = layout.findViewById(R.id.about_card3);
+        Utils.moveLeftRight(card1, getApplicationContext());
+        Utils.moveLeftRight(card2, getApplicationContext());
+        Utils.moveLeftRight(card3, getApplicationContext());
+
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
+                .setTitle("About App")
+                .setView(layout)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        playClickSound();
+                    }
+                })
+                .setIcon(R.drawable.ic_info_accent_24dp)
+                .show();
+    }
+
+    private void dialogPermissionChangedInfo() {
+        Logger.log(TAG, "dialogPermissionChangedInfo()");
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+                .setTitle("App Permissions Have Been Changed")
+                .setMessage("Some functions might not work properly. Restart the app is recommended.")
+                .setPositiveButton("Understood", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        playClickSound();
+                    }
+                })
+                .setIcon(R.drawable.ic_report_yellow_24dp)
+                .show();
+    }
+
+
+
+    /********* INNER CLASS *****************/
 
 
     private class FilterCardClickListener implements View.OnClickListener {
@@ -516,6 +600,11 @@ public class Main2Activity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
+            clickAnimate(view);
+            playClickSound();
+            Utils.blinkblink(breakingModeIcon, getApplicationContext());
+            Utils.blinkblink(vibrationIcon, getApplicationContext());
+
             if (pm.isBluelightFiltering()) {
                 filterCards.get(currentSelectedFilterIndex).setUnSelected();
                 filterCards.get(index).setSelected();

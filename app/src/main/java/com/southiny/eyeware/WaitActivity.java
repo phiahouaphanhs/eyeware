@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.Run;
 import com.southiny.eyeware.service.ClockService;
 import com.southiny.eyeware.tool.Logger;
+import com.southiny.eyeware.tool.Utils;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -40,7 +42,7 @@ public class WaitActivity extends AppCompatActivity {
      */
     private static final int UI_ANIMATION_DELAY = 300;
     private final Handler mHideHandler = new Handler();
-    private View mContentView;
+    private View waitTextView, mContentView;
     private final Runnable mHidePart2Runnable = new Runnable() {
         @SuppressLint("InlinedApi")
         @Override
@@ -50,7 +52,7 @@ public class WaitActivity extends AppCompatActivity {
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-time and do nothing on earlier devices.
-            mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+            waitTextView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
@@ -98,9 +100,25 @@ public class WaitActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_wait);
 
+        final ProgressBar progressBar = findViewById(R.id.progress_bar_wait);
+
+        final Handler handlerProgressBar = new Handler();
+        handlerProgressBar.post(new Runnable() {
+            private int percent = 0;
+            @Override
+            public void run() {
+                progressBar.setProgress(percent);
+                percent = (percent + 1) % 101;
+                handlerProgressBar.post(this);
+            }
+        });
+
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
         mContentView = findViewById(R.id.fullscreen_content);
+        waitTextView = findViewById(R.id.wait_text);
+
+        Utils.blinkButterfly(waitTextView, getApplicationContext());
 
 
         // Set up the user interaction to manually show or hide the system UI.
@@ -127,6 +145,7 @@ public class WaitActivity extends AppCompatActivity {
                     Logger.log(TAG, "ClockService is running !!!");
 
                     if (nb < nbMax) {
+                        nb++;
                         handler.postDelayed(this, 1000);
                     } else { // clock service is really running
                         Intent intent;
@@ -141,6 +160,7 @@ public class WaitActivity extends AppCompatActivity {
 
                         startActivity(intent);
                         finish();
+
                     }
 
                 } else { // clock service has stopped
@@ -180,7 +200,7 @@ public class WaitActivity extends AppCompatActivity {
         }
         mControlsView.setVisibility(View.GONE);
         mVisible = false;
-        ((TextView) mContentView).setText("Please wait...");
+        ((TextView) waitTextView).setText("Please wait...");
 
         // Schedule a runnable to remove the status and navigation bar after a delay
         mHideHandler.removeCallbacks(mShowPart2Runnable);
@@ -190,11 +210,11 @@ public class WaitActivity extends AppCompatActivity {
     @SuppressLint("InlinedApi")
     private void show() {
         // Show the system bar
-        mContentView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+        waitTextView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
         mVisible = true;
 
-        ((TextView) mContentView).setText("Proceed in a few second...");
+        ((TextView) waitTextView).setText("Proceed in a few second...");
 
         // Schedule a runnable to display UI elements after a delay
         mHideHandler.removeCallbacks(mHidePart2Runnable);
