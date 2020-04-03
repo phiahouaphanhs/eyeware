@@ -318,20 +318,15 @@ public class MainActivity extends AppCompatActivity {
         super.onResume();
         Logger.log(TAG, "onResume()");
         // start main activity
-       /* if (SplashScreen.isServiceRunning(ClockService.class.getName(), this)) {
+        if (SplashScreen.isServiceRunning(ClockService.class.getName(), this)) {
             Logger.log(TAG, "ClockService is running !!!");
             Intent intent;
-            if (run.getParentalControl().isPasswordActivated()) {
-                Logger.log(TAG, "start " + PasswordActivity.class.getSimpleName() + "...");
-                intent = new Intent(MainActivity.this, PasswordActivity.class);
-            } else {
-                Logger.log(TAG, "start " + Main2Activity.class.getSimpleName() + "...");
-                intent = new Intent(MainActivity.this, Main2Activity.class);
-            }
+            Logger.log(TAG, "start " + WaitActivity.class.getSimpleName() + "...");
+            intent = new Intent(MainActivity.this, WaitActivity.class);
 
             startActivity(intent);
             finish();
-        }*/
+        }
     }
 
     @Override
@@ -512,7 +507,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void dialogAskOverlayPermissionForStrongBM() {
         Logger.log(TAG, "dialogAskOverlayPermissionForStrongBM()");
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                 .setTitle("Overlay Permission")
                 .setMessage("To apply strong discipline mode, please grant us the overlay permission (\"Appear on top\"). You can turn this off later on. " +
                         "Grant the permission ?")
@@ -533,13 +528,13 @@ public class MainActivity extends AppCompatActivity {
                         dialogChangeBreakingMode();
                     }
                 })
-                .setIcon(R.drawable.ic_face_black_24dp)
+                .setIcon(R.drawable.ic_face_accent_24dp)
                 .show();
     }
 
     private void dialogAskOverlayPermissionForBL() {
         Logger.log(TAG, "dialogAskOverlayPermissionForBL()");
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                 .setTitle("Overlay Permission")
                 .setMessage("To apply blue light filter, please grant us the overlay permission (\"Appear on top\"). You can turn this off later on. " +
                         "Grant the permission ?")
@@ -563,13 +558,13 @@ public class MainActivity extends AppCompatActivity {
                         blLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
                     }
                 })
-                .setIcon(R.drawable.ic_face_black_24dp)
+                .setIcon(R.drawable.ic_face_accent_24dp)
                 .show();
     }
 
     private void dialogAskDeviceAdminPermission() {
         Logger.log(TAG, "dialogAskDeviceAdminPermission()");
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                 .setTitle("Device Admin Permission")
                 .setMessage("To manage lock screen, please grant us the device admin permission. You can turn this off later on. " +
                         "Grant the permission ?")
@@ -584,7 +579,7 @@ public class MainActivity extends AppCompatActivity {
 
                 // A null listener allows the button to dismiss the dialog and take no further action.
                 .setNegativeButton("No, I don't need auto lock screen", null)
-                .setIcon(R.drawable.ic_face_black_24dp)
+                .setIcon(R.drawable.ic_face_accent_24dp)
                 .show();
     }
 
@@ -697,21 +692,21 @@ public class MainActivity extends AppCompatActivity {
 
     private void dialogForgetPassword() {
         Logger.log(TAG, "dialogForgetPassword()");
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                 .setTitle("Forget password, what to do ?")
                 .setMessage("In order to prevent this being done by children, " +
                         "we don't support password reset. " +
                         "A solution is to uninstall and re-install the app. " +
                         "Factory default password is " + Constants.DEFAULT_PASSWORD)
                 .setPositiveButton("OK", null)
-                .setIcon(R.drawable.ic_info_black_24dp)
+                .setIcon(R.drawable.ic_info_accent_24dp)
                 .show();
 
     }
 
     private void dialogChangeBreakingMode() {
         Logger.log(TAG, "dialogChangeBreakingMode()");
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                 .setTitle("Do you want to change the current breaking mode ?")
                 .setMessage("Change to Medium Discipline Mode")
                 .setPositiveButton("Change", new DialogInterface.OnClickListener() {
@@ -726,7 +721,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .setNegativeButton("No", null)
-                .setIcon(R.drawable.ic_face_black_24dp)
+                .setIcon(R.drawable.ic_face_accent_24dp)
                 .show();
 
     }

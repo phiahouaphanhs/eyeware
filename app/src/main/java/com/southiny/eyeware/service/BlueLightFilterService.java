@@ -15,7 +15,6 @@ import android.os.VibrationEffect;
 import android.os.Vibrator;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.constraint.ConstraintSet;
 import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,7 +83,7 @@ public class BlueLightFilterService extends Service {
         Logger.log(TAG, "onCreate()");
 
         ProtectionMode pm = SQLRequest.getRun().getCurrentProtectionMode();
-        sfs = pm.getActivatedScreenFilters();
+        sfs = pm.getActivatedScreenFiltersByOrder();
         currentFilterIndex = sfs.size() - 1;
 
         /****** FOREGROUND ************/
@@ -131,6 +130,28 @@ public class BlueLightFilterService extends Service {
 
                 } else {
                     Logger.log(TAG, "is on notification");
+                    if (isOnNotification) {
+                        int sec = SQLRequest.getRun().getCurrentProtectionMode().getBreakingFor_sec();
+                        final Handler handler = new Handler();
+                        handler.postDelayed(new Runnable() {
+                            private int attempt = 0;
+                            @Override
+                            public void run() {
+                                if (!isOnNotification) {
+                                    currentFilterIndex = (currentFilterIndex + 1) % sfs.size();
+                                    Logger.log(TAG, "current filter index " + currentFilterIndex);
+                                    removeFilter();
+                                    addFilter(sfs.get(currentFilterIndex));
+                                } else {
+                                    if (attempt < 10) {
+                                        attempt++;
+                                        handler.postDelayed(this, 1000);
+                                    }
+                                }
+                            }
+                        }, sec * 1000);
+                    }
+
                 }
 
                 break;

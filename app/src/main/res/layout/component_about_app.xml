@@ -1,187 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/layout_rectangle_dark_blue_shade_vertical">
 
-    <LinearLayout
-        android:id="@+id/linearLayout"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:background="@drawable/layout_round_shape_cream_cut_angle"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:src="@drawable/ic_miracle_head2" />
-
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/slogan_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:text='"Use smart device without fear of losing sight."'
-        android:textAlignment="center"
-        android:textColor="@color/eyeware_black"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
-
-    <LinearLayout
+    <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/slogan_text_view">
+        android:layout_height="wrap_content">
 
-        <HorizontalScrollView
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/layout_round_shape_yellow_cut_angle"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:src="@drawable/ic_miracle_head2" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/slogan_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:text='"Use smart device without fear of losing sight."'
+            android:textAlignment="center"
+            android:textColor="@color/eyeware_black"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout" />
+
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/slogan_text_view">
 
-            <LinearLayout
+            <HorizontalScrollView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <LinearLayout
-                    android:layout_width="350dp"
-                    android:layout_height="400dp"
-                    android:background="@drawable/layout_round_shape_cream_angle60"
-                    android:gravity="center"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:id="@+id/covid_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/fab_margin"
-                        android:layout_marginBottom="8dp"
-                        android:text="Covid-19 quarantine"
-                        android:textAlignment="center"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="16sp"
-                        android:textStyle="bold" />
-
-                    <ImageView
-                        android:id="@+id/covid_icon"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:layout_margin="@dimen/fab_margin"
-                        app:srcCompat="@drawable/ic_covid"
-                        tools:layout_editor_absoluteX="59dp"
-                        tools:layout_editor_absoluteY="522dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="Excessively using smart devices can result in blindness."
-                        android:textAlignment="center"
-                        android:textColor="@color/colorAccent" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="8dp"
-                        android:layout_marginEnd="8dp"
-                        android:text="This app is a solution for you"
-                        android:textAlignment="center"
-                        android:textColor="@color/colorAccent"
-                        android:textSize="18sp"
-                        android:textStyle="bold" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="350dp"
-                    android:layout_height="400dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:background="@drawable/layout_round_shape_cream_angle60">
-
-                    <ImageView
-                        android:id="@+id/world_vision_report_image"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginTop="8dp"
-                        app:srcCompat="@drawable/ic_world_vision_report_who2" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="350dp"
-                    android:layout_height="400dp"
-                    android:layout_marginStart="4dp"
-                    android:layout_marginEnd="4dp"
-                    android:orientation="vertical"
-                    android:gravity="center"
-                    android:background="@drawable/layout_round_shape_cream_angle60">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
                     <LinearLayout
-                        android:layout_width="250dp"
-                        android:layout_height="250dp"
-                        android:background="@drawable/layout_round_shape_accent">
+                        android:layout_width="350dp"
+                        android:layout_height="400dp"
+                        android:background="@drawable/layout_round_shape_yellow_angle60"
+                        android:gravity="center"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:orientation="vertical">
 
-                        <LinearLayout
+                        <TextView
+                            android:id="@+id/covid_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="@dimen/fab_margin"
+                            android:layout_marginBottom="8dp"
+                            android:text="Covid-19 quarantine"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <ImageView
+                            android:id="@+id/covid_icon"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:layout_margin="@dimen/fab_margin"
+                            app:srcCompat="@drawable/ic_covid"
+                            tools:layout_editor_absoluteX="59dp"
+                            tools:layout_editor_absoluteY="522dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:text="Excessively using smart devices can result in blindness."
+                            android:textAlignment="center"
+                            android:textColor="@color/colorAccent" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginEnd="8dp"
+                            android:text="This app is a solution for you"
+                            android:textAlignment="center"
+                            android:textColor="@color/colorAccent"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="350dp"
+                        android:layout_height="400dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/layout_round_shape_yellow_angle60">
+
+                        <ImageView
+                            android:id="@+id/world_vision_report_image"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:layout_margin="8dp"
-                            android:background="@drawable/layout_round_shape_cream"
-                            android:orientation="vertical"
-                            android:gravity="center">
+                            android:layout_marginTop="8dp"
+                            app:srcCompat="@drawable/ic_world_vision_report_who2" />
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAlignment="center"
-                                android:layout_margin="@dimen/fab_margin"
-                                android:textColor="@color/colorAccent"
-                                android:text="© 2020 - All right reserved."/>
+                    </LinearLayout>
 
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:textAlignment="center"
-                                android:background="@drawable/layout_round_shape_accent"
-                                android:padding="@dimen/fab_margin"
-                                android:layout_margin="@dimen/fab_margin"
-                                android:textColor="@color/eyeware_white"
-                                android:textStyle="bold"
-                                android:text="@string/version_text" />
+                    <LinearLayout
+                        android:layout_width="350dp"
+                        android:layout_height="400dp"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginEnd="4dp"
+                        android:orientation="vertical"
+                        android:gravity="center"
+                        android:background="@drawable/layout_round_shape_yellow_angle60">
+
+                        <LinearLayout
+                            android:layout_width="250dp"
+                            android:layout_height="250dp"
+                            android:background="@drawable/layout_round_shape_accent">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="8dp"
+                                android:background="@drawable/layout_round_shape_yellow"
+                                android:orientation="vertical"
+                                android:gravity="center">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAlignment="center"
+                                    android:layout_margin="@dimen/fab_margin"
+                                    android:textColor="@color/colorAccent"
+                                    android:text="© 2020 - All right reserved."/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:textAlignment="center"
+                                    android:background="@drawable/layout_round_shape_accent"
+                                    android:padding="@dimen/fab_margin"
+                                    android:layout_margin="@dimen/fab_margin"
+                                    android:textColor="@color/eyeware_white"
+                                    android:textStyle="bold"
+                                    android:text="@string/version_text" />
+
+                            </LinearLayout>
+
 
                         </LinearLayout>
 
 
                     </LinearLayout>
 
-
                 </LinearLayout>
 
-            </LinearLayout>
+
+            </HorizontalScrollView>
+
+        </LinearLayout>
+
+    </android.support.constraint.ConstraintLayout>
 
 
-        </HorizontalScrollView>
-
-    </LinearLayout>
-
-</android.support.constraint.ConstraintLayout>
+</ScrollView>

@@ -203,5 +203,9 @@
     <string name="content_description_reset_icon">reset_icon</string>
     <string name="reset_to_default_title">Reset to default</string>
 
+    <string name="title_activity_wait">WaitActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+
 
 </resources>

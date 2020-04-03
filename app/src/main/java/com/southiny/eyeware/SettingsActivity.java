@@ -112,7 +112,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void dialogResetDefaultConfirmation() {
         Logger.log(TAG, "dialogResetDefaultConfirmation()");
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle(getApplicationContext().getString(R.string.reset_to_default_title))
                 .setMessage("This action cannot be undone.")
                 .setPositiveButton("Reset", new DialogInterface.OnClickListener() {
@@ -123,7 +123,7 @@ public class SettingsActivity extends AppCompatActivity {
                         Toast.makeText(SettingsActivity.this, "Reset to default complete", Toast.LENGTH_SHORT).show();
                     }
                 })
-                .setIcon(R.drawable.ic_report_black_24dp)
+                .setIcon(R.drawable.ic_report_yellow_24dp)
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
 
@@ -175,7 +175,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void dialogComputerModeInfo() {
         Logger.log(TAG, "dialogComputerModeInfo()");
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("Computer Mode")
                 .setMessage("When the break time arrive, we will notify you even if you are not looking at the phone screen right now (the phone screen is off). " +
                         "This is useful when you want our app to discipline you while using other device such as computer, gaming console,...etc. " +
@@ -211,7 +211,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void dialogAskIfWishToAlsoActivateVibrate() {
         Logger.log(TAG, "dialogAskIfWishToAlsoActivateVibrate()");
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("Do you wish to turn on vibration ?")
                 .setMessage("Computer mode will not work without vibration on.")
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -231,7 +231,7 @@ public class SettingsActivity extends AppCompatActivity {
                         computerModeSwitch.setChecked(false);
                     }
                 })
-                .setIcon(android.R.drawable.ic_dialog_info)
+                .setIcon(R.drawable.ic_face_accent_24dp)
                 .show();
     }
 
@@ -240,11 +240,10 @@ public class SettingsActivity extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View layout = inflater.inflate(R.layout.component_about_app, null);
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("About App")
                 .setView(layout)
                 .setPositiveButton("OK", null)
-                .setIcon(R.drawable.ic_info_black_24dp)
                 .show();
     }
 

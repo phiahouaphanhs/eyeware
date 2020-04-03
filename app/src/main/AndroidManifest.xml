@@ -23,16 +23,21 @@
         android:roundIcon="@mipmap/ic_laucher_miracle_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".TestActivity"></activity>
+        <activity
+            android:name=".WaitActivity"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:label="@string/title_activity_wait"
+            android:theme="@style/FullscreenTheme"></activity>
+        <activity android:name=".TestActivity" />
         <activity android:name=".LockPhoneActivity" />
         <activity android:name=".SettingsActivity" />
         <activity
             android:name=".NotificationScreen"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:noHistory="true"
             android:autoRemoveFromRecents="true"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"
             android:label="@string/title_activity_notification_screen"
+            android:noHistory="true"
             android:theme="@style/FullscreenTheme" />
 
         <service
@@ -83,15 +88,16 @@
 
         <activity
             android:name=".Main2Activity"
-            android:label="@string/title_activity_main2"
-            android:noHistory="true"
             android:autoRemoveFromRecents="true"
             android:excludeFromRecents="true"
+            android:label="@string/title_activity_main2"
+            android:noHistory="true"
             android:taskAffinity=".OnInviteActivity"
             android:theme="@style/AppTheme" />
         <activity
             android:name=".ProtectionLevelEditActivity"
-            android:label="@string/title_activity_settings" />
+            android:label="@string/title_activity_settings"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

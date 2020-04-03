@@ -1,0 +1,8 @@
+color=#FF0309 dim=0.47 alpha=0.14
+color=#555500 dim=0.47 alpha=0.14
+color=#B4A2FF dim=0.47 alpha=0.14
+color=#FFB102 dim=0.47 alpha=0.14
+color=#00AA00 dim=0.47 alpha=0.14
+color=#2D07FF dim=0.47 alpha=0.14
+color=#FFE401 dim=0.28 alpha=0.14
+color=#04FFD0 dim=0.47 alpha=0.04

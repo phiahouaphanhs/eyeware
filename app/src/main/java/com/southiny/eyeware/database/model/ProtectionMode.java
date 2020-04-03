@@ -224,7 +224,12 @@ public class ProtectionMode extends Model {
         else if (protectionLevelOrdinal == ProtectionLevel.GAMER.ordinal()) this.setGamer();
     }
 
+    public Long getId() {
+        return id;
+    }
+
     /******/
+
 
 
     public String getName() {
@@ -299,19 +304,61 @@ public class ProtectionMode extends Model {
         this.breakingModeOrdinal = breakingMode.ordinal();
     }
 
-    public ArrayList<ScreenFilter> getActivatedScreenFilters() {
+    public ArrayList<ScreenFilter> getActivatedScreenFiltersByOrder() {
         ArrayList<ScreenFilter> screenFilters = new ArrayList<>();
 
         if (screenFilter0.isActivated()) screenFilters.add(screenFilter0);
-        if (screenFilter1.isActivated()) screenFilters.add(screenFilter1);
-        if (screenFilter2.isActivated()) screenFilters.add(screenFilter2);
-        if (screenFilter3.isActivated()) screenFilters.add(screenFilter3);
-        if (screenFilter4.isActivated()) screenFilters.add(screenFilter4);
-        if (screenFilter5.isActivated()) screenFilters.add(screenFilter5);
-        if (screenFilter6.isActivated()) screenFilters.add(screenFilter6);
-        if (screenFilter7.isActivated()) screenFilters.add(screenFilter7);
+
+        if (screenFilter1.isActivated()) {
+            if (screenFilter1.getOrder() > screenFilter0.getOrder()) {
+                screenFilters.add(screenFilter1);
+            } else {
+                screenFilters.add(0, screenFilter1);
+            }
+        }
+
+        if (screenFilter2.isActivated()) {
+            int i = positionToAdd(screenFilter2, screenFilters);
+            screenFilters.add(i, screenFilter2);
+        }
+
+        if (screenFilter3.isActivated()) {
+            int i = positionToAdd(screenFilter3, screenFilters);
+            screenFilters.add(i, screenFilter3);
+        }
+
+        if (screenFilter4.isActivated()) {
+            int i = positionToAdd(screenFilter4, screenFilters);
+            screenFilters.add(i, screenFilter4);
+        }
+
+        if (screenFilter5.isActivated()) screenFilters.add(screenFilter5);{
+            int i = positionToAdd(screenFilter5, screenFilters);
+            screenFilters.add(i, screenFilter5);
+        }
+
+        if (screenFilter6.isActivated()) {
+            int i = positionToAdd(screenFilter6, screenFilters);
+            screenFilters.add(i, screenFilter6);
+        }
+
+        if (screenFilter7.isActivated()) {
+            int i = positionToAdd(screenFilter7, screenFilters);
+            screenFilters.add(i, screenFilter7);
+        }
 
         return screenFilters;
+    }
+
+    private int positionToAdd(ScreenFilter screenFilter, ArrayList<ScreenFilter> screenFilters) {
+        boolean add = false;
+        int i;
+        for (i = 0; !add && i < screenFilters.size(); i++) {
+            if (screenFilter.getOrder() < screenFilters.get(i).getOrder()) {
+                add = true;
+            }
+        }
+        return i;
     }
 
     public int getNbActivatedScreenFilters() {

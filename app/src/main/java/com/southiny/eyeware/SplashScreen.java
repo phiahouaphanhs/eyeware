@@ -21,6 +21,7 @@ import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.service.ClockService;
 import com.southiny.eyeware.tool.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SplashScreen extends Activity {
@@ -89,6 +90,12 @@ public class SplashScreen extends Activity {
 
                 Run run = SQLRequest.getRun();
                 Intent intent;
+
+                ArrayList<ScreenFilter> scs = run.getCurrentProtectionMode().getActivatedScreenFiltersByOrder();
+                for (int i = 0; i < scs.size(); i++) {
+                    Logger.log(TAG, scs.get(i).print());
+                }
+
 
                 // start main activity
                 if (isServiceRunning(ClockService.class.getName(), SplashScreen.this)) {

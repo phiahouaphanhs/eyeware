@@ -3,7 +3,7 @@
     <corners android:radius="100dp" />
     <gradient
         android:angle="180"
-        android:endColor="@color/eyeware_cream"
-        android:startColor="@color/eyeware_cream"
+        android:endColor="@color/eyeware_yellow"
+        android:startColor="@color/eyeware_yellow"
         android:type="linear"/>
 </shape>

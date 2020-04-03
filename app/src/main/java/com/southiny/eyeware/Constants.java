@@ -23,21 +23,21 @@ public final class Constants {
 
     /**************/
 
-    public static final int DEFAULT_DIM_MAX_PERCENT = 70; // %
-    public static final int DEFAULT_DIM_MIN_PERCENT = 0; // %
+    public static final int DEFAULT_DIM_MAX_PERCENT = 100; // %
+    public static final int DEFAULT_DIM_MIN_PERCENT = 10; // %
 
-    public static final int DEFAULT_ALPHA_MAX_PERCENT = 100; // %
-    public static final int DEFAULT_ALPHA_MIN_PERCENT = 0; // %
+    public static final int DEFAULT_ALPHA_MAX_PERCENT = 95; // %
+    public static final int DEFAULT_ALPHA_MIN_PERCENT = 10; // %
 
     public static final ScreenFilter[] DEFAULT_SCREEN_FILTERS = {
-            new ScreenFilter("#000000", 0 /100F, 40 /100F),
-            new ScreenFilter( "#8FAF8903", 0 /100F, 40 /100F),
-            new ScreenFilter( "#92035E01", 0 /100F, 40 /100F),
-            new ScreenFilter( "#8F4D0126", 0 /100F, 40 /100F),
-            new ScreenFilter( "#95682D00", 0 /100F, 40 /100F),
-            new ScreenFilter( "#941F012C", 0 /100F, 40 /100F),
-            new ScreenFilter( "#925F0002", 0 /100F, 40 /100F),
-            new ScreenFilter( "#9C040E42", 0 /100F, 40 /100F),
+            new ScreenFilter( "#555500", 0.47F,  0.14F, 1),
+            new ScreenFilter("#FF0309", 0.47F,  0.14F, 2),
+            new ScreenFilter( "#FFB102", 0.47F,  0.14F, 3),
+            new ScreenFilter( "#00AA00", 0.47F,  0.14F, 4),
+            new ScreenFilter( "#04FFD0", 0.47F,  0.04F, 5),
+            new ScreenFilter( "#FFE401", 0.28F,  0.14F, 6),
+            new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, 7),
+            new ScreenFilter( "#06F0FF", 0.36F,  0.15F, 8),
     };
 
     /*****************/

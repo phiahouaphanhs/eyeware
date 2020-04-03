@@ -77,7 +77,7 @@ public class Main2Activity extends AppCompatActivity {
             sec = (int) (time_sec % 60);
             blMinuteTextView.setText(zbs(min));
             blSecondTextView.setText(zbs(sec));
-            updateCurrentFilterColorIcon();
+            updateProgressBarAndSelectedFilter();
 
             time_sec = mCService.getCptLockScreenSec();
             min = (int) (time_sec / 60);
@@ -132,6 +132,9 @@ public class Main2Activity extends AppCompatActivity {
 
                 Toast.makeText(Main2Activity.this, getString(R.string.home_timer_stop_message), Toast.LENGTH_SHORT).show();
 
+                intent = new Intent(Main2Activity.this, MainActivity.class);
+                startActivity(intent);
+
                 Logger.log(TAG, "finished.");
                 finish();
             }
@@ -185,6 +188,9 @@ public class Main2Activity extends AppCompatActivity {
                 Logger.log(TAG, "alpha value is " + seekBar.getProgress());
                 float alpha = (float) (Constants.DEFAULT_ALPHA_MAX_PERCENT - seekBar.getProgress()) / 100F;
                 mBLService.updateCurrentFilterAlpha(alpha);
+
+                filterCards.get(currentSelectedFilterIndex).setAlpha(alpha);
+
                 Toast.makeText(Main2Activity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
             }
         });
@@ -424,18 +430,29 @@ public class Main2Activity extends AppCompatActivity {
         }
     }
 
-    private void updateCurrentFilterColorIcon() {
-        float dim = mBLService.getCurrentFilterDim();
-        float alpha = mBLService.getCurrentFilterAlpha();
+    private void updateProgressBarAndSelectedFilter() {
+        if (mBLBound) {
+            float dim = mBLService.getCurrentFilterDim();
+            float alpha = mBLService.getCurrentFilterAlpha();
 
-        Logger.log(TAG, "updateCurrentFilterColorIcon(" + dim + "," + alpha + ")");
-        dimBar.setProgress(Constants.DEFAULT_DIM_MAX_PERCENT - (int)(dim * 100));
-        alphaBar.setProgress(Constants.DEFAULT_ALPHA_MAX_PERCENT - (int)(alpha * 100));
+            dimBar.setProgress(Constants.DEFAULT_DIM_MAX_PERCENT - (int)(dim * 100));
+            alphaBar.setProgress(Constants.DEFAULT_ALPHA_MAX_PERCENT - (int)(alpha * 100));
+
+            int index = mBLService.getCurrentFilterIndex();
+            if (index != currentSelectedFilterIndex) {
+                filterCards.get(currentSelectedFilterIndex).setUnSelected();
+                currentSelectedFilterIndex = index;
+                filterCards.get(currentSelectedFilterIndex).setSelected();
+            }
+        } else {
+            Logger.err(TAG, "updateProgressBarAndSelectedFilter() mBLService not bound");
+        }
+
     }
 
     private void dialogBreakingModeInfo(String title, String message, int dw) {
         Logger.log(TAG, "dialogBreakingModeInfo()");
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Alright", null)
@@ -448,21 +465,21 @@ public class Main2Activity extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View layout = inflater.inflate(R.layout.component_about_app, null);
 
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("About App")
                 .setView(layout)
                 .setPositiveButton("OK", null)
-                .setIcon(R.drawable.ic_info_black_24dp)
+                .setIcon(R.drawable.ic_info_accent_24dp)
                 .show();
     }
 
     private void dialogPermissionChangedInfo() {
         Logger.log(TAG, "dialogPermissionChangedInfo()");
-        new AlertDialog.Builder(this)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                 .setTitle("App Permissions Have Been Changed")
                 .setMessage("Some functions might not work properly. Restart the app is recommended.")
                 .setPositiveButton("Understood", null)
-                .setIcon(R.drawable.ic_report_black_24dp)
+                .setIcon(R.drawable.ic_report_yellow_24dp)
                 .show();
     }
 
@@ -475,10 +492,11 @@ public class Main2Activity extends AppCompatActivity {
                 ViewGroup.LayoutParams.WRAP_CONTENT));
         filterGlobeLayout.setGravity(Gravity.CENTER);
 
-        ArrayList<ScreenFilter> activatedSCs = pm.getActivatedScreenFilters();
+        ArrayList<ScreenFilter> activatedSCs = pm.getActivatedScreenFiltersByOrder();
 
         for (int i = 0; i < activatedSCs.size(); i++) {
-            ColorFilterLinearLayout filterCard = new ColorFilterLinearLayout(this, i, activatedSCs.get(i).getColorCode());
+            ColorFilterLinearLayout filterCard =
+                    new ColorFilterLinearLayout(this, i, activatedSCs.get(i).getColorCode(), activatedSCs.get(i).getScreenAlpha());
             filterGlobeLayout.addView(filterCard);
             filterCards.add(filterCard);
         }

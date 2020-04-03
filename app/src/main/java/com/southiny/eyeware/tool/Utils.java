@@ -9,4 +9,15 @@ public final class Utils {
             return String.valueOf(value);
         }
     }
+
+    public static String getTransparencyCodeByAlpha(float alpha) {
+        double a1 = Math.round(alpha * 100) / 100.0d;
+        int a2 = (int) Math.round(a1 * 255);
+        String hex = Integer.toHexString(a2).toUpperCase();
+        if (hex.length() == 1) {
+            hex = "0" + hex;
+        }
+
+        return hex;
+    }
 }

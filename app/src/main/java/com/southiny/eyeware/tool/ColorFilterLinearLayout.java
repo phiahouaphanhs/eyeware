@@ -23,6 +23,7 @@ public class ColorFilterLinearLayout extends LinearLayout {
 
     private int id;
     private String colorCode = "#000000";
+    private float alpha;
     private ImageView image;
 
 
@@ -31,10 +32,11 @@ public class ColorFilterLinearLayout extends LinearLayout {
         super(context);
     }
 
-    public ColorFilterLinearLayout(Context context, int id, String colorCode) {
+    public ColorFilterLinearLayout(Context context, int id, String colorCode, float alpha) {
         super(context);
         this.id = id;
         this.colorCode = colorCode;
+        this.alpha = alpha;
         create();
 
     }
@@ -50,7 +52,8 @@ public class ColorFilterLinearLayout extends LinearLayout {
         this.image = new ImageView(this.getContext());
         int randomID = ThreadLocalRandom.current().nextInt(min, max + 1);
         this.image.setId(randomID);
-        this.image.setBackgroundColor(Color.parseColor(this.colorCode));
+        String colorCode = '#' + Utils.getTransparencyCodeByAlpha(this.alpha) + this.colorCode.substring(1);
+        this.image.setBackgroundColor(Color.parseColor(colorCode));
         this.image.setPadding(10,10,10,10);
         this.image.setLayoutParams(new ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -75,5 +78,11 @@ public class ColorFilterLinearLayout extends LinearLayout {
         ViewGroup.LayoutParams params = this.getLayoutParams();
         params.height = 200;
         this.setLayoutParams(params);
+    }
+
+    public void setAlpha(float alpha) {
+        this.alpha = alpha;
+        String colorCode = '#' + Utils.getTransparencyCodeByAlpha(alpha) + this.colorCode.substring(1);
+        this.image.setBackgroundColor(Color.parseColor(colorCode));
     }
 }

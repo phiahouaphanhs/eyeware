@@ -16,6 +16,7 @@ public class ScreenFilter extends Model {
     public static final String COLUMN_DIM_AMOUNT = "dim_amount";
     public static final String COLUMN_SCREEN_ALPHA = "screen_alpha";
     public static final String COLUMN_IS_ACTIVATED = "is_activated";
+    public static final String COLUMN_ORDER = "filter_order";
 
     @PrimaryKey
     private Long id;
@@ -32,6 +33,9 @@ public class ScreenFilter extends Model {
     @Column(name = COLUMN_IS_ACTIVATED)
     private boolean isActivated;
 
+    @Column(name = COLUMN_ORDER)
+    private int order;
+
 
     // should never be called
     public ScreenFilter() {
@@ -40,13 +44,15 @@ public class ScreenFilter extends Model {
         this.dimAmount = sc.dimAmount;
         this.screenAlpha = sc.screenAlpha;
         isActivated = false;
+        order = 0;
     }
 
-    public ScreenFilter(String code, float dimAmount, float screenAlpha) {
+    public ScreenFilter(String code, float dimAmount, float screenAlpha, int order) {
         this.colorCode = code;
         this.dimAmount = dimAmount;
         this.screenAlpha = screenAlpha;
         isActivated = false;
+        this.order = order;
     }
 
     public String getColorCode() {
@@ -81,9 +87,18 @@ public class ScreenFilter extends Model {
         isActivated = activated;
     }
 
-    public static void initsave() {
-        for (ScreenFilter sc : Constants.DEFAULT_SCREEN_FILTERS) {
-            sc.save();
-        }
+
+    public String print() {
+        return "color=" + this.colorCode
+                + " dim=" + this.dimAmount
+                + " alpha=" + this.screenAlpha;
+    }
+
+    public int getOrder() {
+        return order;
+    }
+
+    public void setOrder(int order) {
+        this.order = order;
     }
 }
