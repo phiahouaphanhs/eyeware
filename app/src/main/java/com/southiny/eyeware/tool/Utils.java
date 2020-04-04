@@ -28,9 +28,9 @@ public final class Utils {
         return hex;
     }
 
-    public static void clockwise(View view, Context context){
+    public static void clockwiseLeftRightFade(View view, Context context){
         Animation animation = AnimationUtils.loadAnimation(context,
-                R.anim.clockwise_round_fade);
+                R.anim.clockwise_left_right_fade);
         view.startAnimation(animation);
     }
 
@@ -41,25 +41,25 @@ public final class Utils {
     }
 
 
-    public static void clockwiseFast(View view, Context context){
+    public static void clockwiseRoundFast(View view, Context context){
         Animation animation = AnimationUtils.loadAnimation(context,
-                R.anim.clockwise_fast);
+                R.anim.clockwise_round_fast);
         view.startAnimation(animation);
     }
 
     public static void zoom(View view, Context context){
         Animation animation = AnimationUtils.loadAnimation(context,
-                R.anim.my_animation);
+                R.anim.zoom);
         view.startAnimation(animation);
     }
 
-    public static void fade(View view, Context context) {
+    public static void fadeClick(View view, Context context) {
         Animation animation = AnimationUtils.loadAnimation(context,
                 R.anim.fade_click);
         view.startAnimation(animation);
     }
 
-    public static void blinkblink(View view, Context context) {
+    public static void blinkBlink(View view, Context context) {
         Animation animation = AnimationUtils.loadAnimation(context,
                 R.anim.blink_blink);
         view.startAnimation(animation);
@@ -83,9 +83,21 @@ public final class Utils {
         view.startAnimation(animation);
     }
 
-    public static void moveTopDown(View view, Context context) {
+    public static void moveRightLeft(View view, Context context) {
         Animation animation = AnimationUtils.loadAnimation(context,
-                R.anim.move_top_down);
+                R.anim.move_right_left);
+        view.startAnimation(animation);
+    }
+
+    public static void moveUp(View view, Context context) {
+        Animation animation = AnimationUtils.loadAnimation(context,
+                R.anim.move_up);
+        view.startAnimation(animation);
+    }
+
+    public static void moveDown(View view, Context context) {
+        Animation animation = AnimationUtils.loadAnimation(context,
+                R.anim.move_down);
         view.startAnimation(animation);
     }
 

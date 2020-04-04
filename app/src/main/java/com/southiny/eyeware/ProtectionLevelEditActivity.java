@@ -158,7 +158,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         filterNumberTextViews[7] = findViewById(R.id.textView8);
 
         ConstraintLayout mainLayout = findViewById(R.id.main_layout);
-        Utils.moveTopDown(mainLayout, getApplicationContext());
+        Utils.moveUp(mainLayout, getApplicationContext());
 
 
         setInfoOnScreen();
@@ -214,7 +214,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         });
 
         ImageView resetIcon = findViewById(R.id.reset_icon);
-        Utils.clockwise(resetIcon, getApplicationContext());
+        Utils.clockwiseLeftRightFade(resetIcon, getApplicationContext());
         resetIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -336,7 +336,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
     /****************************/
 
     private void clickAnimate(View view) {
-        Utils.fade(view, getApplicationContext());
+        Utils.fadeClick(view, getApplicationContext());
     }
 
     private void playClickSound() {
@@ -565,6 +565,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                playClickSound();
                 temp_selectedDim = (float) (Constants.DEFAULT_DIM_MAX_PERCENT - seekBar.getProgress()) / 100F;
                 Toast.makeText(ProtectionLevelEditActivity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
                 if (temp_overlayIt) {
@@ -588,6 +589,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                playClickSound();
                 temp_selectedAlpha = (float) (Constants.DEFAULT_ALPHA_MAX_PERCENT - seekBar.getProgress()) / 100F;
                 Toast.makeText(ProtectionLevelEditActivity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
                 if (temp_overlayIt) {
@@ -847,6 +849,13 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
         public RadioButtonListener(RadioButton radioButton) {
             this.radioButton = radioButton;
+
+            radioButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    playClickSound();
+                }
+            });
         }
 
         @Override

@@ -95,12 +95,13 @@ public class BlueLightFilterService extends Service {
 
         Notification notification =
                 new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
-                        .setContentTitle("Blue light filter on screen")
+                        .setContentTitle("Tap to manage screen filter")
                         // .setContentText(getText(R.string.notification_message))
                         .setSmallIcon(R.drawable.ic_miracle_head2)
                         .setContentIntent(pendingIntent)
                         .setShowWhen(false) // to hide timestamp
                         .setPriority(NotificationCompat.PRIORITY_MIN)
+                        .setColor(getColor(R.color.colorAccent))
                         .build();
 
         startForeground(2, notification);

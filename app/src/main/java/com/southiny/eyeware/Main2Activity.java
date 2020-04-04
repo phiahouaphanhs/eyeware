@@ -60,7 +60,7 @@ public class Main2Activity extends AppCompatActivity {
             blMinuteTextView, blSecondTextView,
             lockScreenMinuteTextView, lockScreenSecondTextView;
 
-    private ImageView breakingModeIcon, vibrationIcon;
+    private ImageView breakingModeIcon, vibrationIcon, miracleIcon;
 
     private ArrayList<ColorFilterLinearLayout> filterCards = new ArrayList<>();
     private int currentSelectedFilterIndex;
@@ -115,7 +115,7 @@ public class Main2Activity extends AppCompatActivity {
         lockScreenSecondTextView = findViewById(R.id.lockscreen_second_count);
 
         LinearLayout mainLayout = findViewById(R.id.main_layout);
-        Utils.moveTopDown(mainLayout, getApplicationContext());
+        Utils.moveUp(mainLayout, getApplicationContext());
 
 
         /***************************/
@@ -137,7 +137,13 @@ public class Main2Activity extends AppCompatActivity {
 
         Logger.log(TAG, "set on click to stop button");
         final Button stopButton = findViewById(R.id.stop_button);
-        Utils.blinkblink(stopButton, getApplicationContext());
+        Utils.blinkBlink(stopButton, getApplicationContext());
+        (new Handler()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Utils.blinkButterfly(stopButton, getApplicationContext());
+            }
+        }, 3000);
         stopButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -159,7 +165,7 @@ public class Main2Activity extends AppCompatActivity {
         });
 
         vibrationIcon = findViewById(R.id.vibration_icon);
-        Utils.blinkblink(vibrationIcon, getApplicationContext());
+        Utils.blinkBlink(vibrationIcon, getApplicationContext());
         if (!run.isVibrationActivated()) {
             vibrationIcon.setImageResource(R.drawable.ic_vibration_grey_24dp);
         }
@@ -183,7 +189,7 @@ public class Main2Activity extends AppCompatActivity {
         });
 
         breakingModeIcon = findViewById(R.id.breaking_mode_icon_started);
-        Utils.blinkblink(breakingModeIcon, getApplicationContext());
+        Utils.blinkBlink(breakingModeIcon, getApplicationContext());
         int dw = R.drawable.ic_close_white_24dp;
         BreakingMode mode = pm.getBreakingMode();
         switch (mode) {
@@ -234,7 +240,7 @@ public class Main2Activity extends AppCompatActivity {
         }
         breakingModeIcon.setImageResource(dw);
 
-        final ImageView miracleIcon = findViewById(R.id.miracle_icon_in_clock);
+        miracleIcon = findViewById(R.id.miracle_icon_in_clock);
         Utils.move(miracleIcon, getApplicationContext());
         miracleIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -437,7 +443,7 @@ public class Main2Activity extends AppCompatActivity {
     /*********** PRIVATE METHODS ********************/
 
     private void clickAnimate(View view) {
-        Utils.fade(view, getApplicationContext());
+        Utils.fadeClick(view, getApplicationContext());
     }
 
     private void playClickSound() {
@@ -564,6 +570,13 @@ public class Main2Activity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         playClickSound();
+
+                        (new Handler()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                Utils.move(miracleIcon, getApplicationContext());
+                            }
+                        }, 2000);
                     }
                 })
                 .setIcon(R.drawable.ic_info_accent_24dp)
@@ -602,8 +615,8 @@ public class Main2Activity extends AppCompatActivity {
         public void onClick(View view) {
             clickAnimate(view);
             playClickSound();
-            Utils.blinkblink(breakingModeIcon, getApplicationContext());
-            Utils.blinkblink(vibrationIcon, getApplicationContext());
+            Utils.blinkBlink(breakingModeIcon, getApplicationContext());
+            Utils.blinkBlink(vibrationIcon, getApplicationContext());
 
             if (pm.isBluelightFiltering()) {
                 filterCards.get(currentSelectedFilterIndex).setUnSelected();

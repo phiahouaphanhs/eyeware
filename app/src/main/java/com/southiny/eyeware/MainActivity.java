@@ -55,14 +55,16 @@ public class MainActivity extends AppCompatActivity {
     ImageView standardCheckIcon, highCheckIcon, lowCheckIcon, gamerCheckIcon;
     ImageView overlayPermissionIcon, adminPermissionIcon;
     Switch passwordActivateSwitch, lockScreenActivateSwitch, unlockScreenActivateSwitch;
-    ConstraintLayout lockScreenLayout;
-    LinearLayout startStopTimerLayout;
+    ConstraintLayout lockScreenLayout, breakForFoot;
+    LinearLayout startStopTimerLayout, breakingBody, filterArm, lockArm;
+    ImageView breakingModeIconFoot;
 
     public static final int RESULT_ENABLE_ADMIN_PERMISSION = 11;
     public static final int RESULT_ENABLE_OVERLAY_PERMISSION = 12;
     public static final int RESULT_ENABLE_ADMIN_PERMISSION_FOR_START = 13;
     public static final int RESULT_ENABLE_OVERLAY_PERMISSION_FOR_START = 14;
     private boolean lockScreenOnAfterAdminPermissionGranted = false;
+    private int nbClick; // for animation
 
     private DevicePolicyManager devicePolicyManager;
     private ComponentName compName;
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         Logger.log(TAG, "set content view to overlay_view activity_main");
         setContentView(R.layout.activity_main);
+
     }
 
     @Override
@@ -125,8 +128,52 @@ public class MainActivity extends AppCompatActivity {
         overlayPermissionIcon = findViewById(R.id.overlay_permission_on_off_button);
         adminPermissionIcon = findViewById(R.id.admin_permission_on_off_button);
 
+        breakingBody = findViewById(R.id.linearLayout0);
+        lockArm = findViewById(R.id.linearLayout3);
+        filterArm = findViewById(R.id.linearLayout4);
+        breakForFoot = findViewById(R.id.constraintLayout6);
+        breakingModeIconFoot = findViewById(R.id.breaking_mode_icon);
+
+        final LinearLayout parentalControlsIconLayout = findViewById(R.id.linearLayout_parental_control_icons);
+
+        /* ********************* animation ***********/
+
+        Utils.blinkButterfly(parentalControlsIconLayout, getApplicationContext());
+        Utils.blinkButterfly(lockArm, getApplicationContext());
+        Utils.blinkButterfly(filterArm, getApplicationContext());
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Utils.blinkButterfly(breakingBody, getApplicationContext());
+            }
+        }, 200);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Utils.blinkButterfly(breakingModeIconFoot, getApplicationContext());
+            }
+        }, 400);
+
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Utils.blinkButterfly(breakForFoot, getApplicationContext());
+            }
+        }, 500);
+
+        Utils.clockwiseLeftRightFade(startStopTimerLayout, getApplicationContext());
+
         LinearLayout mainLayout = findViewById(R.id.main_layout);
-        Utils.moveTopDown(mainLayout, getApplicationContext());
+        Utils.moveUp(mainLayout, getApplicationContext());
+
+        breakingBody.setOnClickListener(new RobotOnClickListener());
+        filterArm.setOnClickListener(new RobotOnClickListener());
+        lockArm.setOnClickListener(new RobotOnClickListener());
+        breakForFoot.setOnClickListener(new Robot2OnClickListener(false));
+        breakingModeIconFoot.setOnClickListener(new Robot2OnClickListener(true));
+
 
         /* *** set info on screen ***/
 
@@ -243,14 +290,14 @@ public class MainActivity extends AppCompatActivity {
         lowEditIcon.setOnClickListener(new PLEditIconClickListener(ProtectionLevel.LOW));
         gamerEditIcon.setOnClickListener(new PLEditIconClickListener(ProtectionLevel.GAMER));
 
-        Utils.blinkblink(standardButton, getApplicationContext());
-        Utils.blinkblink(highButton, getApplicationContext());
-        Utils.blinkblink(lowButton, getApplicationContext());
-        Utils.blinkblink(gamerButton, getApplicationContext());
-        Utils.blinkblink(standardEditIcon, getApplicationContext());
-        Utils.blinkblink(highEditIcon, getApplicationContext());
-        Utils.blinkblink(lowEditIcon, getApplicationContext());
-        Utils.blinkblink(gamerEditIcon, getApplicationContext());
+        Utils.blinkBlink(standardButton, getApplicationContext());
+        Utils.blinkBlink(highButton, getApplicationContext());
+        Utils.blinkBlink(lowButton, getApplicationContext());
+        Utils.blinkBlink(gamerButton, getApplicationContext());
+        Utils.blinkBlink(standardEditIcon, getApplicationContext());
+        Utils.blinkBlink(highEditIcon, getApplicationContext());
+        Utils.blinkBlink(lowEditIcon, getApplicationContext());
+        Utils.blinkBlink(gamerEditIcon, getApplicationContext());
 
         // set onchange to password switch
         passwordActivateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -373,41 +420,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
-        /* ********************* animation ***********/
-
-        final LinearLayout breaking = findViewById(R.id.linearLayout0);
-        final LinearLayout lock = findViewById(R.id.linearLayout3);
-        final LinearLayout filter = findViewById(R.id.linearLayout4);
-        final ConstraintLayout breakFor = findViewById(R.id.constraintLayout6);
-        final ImageView breakingModeIcon = findViewById(R.id.breaking_mode_icon);
-
-        Utils.blinkButterfly(lock, getApplicationContext());
-        Utils.blinkButterfly(filter, getApplicationContext());
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Utils.blinkButterfly(breaking, getApplicationContext());
-            }
-        }, 200);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Utils.blinkButterfly(breakingModeIcon, getApplicationContext());
-            }
-        }, 400);
-
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                Utils.blinkButterfly(breakFor, getApplicationContext());
-            }
-        }, 500);
-
-        Utils.clockwise(startStopTimerLayout, getApplicationContext());
-
     }
 
     @Override
@@ -451,7 +463,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void clickAnimate(View view) {
-        Utils.fade(view, getApplicationContext());
+        Utils.fadeClick(view, getApplicationContext());
     }
 
     private void initInfoOnScreen() {
@@ -509,8 +521,8 @@ public class MainActivity extends AppCompatActivity {
                 dw = R.drawable.ic_bm_light_white_24dp;
                 break;
         }
-        ImageView breakingModeIcon = findViewById(R.id.breaking_mode_icon);
-        breakingModeIcon.setImageResource(dw);
+
+        breakingModeIconFoot.setImageResource(dw);
 
         // set bluelight time
         sec = pm.getBlueLightFilterChangeEvery_sec();
@@ -531,11 +543,11 @@ public class MainActivity extends AppCompatActivity {
         ConstraintLayout breakingForLayout = findViewById(R.id.constraintLayout6);
         if (!pm.isBreakingActivated()) {
             breakingLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
-            breakingModeIcon.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+            breakingModeIconFoot.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
             breakingForLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
         } else {
             breakingLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
-            breakingModeIcon.setBackground(getDrawable(R.drawable.layout_round_shape_accent));
+            breakingModeIconFoot.setBackground(getDrawable(R.drawable.layout_round_shape_accent));
             breakingForLayout.setBackground(getDrawable(R.drawable.layout_round_shape_accent));
         }
         ConstraintLayout blLayout = findViewById(R.id.constraintLayout_bl_filter);
@@ -1036,6 +1048,7 @@ public class MainActivity extends AppCompatActivity {
 
     private class PLButtonClickListener implements View.OnClickListener {
 
+        private int clickAt;
         private ProtectionMode protectionMode;
 
         public PLButtonClickListener(ProtectionMode protectionMode) {
@@ -1044,16 +1057,21 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
+            nbClick++;
+            clickAt = nbClick;
+
             playClickSound();
             clickAnimate(view);
-            Utils.clockwiseFast(startStopTimerLayout, getApplicationContext());
+            Utils.clockwiseRoundFast(startStopTimerLayout, getApplicationContext());
 
             (new Handler()).postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    Utils.clockwise(startStopTimerLayout, getApplicationContext());
+                    if (nbClick == clickAt) {
+                        Utils.clockwiseLeftRightFade(startStopTimerLayout, getApplicationContext());
+                    }
                 }
-            }, 6000);
+            }, 10000);
 
 
             Logger.log(TAG, "onClick() " + protectionMode.getName() + " button");
@@ -1082,6 +1100,87 @@ public class MainActivity extends AppCompatActivity {
             intent.putExtra(ProtectionLevelEditActivity.INTENT_EXTRA_PROTECTION_LEVEL_ORDINAL,
                     protectionLevel.ordinal());
             startActivity(intent);
+        }
+    }
+
+
+
+    private class RobotOnClickListener implements View.OnClickListener {
+
+        private int clickAt;
+
+        @Override
+        public void onClick(final View view) {
+            nbClick++;
+            clickAt = nbClick;
+
+            Utils.blinkBlink(view, MainActivity.this.getApplicationContext());
+            Utils.zoom(startStopTimerLayout, MainActivity.this.getApplicationContext());
+
+            (new Handler()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (clickAt == nbClick) {
+                        Utils.blinkButterfly(view, MainActivity.this.getApplicationContext());
+                        Utils.blinkBlink(startStopTimerLayout, MainActivity.this.getApplicationContext());
+
+                        (new Handler()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (clickAt == nbClick)
+                                    Utils.clockwiseLeftRightFade(startStopTimerLayout, MainActivity.this.getApplicationContext());
+                            }
+                        }, 4000);
+                    }
+                }
+            }, 6000);
+        }
+    }
+
+    private class Robot2OnClickListener implements View.OnClickListener {
+
+        private int clickAt;
+        private boolean leftRight;
+
+        public Robot2OnClickListener(boolean leftRight) {
+            this.leftRight = leftRight;
+        }
+
+        @Override
+        public void onClick(final View view) {
+            nbClick++;
+            clickAt = nbClick;
+
+            Utils.blinkBlink(view, MainActivity.this.getApplicationContext());
+
+            if (leftRight) {
+                Utils.moveLeftRight(startStopTimerLayout, MainActivity.this.getApplicationContext());
+                Utils.moveDown(filterArm, MainActivity.this.getApplicationContext());
+                Utils.moveUp(lockArm, MainActivity.this.getApplicationContext());
+            } else {
+                Utils.moveRightLeft(startStopTimerLayout, MainActivity.this.getApplicationContext());
+                Utils.moveUp(filterArm, MainActivity.this.getApplicationContext());
+                Utils.moveDown(lockArm, MainActivity.this.getApplicationContext());
+            }
+
+            (new Handler()).postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    if (clickAt == nbClick) {
+                        Utils.blinkButterfly(view, MainActivity.this.getApplicationContext());
+                        Utils.blinkButterfly(filterArm, MainActivity.this.getApplicationContext());
+                        Utils.blinkButterfly(lockArm, MainActivity.this.getApplicationContext());                        Utils.blinkBlink(startStopTimerLayout, MainActivity.this.getApplicationContext());
+
+                        (new Handler()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (clickAt == nbClick)
+                                    Utils.clockwiseLeftRightFade(startStopTimerLayout, MainActivity.this.getApplicationContext());
+                            }
+                        }, 4000);
+                    }
+                }
+            }, 6000);
         }
     }
 

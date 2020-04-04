@@ -18,14 +18,14 @@ public class TestActivity extends AppCompatActivity {
     public void clockwise(View view){
         ImageView image = (ImageView)findViewById(R.id.imageView);
         Animation animation = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.my_animation);
+                R.anim.zoom);
         image.startAnimation(animation);
     }
 
     public void zoom(View view){
         ImageView image = (ImageView)findViewById(R.id.imageView);
         Animation animation1 = AnimationUtils.loadAnimation(getApplicationContext(),
-                R.anim.clockwise_round_fade);
+                R.anim.clockwise_left_right_fade);
         image.startAnimation(animation1);
     }
 

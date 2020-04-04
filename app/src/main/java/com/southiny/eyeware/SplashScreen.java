@@ -77,7 +77,7 @@ public class SplashScreen extends Activity {
         this.setContentView(R.layout.activity_splash_screen);
 
         final ProgressBar progressBar = findViewById(R.id.progress_bar_splash);
-        Utils.blinkblink(progressBar, getApplicationContext());
+        Utils.blinkBlink(progressBar, getApplicationContext());
         final Handler handler = new Handler();
         handler.post(new Runnable() {
             private int percent = 0;
@@ -90,7 +90,7 @@ public class SplashScreen extends Activity {
         });
 
         ConstraintLayout mainLayout = findViewById(R.id.main_layout);
-        Utils.fade(mainLayout, getApplicationContext());
+        Utils.fadeClick(mainLayout, getApplicationContext());
 
     }
 

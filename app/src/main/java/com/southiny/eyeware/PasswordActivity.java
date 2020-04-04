@@ -92,7 +92,7 @@ public class PasswordActivity extends AppCompatActivity {
     }
 
     private void clickAnimate(View view) {
-        Utils.fade(view, getApplicationContext());
+        Utils.fadeClick(view, getApplicationContext());
     }
 
     private void playClickSound() {

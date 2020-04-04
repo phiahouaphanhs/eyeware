@@ -200,7 +200,7 @@ public class WaitActivity extends AppCompatActivity {
         }
         mControlsView.setVisibility(View.GONE);
         mVisible = false;
-        ((TextView) waitTextView).setText("Please wait...");
+        ((TextView) waitTextView).setText("Just check things out...");
 
         // Schedule a runnable to remove the status and navigation bar after a delay
         mHideHandler.removeCallbacks(mShowPart2Runnable);

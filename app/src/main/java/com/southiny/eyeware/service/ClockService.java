@@ -11,6 +11,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
@@ -100,12 +101,13 @@ public class ClockService extends Service {
 
         Notification notification =
                 new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
-                        .setContentTitle("Breaking is counting down")
-                        // .setContentText(getText(R.string.notification_message))
+                        .setContentTitle("Using smart devices without fear of losing sight")
+                        //.setContentText("Using smart devices without fear of losing sight")
                         .setSmallIcon(R.drawable.ic_miracle_head2)
                         .setContentIntent(pendingIntent)
                         .setShowWhen(false) // to hide timestamp
                         .setPriority(NotificationCompat.PRIORITY_MIN)
+                        .setColor(getColor(R.color.colorAccent))
                         .build();
 
         startForeground(1, notification);

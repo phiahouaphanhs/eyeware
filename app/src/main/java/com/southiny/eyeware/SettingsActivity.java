@@ -327,6 +327,6 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void clickAnimate(View view) {
-        Utils.fade(view, getApplicationContext());
+        Utils.fadeClick(view, getApplicationContext());
     }
 }

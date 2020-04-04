@@ -21,7 +21,7 @@
             android:id="@+id/wait_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Check things out..." />
+            android:text="Just check things out..." />
 
         <ProgressBar
             android:id="@+id/progress_bar_wait"
