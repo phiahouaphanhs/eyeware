@@ -28,4 +28,17 @@ public enum BreakingMode {
                 return "Unknown";
         }
     }
+
+    public int getUnitScore() {
+        switch (this) {
+            case LIGHT:
+                return 20;
+            case MEDIUM:
+                return 40;
+            case STRONG:
+                return 100;
+            default:
+                return 20;
+        }
+    }
 }

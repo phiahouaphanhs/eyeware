@@ -29,7 +29,11 @@ public class Run extends Model {
 
     public static final String COLUMN_PARENTAL_CONTROL = "parental_control_id";
 
+    public static final String COLUMN_SCORING = "scoring_id";
+
     public static final String COLUMN_PERMISSION_IS_CHANGED = "permission_is_changed";
+
+    public static final String COLUMN_IS_NEW_ARRIVAL = "is_new_arrival";
 
     @PrimaryKey
     private Long id;
@@ -58,8 +62,15 @@ public class Run extends Model {
     @Column(name = COLUMN_PROTECTION_MODE_GAMER)
     private ProtectionMode protectionModeGamer;
 
+    @Column(name = COLUMN_SCORING)
+    private Scoring scoring;
+
     @Column(name = COLUMN_PERMISSION_IS_CHANGED)
     private boolean isPermissionChanged;
+
+    @Column(name = COLUMN_IS_NEW_ARRIVAL)
+    private boolean isNewArrival;
+
 
     public Run() {
         init();
@@ -78,6 +89,8 @@ public class Run extends Model {
         protectionModeStandard.setCurrent(true);
         parentalControl = new ParentalControl();
         isPermissionChanged = false;
+        scoring = new Scoring();
+        isNewArrival = true;
     }
 
     public Long getId() {
@@ -207,5 +220,21 @@ public class Run extends Model {
 
     public void setPermissionChanged(boolean permissionChanged) {
         isPermissionChanged = permissionChanged;
+    }
+
+    public Scoring getScoring() {
+        return scoring;
+    }
+
+    public void setScoring(Scoring scoring) {
+        this.scoring = scoring;
+    }
+
+    public boolean isNewArrival() {
+        return isNewArrival;
+    }
+
+    public void setNewArrival(boolean newArrival) {
+        isNewArrival = newArrival;
     }
 }

@@ -10,6 +10,7 @@ import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.Settings;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
@@ -37,6 +38,8 @@ import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
 import com.southiny.eyeware.database.model.ScreenFilter;
+import com.southiny.eyeware.service.BlueLightFilterService;
+import com.southiny.eyeware.service.NotificationService;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
 import com.southiny.eyeware.tool.ProtectionLevel;
@@ -167,8 +170,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         applyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 Logger.log(TAG, "onClick() apply button");
                 // get input values
                 String name = plNameEditText.getText().toString();
@@ -207,19 +210,19 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
                     Intent intent = new Intent(ProtectionLevelEditActivity.this, MainActivity.class);
                     startActivity(intent);
 
-                    Toast.makeText(ProtectionLevelEditActivity.this, "Saved !", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ProtectionLevelEditActivity.this, "Ready to start !", Toast.LENGTH_SHORT).show();
                     finish();
                 }
             }
         });
 
         ImageView resetIcon = findViewById(R.id.reset_icon);
-        Utils.clockwiseLeftRightFade(resetIcon, getApplicationContext());
+        Utils.clockwiseRoundLeft(resetIcon, getApplicationContext());
         resetIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 dialogResetConfirmation();
             }
         });
@@ -227,8 +230,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         breakingLightIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 pm.setBreakingMode(BreakingMode.LIGHT);
                 setSelectedBreakingMode(BreakingMode.LIGHT);
                 Toast.makeText(ProtectionLevelEditActivity.this, "Light Discipline", Toast.LENGTH_SHORT).show();
@@ -239,8 +242,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         breakingMediumIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 pm.setBreakingMode(BreakingMode.MEDIUM);
                 setSelectedBreakingMode(BreakingMode.MEDIUM);
                 Toast.makeText(ProtectionLevelEditActivity.this, "Medium Discipline", Toast.LENGTH_SHORT).show();
@@ -251,8 +254,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         breakingStrongIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 pm.setBreakingMode(BreakingMode.STRONG);
                 setSelectedBreakingMode(BreakingMode.STRONG);
                 Toast.makeText(ProtectionLevelEditActivity.this, "Strong Discipline", Toast.LENGTH_SHORT).show();
@@ -273,7 +276,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         breakingSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
+                Utils.playClickSound(audioManager);
             }
         });
 
@@ -288,10 +291,63 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             }
         });
 
+
+        Button breakingModeTestButton = findViewById(R.id.breaking_mode_test_button);
+        breakingModeTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
+
+                BreakingMode breakingMode = pm.getBreakingMode();
+
+                // start breaking
+                Intent intent;
+                switch (breakingMode) {
+                    case LIGHT:
+                        Logger.log(TAG, "Light : Push Notification");
+                        intent = new Intent(ProtectionLevelEditActivity.this, NotificationService.class);
+                        intent.putExtra(NotificationService.INTENT_EXTRA_CODE,
+                                NotificationService.INTENT_EXTRA_BREAK_NOTIF_SHORT);
+                        startService(intent);
+                        break;
+
+                    case MEDIUM:
+                        Logger.log(TAG, "Medium : Start Notification Screen");
+                        final int breakFor_sec = pm.getBreakingFor_sec();
+                        pm.setBreakingFor_sec(4);
+                        pm.save();
+                        intent = new Intent(ProtectionLevelEditActivity.this, NotificationScreen.class);
+                        startActivity(intent);
+                        (new Handler()).postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                pm.setBreakingFor_sec(breakFor_sec);
+                                pm.save();
+                            }
+                        }, 3000);
+                        break;
+
+                    case STRONG:
+                        if (Settings.canDrawOverlays(ProtectionLevelEditActivity.this)) {
+                            Logger.log(TAG, "Strong : Send intent to " + BlueLightFilterService.TAG);
+                            intent = new Intent(getApplicationContext(), BlueLightFilterService.class);
+                            intent.putExtra(BlueLightFilterService.INTENT_EXTRA_CODE, BlueLightFilterService.ADD_NOTIF_SHORT_CODE);
+                            startForegroundService(intent);
+                        } else {
+                            Logger.err(TAG, "cannot test strong breaking mode, no overlay permission");
+                            dialogAskOverlayPermissionForStrongBM();
+                        }
+                        break;
+                }
+            }
+        });
+
+
         bluelightSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
+                Utils.playClickSound(audioManager);
             }
         });
 
@@ -334,14 +390,6 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
     }
 
     /****************************/
-
-    private void clickAnimate(View view) {
-        Utils.fadeClick(view, getApplicationContext());
-    }
-
-    private void playClickSound() {
-        audioManager.playSoundEffect(SoundEffectConstants.CLICK,1.0f);
-    }
 
     private void setInfoOnScreen() {
         Logger.log(TAG, "setInfoOnScreen()");
@@ -401,26 +449,44 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         String errorMessage = "";
         boolean valid = true;
 
-        if (name.length() > 20) {
-            errorMessage += getResources().getString(R.string.error_message_input_pl_name);
+        if (name.length() > Constants.MAX_NB_CHARACTER_IN_PL_NAME) {
+            errorMessage += "The name should not be more than " +
+                    Constants.MAX_NB_CHARACTER_IN_PL_NAME + " characters";
             valid = false;
         }
 
-        if (breakEverySec < 60) {
+        if (breakEverySec < Constants.BREAKING_EVERY_MIN_SEC) {
             if (!valid) errorMessage += "\n";
-            errorMessage += getResources().getString(R.string.error_message_input_break_every);
+            errorMessage += "Please enter a number more than " +
+                    (Constants.BREAKING_EVERY_MIN_SEC / 60) + " minutes in \"Break Every\". ";
+            valid = false;
+        } else if (breakEverySec > Constants.BREAKING_EVERY_MAX_SEC){
+            if (!valid) errorMessage += "\n";
+            errorMessage += "Please enter a number less than " +
+                    (Constants.BREAKING_EVERY_MAX_SEC / 60) + " minutes in \"Break Every\". ";
             valid = false;
         }
-        if (breakForSec < 5) {
+        if (breakForSec < Constants.BREAKING_FOR_MIN_SEC) {
             if (!valid) errorMessage += "\n";
-            errorMessage += getResources().getString(R.string.error_message_input_break_for);
+            errorMessage += "Please enter a number more than " +
+                    Constants.BREAKING_FOR_MIN_SEC + " seconds in \"Break For\". ";
+            valid = false;
+        } else if (breakForSec > Constants.BREAKING_FOR_MAX_SEC){
+            if (!valid) errorMessage += "\n";
+            errorMessage += "Please enter a number less than " +
+                    Constants.BREAKING_FOR_MAX_SEC + " seconds in \"Break For\". ";
             valid = false;
         }
-        if (blueLightChangeEverySec < 60) {
+        if (blueLightChangeEverySec < Constants.BLUELIGHT_FILTER_CHANGE_EVERY_MIN_SEC) {
             if (!valid) errorMessage += "\n";
-            errorMessage += getResources().getString(R.string.error_message_input_bluelight_change);
+            errorMessage += "Please enter a number more than " +
+                    Constants.BLUELIGHT_FILTER_CHANGE_EVERY_MIN_SEC + " minutes in \"Change Screen Filter Every\". ";
             valid = false;
-
+        } else if (blueLightChangeEverySec > Constants.BLUELIGHT_FILTER_CHANGE_EVERY_MAX_SEC){
+            if (!valid) errorMessage += "\n";
+            errorMessage += "Please enter a number less than " +
+                    Constants.BLUELIGHT_FILTER_CHANGE_EVERY_MAX_SEC + " minutes in \"Change Screen Filter Every\". ";
+            valid = false;
         }
 
         if (!valid) {
@@ -439,7 +505,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
                 .setMessage("Reset this mode to default values ?")
                 .setPositiveButton("Reset", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         pm.reset();
                         scs = pm.getScreenFilters();
                         setInfoOnScreen();
@@ -449,7 +515,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                     }
                 })
                 .setIcon(R.drawable.ic_face_accent_24dp)
@@ -474,9 +540,11 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         final TextView cancelButton = changeColorCodeLayout.findViewById(R.id.change_color_code_button_cancel);
         final SeekBar dimBar = changeColorCodeLayout.findViewById(R.id.brightness_level_seek_bar);
         final SeekBar alphaBar = changeColorCodeLayout.findViewById(R.id.transparency_level_seek_bar);
-        final LinearLayout globeLayout = changeColorCodeLayout.findViewById(R.id.change_color_layout);
+        final ConstraintLayout globeLayout = changeColorCodeLayout.findViewById(R.id.change_color_layout);
         final ColorPickerView colorPickerView = changeColorCodeLayout.findViewById(R.id.colorPickerView);
         final TextView selectResultTextView = changeColorCodeLayout.findViewById(R.id.select_result_text);
+        final TextView selectResultTemperatureTextView = changeColorCodeLayout.findViewById(R.id.select_result_temperature_text);
+        final TextView selectResultExplanationTextView = changeColorCodeLayout.findViewById(R.id.select_result_temperature_explanation_text);
         final TextView overlayPermissionMessage = changeColorCodeLayout.findViewById(R.id.overlay_permission_deactivated_message);
 
         final RadioButton radioButton1 = changeColorCodeLayout.findViewById(R.id.radio_button_1);
@@ -514,9 +582,6 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
         colorPickerView.setPreferenceName("EyewareColorPicker_" + pm.getId() + "_" + index);
 
-        String text = temp_selectedColorCode;
-        selectResultTextView.setText(text);
-
         if (temp_overlayIt) {
             temp_overlayIt = overlay(temp_selectedColorCode, temp_selectedAlpha, temp_selectedDim);
         }
@@ -536,8 +601,17 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
                 temp_selectedColorCode  = '#' + colorEnvelope.getColorHtml();
 
+                setActivateSeekBars(colorPickerView.getSelectorX(), colorPickerView.getSelectorY());
+
                 String text = temp_selectedColorCode;
                 selectResultTextView.setText(text);
+
+                int temperature = (int) Utils.getColorTemperatureFromRGB(colorEnvelope.getColorRGB());
+                text = String.valueOf(temperature) + "K";
+                selectResultTemperatureTextView.setText(text);
+
+                text = Utils.getColorTemperatureExplanation(temperature);
+                selectResultExplanationTextView.setText(text);
 
                 if (nb >= 2) { // car qu'il trigger 2 fois pour rien et ça nous embete
                     if (temp_overlayIt) {
@@ -550,6 +624,16 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
                 nb++;
 
+            }
+
+            private void setActivateSeekBars(float x, float y) {
+                if (x != 328F && y != 328F) {
+                    dimBar.setEnabled(true);
+                    alphaBar.setEnabled(true);
+                } else {
+                    dimBar.setEnabled(false);
+                    alphaBar.setEnabled(false);
+                }
             }
         });
 
@@ -565,7 +649,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                playClickSound();
+                Utils.playClickSound(audioManager);
                 temp_selectedDim = (float) (Constants.DEFAULT_DIM_MAX_PERCENT - seekBar.getProgress()) / 100F;
                 Toast.makeText(ProtectionLevelEditActivity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
                 if (temp_overlayIt) {
@@ -589,7 +673,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                playClickSound();
+                Utils.playClickSound(audioManager);
                 temp_selectedAlpha = (float) (Constants.DEFAULT_ALPHA_MAX_PERCENT - seekBar.getProgress()) / 100F;
                 Toast.makeText(ProtectionLevelEditActivity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
                 if (temp_overlayIt) {
@@ -611,8 +695,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 Logger.log(TAG, "ok !");
                 if (temp_overlayIt) {
                     removeFilter();
@@ -665,8 +749,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 Logger.log(TAG, "cancel !");
                 if (temp_overlayIt) {
                     removeFilter();
@@ -678,16 +762,16 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
     }
 
 
-    private void dialogAskOverlayPermission() {
-        Logger.log(TAG, "dialogAskOverlayPermission()");
+    private void dialogAskOverlayPermissionForFilterColor() {
+        Logger.log(TAG, "dialogAskOverlayPermissionForFilterColor()");
         new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("Overlay Permission")
                 .setMessage("To see in the filter color change in real time, please grant us the overlay permission (\"Appear on top\"). You can turn this off later on. " +
                         "Grant the permission ?")
 
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+                .setPositiveButton("Grant", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
                         startActivityForResult(intent, 0);
                     }
@@ -696,14 +780,38 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
                 .setNeutralButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                     }
                 })
                 .setNegativeButton("Don't ask me again, I don't need to see it in real time", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         askOverlayPermission = false;
+                    }
+                })
+                .setIcon(R.drawable.ic_face_accent_24dp)
+                .show();
+    }
+
+    private void dialogAskOverlayPermissionForStrongBM() {
+        Logger.log(TAG, "dialogAskOverlayPermissionForStrongBM()");
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
+                .setTitle("Overlay Permission")
+                .setMessage("To test strong breaking mode, please grant us the overlay permission (\"Appear on top\"). You can turn this off later on. " +
+                        "Grant the permission ?")
+
+                .setPositiveButton("Grant", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Utils.playClickSound(audioManager);
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
+                        startActivityForResult(intent, 0);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Utils.playClickSound(audioManager);
                     }
                 })
                 .setIcon(R.drawable.ic_face_accent_24dp)
@@ -811,11 +919,11 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            clickAnimate(view);
-            playClickSound();
+            Utils.clickAnimate(view, getApplicationContext());
+            Utils.playClickSound(audioManager);
             if (!Settings.canDrawOverlays(ProtectionLevelEditActivity.this)) {
                 if (askOverlayPermission) {
-                    dialogAskOverlayPermission();
+                    dialogAskOverlayPermissionForFilterColor();
                 } else {
                     dialogChangeColorCode(index, false);
                 }
@@ -835,8 +943,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            clickAnimate(view);
-            playClickSound();
+            Utils.clickAnimate(view, getApplicationContext());
+            Utils.playClickSound(audioManager);
             scs[index].setActivated(!scs[index].isActivated());
             setActivatedColor(index, scs[index].isActivated());
 
@@ -853,7 +961,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             radioButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    playClickSound();
+                    Utils.playClickSound(audioManager);
                 }
             });
         }

@@ -78,10 +78,9 @@
                     app:layout_constraintTop_toBottomOf="@+id/settings_title" />
 
                 <android.support.constraint.ConstraintLayout
-                    android:id="@+id/constraintLayout1"
+                    android:id="@+id/vibration_field"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_height="90dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider1">
 
@@ -90,9 +89,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
                         android:text="@string/pref_title_vibrate"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/eyeware_black"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -100,7 +102,10 @@
                         android:id="@+id/vibration_activate_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -111,29 +116,29 @@
                     android:id="@+id/divider2"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="32dp"
                     android:background="?android:attr/listDivider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout1" />
+                    app:layout_constraintTop_toBottomOf="@+id/vibration_field" />
 
                 <android.support.constraint.ConstraintLayout
-                    android:id="@+id/linearLayout_breaking"
+                    android:id="@+id/computer_mode_field"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_height="90dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider2">
 
                     <TextView
-                        android:id="@+id/computer_mode_text_label"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
                         android:text="Computer mode"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/eyeware_black"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -142,6 +147,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -151,18 +158,16 @@
                     android:id="@+id/divider13"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="32dp"
                     android:background="?android:attr/listDivider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/linearLayout_breaking" />
+                    app:layout_constraintTop_toBottomOf="@+id/computer_mode_field" />
 
                 <android.support.constraint.ConstraintLayout
-                    android:id="@+id/constraintLayout3"
+                    android:id="@+id/dark_pattern_field"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="32dp"
+                    android:layout_height="90dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/divider13">
 
@@ -171,9 +176,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
                         android:text="Dark Pattern"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
                         android:textColor="@color/eyeware_gray"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -181,7 +189,10 @@
                         android:id="@+id/dark_pattern_activate_switch"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
                         android:layout_marginEnd="16dp"
+                        android:layout_marginBottom="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -191,82 +202,108 @@
                     android:id="@+id/divider3"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="32dp"
                     android:background="?android:attr/listDivider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/constraintLayout3" />
+                    app:layout_constraintTop_toBottomOf="@+id/dark_pattern_field" />
 
-                <TextView
-                    android:id="@+id/change_language_settings_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
-                    android:text="Change language"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/eyeware_gray"
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/change_language_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider3" />
+                    app:layout_constraintTop_toBottomOf="@+id/divider3">
+
+                    <TextView
+
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="Change language"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="@color/eyeware_gray"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </android.support.constraint.ConstraintLayout>
 
                 <View
                     android:id="@+id/divider4"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="32dp"
                     android:background="?android:attr/listDivider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/change_language_settings_text" />
+                    app:layout_constraintTop_toBottomOf="@+id/change_language_field" />
 
-
-                <TextView
-                    android:id="@+id/reset_to_default_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
-                    android:text="@string/reset_to_default_title"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/eyeware_black"
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/reset_to_default_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider4" />
+                    app:layout_constraintTop_toBottomOf="@+id/divider4">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp"
+                        android:text="@string/reset_to_default_title"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="@color/eyeware_black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </android.support.constraint.ConstraintLayout>
 
                 <View
                     android:id="@+id/divider5"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="32dp"
                     android:background="?android:attr/listDivider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/reset_to_default_text" />
+                    app:layout_constraintTop_toBottomOf="@+id/reset_to_default_field" />
 
-                <TextView
-                    android:id="@+id/about_app"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="32dp"
-                    android:text="About app"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                    android:textColor="@color/eyeware_black"
+                <android.support.constraint.ConstraintLayout
+                    android:id="@+id/about_app_field"
+                    android:layout_width="match_parent"
+                    android:layout_height="90dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider5" />
+                    app:layout_constraintTop_toBottomOf="@+id/divider5">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="16dp"
+                        android:text="About app"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                        android:textColor="@color/eyeware_black"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                </android.support.constraint.ConstraintLayout>
+
 
                 <View
                     android:id="@+id/divider6"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="32dp"
                     android:background="?android:attr/listDivider"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/about_app" />
+                    app:layout_constraintTop_toBottomOf="@+id/about_app_field" />
 
 
             </android.support.constraint.ConstraintLayout>

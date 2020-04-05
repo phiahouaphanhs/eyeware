@@ -3,12 +3,15 @@ package com.southiny.eyeware.database;
 import com.reactiveandroid.query.Delete;
 import com.reactiveandroid.query.Select;
 import com.southiny.eyeware.Constants;
+import com.southiny.eyeware.database.model.Award;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
+import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.tool.Logger;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class SQLRequest {
@@ -32,6 +35,8 @@ public final class SQLRequest {
         Delete.from(ProtectionMode.class).execute();
         Delete.from(ScreenFilter.class).execute();
         Delete.from(ParentalControl.class).execute();
+        Delete.from(Scoring.class).execute();
+        Delete.from(Award.class).execute();
     }
 
     public static void whatInDB() {
@@ -43,7 +48,20 @@ public final class SQLRequest {
         List<ParentalControl> pctrls = Select.from(ParentalControl.class).fetch();
         Logger.log(TAG, "nb pctrls : " + pctrls.size());
         List<ScreenFilter> sfs = Select.from(ScreenFilter.class).fetch();
-        Logger.log(TAG, "nb run : " + sfs.size());
+        Logger.log(TAG, "nb sfs : " + sfs.size());
+        List<Scoring> scorings = Select.from(Scoring.class).fetch();
+        Logger.log(TAG, "nb scorings : " + scorings.size());
+        List<Award> awards = Select.from(Award.class).fetch();
+        Logger.log(TAG, "nb awards : " + awards.size());
+    }
+
+    public static ArrayList<Award> getAwards() {
+        Logger.log(TAG, "getAwards()");
+        List<Award> awards = Select.from(Award.class).fetch();
+        if (awards == null) {
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(awards);
     }
 
 }

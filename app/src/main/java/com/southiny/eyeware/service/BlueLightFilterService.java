@@ -19,6 +19,7 @@ import android.support.v4.app.NotificationCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Toast;
 
 import com.southiny.eyeware.Constants;
 import com.southiny.eyeware.Main2Activity;
@@ -26,8 +27,10 @@ import com.southiny.eyeware.R;
 import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
+import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.tool.Logger;
+import com.southiny.eyeware.tool.Utils;
 
 import java.util.ArrayList;
 
@@ -40,6 +43,7 @@ public class BlueLightFilterService extends Service {
     public static final int ADD_CODE = 1;
     public static final int REMOVE_AND_EXIT_CODE = 0;
     public static final int ADD_NOTIF_CODE = 2;
+    public static final int ADD_NOTIF_SHORT_CODE = 3;
 
     private int currentFilterIndex = 0;
 
@@ -47,10 +51,36 @@ public class BlueLightFilterService extends Service {
     private float currentFilterDimAmount = 0;
     private float currentFilterScreenAlpha = 0;
 
+    public Scoring scoring;
     public ArrayList<ScreenFilter> sfs;
 
     private boolean isOnNotification = false;
     private boolean hasFilterOn = false;
+    private boolean isGainPointRunnablePosted = false;
+
+    private Handler gainPointHandler = new Handler();
+
+    private Runnable gainPointRunnable = new Runnable() {
+        @Override
+        public void run() {
+            // gain points
+            float dim = sfs.get(currentFilterIndex).getDimAmount();
+            float alpha = sfs.get(currentFilterIndex).getScreenAlpha();
+            long newPoints = Utils.getBluelightFilteringPoints(dim, alpha);
+
+            Logger.log(TAG, "gain point ! +" + newPoints);
+
+            scoring = SQLRequest.getRun().getScoring();
+            scoring.gainPoints(newPoints);
+            gainPointHandler.postDelayed(this,
+                    Constants.DEFAULT_EARN_SCREEN_FILTER_POINT_EVERY_SEC * 1000);
+
+            if (Main2Activity.isActivityRunning) {
+                Toast.makeText(getApplicationContext(), "+" + newPoints + " points !", Toast.LENGTH_SHORT).show();
+
+            }
+        }
+    };
 
     // Binder given to clients
     private final IBinder binder = new LocalBinder();
@@ -85,6 +115,7 @@ public class BlueLightFilterService extends Service {
         ProtectionMode pm = SQLRequest.getRun().getCurrentProtectionMode();
         sfs = pm.getActivatedScreenFiltersByOrder();
         currentFilterIndex = sfs.size() - 1;
+        scoring = SQLRequest.getRun().getScoring();
 
         /****** FOREGROUND ************/
 
@@ -121,13 +152,27 @@ public class BlueLightFilterService extends Service {
         Logger.log(TAG, "received code = " + code);
 
         switch (code) {
+
+            // receive only from clock service (auto change filter only, not manual)
             case ADD_CODE:
+                // gain point when auto changed
+                scoring = SQLRequest.getRun().getScoring();
+                Logger.log(TAG, "gain point ! +" + Constants.DEFAULT_UNIT_SCORE_CHANGE_SCREEN_FILTER);
+                scoring.gainPoints(Constants.DEFAULT_UNIT_SCORE_CHANGE_SCREEN_FILTER);
+                if (Main2Activity.isActivityRunning) {
+                    Toast.makeText(getApplicationContext(), "+" + Constants.DEFAULT_UNIT_SCORE_CHANGE_SCREEN_FILTER + " points !", Toast.LENGTH_SHORT).show();
+                }
+
                 // change blue light filter color
                 if (!isOnNotification && sfs.size() > 0) {
                     currentFilterIndex = (currentFilterIndex + 1) % sfs.size();
                     Logger.log(TAG, "current filter index " + currentFilterIndex);
                     removeFilter();
                     addFilter(sfs.get(currentFilterIndex));
+                    if (!isGainPointRunnablePosted) {
+                        gainPointHandler.post(gainPointRunnable);
+                        isGainPointRunnablePosted = true;
+                    }
 
                 } else {
                     Logger.log(TAG, "is on notification");
@@ -143,6 +188,9 @@ public class BlueLightFilterService extends Service {
                                     Logger.log(TAG, "current filter index " + currentFilterIndex);
                                     removeFilter();
                                     addFilter(sfs.get(currentFilterIndex));
+                                    if (!isGainPointRunnablePosted) {
+                                        gainPointHandler.post(gainPointRunnable);
+                                    }
                                 } else {
                                     if (attempt < 10) {
                                         attempt++;
@@ -157,6 +205,7 @@ public class BlueLightFilterService extends Service {
 
                 break;
 
+            // receive only from clock service
             case ADD_NOTIF_CODE:
                 removeFilter();
                 addNotif();
@@ -183,8 +232,29 @@ public class BlueLightFilterService extends Service {
 
                 break;
 
+            // receive only from protection level edit activity
+            case ADD_NOTIF_SHORT_CODE:
+                removeFilter();
+                addNotif();
+
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Logger.log(TAG, "run() in runnable");
+                        vibrate(Constants.DEFAULT_VIBRATION_DURATION_MILLIS);
+                        removeFilter();
+
+                    }
+                }, 4000);
+
+                break;
+
+            // receive only from clock service
             case REMOVE_AND_EXIT_CODE:
                 removeFilter();
+                if (isGainPointRunnablePosted) {
+                    gainPointHandler.removeCallbacks(gainPointRunnable);
+                }
                 stopSelf();
                 break;
         }

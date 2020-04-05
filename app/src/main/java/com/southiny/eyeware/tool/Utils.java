@@ -1,11 +1,22 @@
 package com.southiny.eyeware.tool;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.media.AudioManager;
+import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 
+import com.southiny.eyeware.Constants;
 import com.southiny.eyeware.R;
+
+import java.util.Calendar;
 
 public final class Utils {
 
@@ -28,6 +39,25 @@ public final class Utils {
         return hex;
     }
 
+    public static long getBreakingPoints(BreakingMode bm, int breakEvery_sec, int breakFor_sec) {
+        int unitScore = bm.getUnitScore();
+        int percentDifference = breakFor_sec - (breakEvery_sec / 60);
+
+        if (percentDifference < Constants.MAX_MINUS_SCORE_PERCENT) {
+            percentDifference = Constants.MAX_MINUS_SCORE_PERCENT;
+        }
+
+        int plusOrMinusScore = (percentDifference * unitScore) / 100;
+
+        return unitScore + plusOrMinusScore;
+    }
+
+    public static long getBluelightFilteringPoints(float dim, float alpha) {
+        float percent = (dim + alpha) / 2F;
+
+        return (long) (percent * Constants.DEFAULT_UNIT_SCORE_SCREEN_FILTER);
+    }
+
     public static void clockwiseLeftRightFade(View view, Context context){
         Animation animation = AnimationUtils.loadAnimation(context,
                 R.anim.clockwise_left_right_fade);
@@ -37,6 +67,12 @@ public final class Utils {
     public static void clockwiseLeftRight(View view, Context context){
         Animation animation = AnimationUtils.loadAnimation(context,
                 R.anim.clockwise_left_right);
+        view.startAnimation(animation);
+    }
+
+    public static void clockwiseRoundLeft(View view, Context context){
+        Animation animation = AnimationUtils.loadAnimation(context,
+                R.anim.clockwise_left);
         view.startAnimation(animation);
     }
 
@@ -105,5 +141,155 @@ public final class Utils {
         Animation animation = AnimationUtils.loadAnimation(context,
                 R.anim.slide);
         view.startAnimation(animation);
+    }
+
+    public static double getColorTemperatureFromRGB(int[] rgb) {
+        int R = rgb[0];
+        int G = rgb[1];
+        int B = rgb[2];
+
+        double nominator = (0.23881* R) + (0.25499 * G) + (-0.58291 * B);
+
+        double denominator = (0.11109 * R) + (-0.85406 * G) + (0.52289 * B);
+
+        double n = nominator/ denominator;
+
+        double CCT = (449 * Math.pow(n, 3)) + (3525 * Math.pow(n, 2)) + (6823.3 * n) + 5520.33;
+
+        if (CCT < 1000) CCT = 1000;
+        else if (CCT > 30000) CCT = 30000;
+
+        return CCT;
+    }
+
+    public static String getColorTemperatureExplanation(int CCT) {
+
+        //  1700 K	Match flame, low pressure sodium lamps (LPS/SOX)
+        if (CCT >= 1600 && CCT <= 1750) {
+            return "Match flame, low pressure sodium lamps (LPS/SOX)";
+        }
+
+        // 1850 K	Candle flame, sunset/sunrise
+        if (CCT > 1750 && CCT <= 2000) {
+            return "Candle flame, sunset/sunrise";
+        }
+
+//        2400 K	Standard incandescent lamps
+        if (CCT > 2000 && CCT <= 2450) {
+            return "Standard incandescent lamps";
+        }
+
+//        2550 K	Soft white incandescent lamps
+        if (CCT > 2450 && CCT <= 2600) {
+            return "Soft white incandescent lamps";
+        }
+//        2700 K	"Soft white" compact fluorescent and LED lamps
+        if (CCT > 2600 && CCT <= 2800) {
+            return "\"Soft white\" compact fluorescent and LED lamps";
+        }
+//        3000 K	Warm white compact fluorescent and LED lamps
+        if (CCT > 2800 && CCT <= 3100) {
+            return "Warm white compact fluorescent and LED lamps";
+        }
+//        3200 K	Studio lamps, photofloods, etc.
+        if (CCT > 3100 && CCT <= 3270) {
+            return "Studio lamps, photofloods, etc.";
+        }
+//        3350 K	Studio "CP" light
+        if (CCT > 3270 && CCT <= 4000) {
+            return "Studio \"CP\" light";
+        }
+//        5000 K	Horizon daylight
+        if (CCT > 4000 && CCT <= 5200) {
+            return "Horizon daylight";
+        }
+//        5500 – 6000 K	Vertical daylight, electronic flash
+        if (CCT > 5200 && CCT <= 6100) {
+            return "Vertical daylight, electronic flash";
+        }
+//        6200 K	Xenon short-arc lamp [2]
+        if (CCT > 6100 && CCT <= 6350) {
+            return "Xenon short-arc lamp";
+        }
+//        6500 K	Daylight, overcast
+        if (CCT > 6350 && CCT <= 10000) {
+            return "Daylight, overcast or LCD / CRT screen";
+        }
+
+//        15,000 – 27,000 K	Clear blue poleward sky
+        if (CCT > 14000 && CCT <= 28000) {
+            return "Clear blue poleward sky";
+        }
+
+        return "Mystery of nature";
+    }
+
+    public static long getReachLevelPoint(int level) {
+        return Constants.AWARD_SCORE_REACH_GOAL_BASE * (level - 1);
+    }
+
+    public static void setMidnightAlarmIfNotExist(Context context, int hour, int minute) {
+
+        if (checkIfHasAlarm(context)) {
+            Logger.log("Utils", "already has alarm, don't set it");
+        } else {
+            Logger.log("Utils", "no alarm yet, set it");
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(System.currentTimeMillis());
+            calendar.set(Calendar.HOUR_OF_DAY, hour);
+            calendar.set(Calendar.MINUTE, minute);
+
+            AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(context, AlarmReceiver.class);
+            intent.setAction(AlarmReceiver.ACTION_ALARM_RECEIVER);
+            PendingIntent alarmIntent = PendingIntent.getBroadcast(context, 1001, intent, 0);
+
+            // With setInexactRepeating(), you have to use one of the AlarmManager interval
+            // constants--in this case, AlarmManager.INTERVAL_DAY.
+
+            assert alarmMgr != null;
+
+            alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
+                    AlarmManager.INTERVAL_DAY, alarmIntent);
+        }
+    }
+
+
+   /* public static void stopAlarm() {
+        //starting
+        AlarmManager alarmManager = (AlarmManager) getActivity().getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(getActivity(), MyReceiver.class);
+        intent.setAction(MyReceiver.ACTION_ALARM_RECEIVER);//my custom string action name
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1001, intent, PendingIntent.FLAG_CANCEL_CURRENT);//used unique ID as 1001
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), aroundInterval, pendingIntent);//first start will start asap
+
+//and stopping
+        Intent intent = new Intent(getActivity(), MyReceiver.class);//the same as up
+        intent.setAction(MyReceiver.ACTION_ALARM_RECEIVER);//the same as up
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(getActivity(), 1001, intent, PendingIntent.FLAG_CANCEL_CURRENT);//the same as up
+        alarmManager.cancel(pendingIntent);//important
+        pendingIntent.cancel();//important
+
+//checking if alarm is working with pendingIntent
+        Intent intent = new Intent(getActivity(), MyReceiver.class);//the same as up
+        intent.setAction(MyReceiver.ACTION_ALARM_RECEIVER);//the same as up
+        boolean isWorking = (PendingIntent.getBroadcast(getActivity(), 1001, intent, PendingIntent.FLAG_NO_CREATE) != null);//just changed the flag
+        Log.d(TAG, "alarm is " + (isWorking ? "" : "not") + " working...");
+    }*/
+
+    private static boolean checkIfHasAlarm(Context context) {
+        //checking if alarm is working with pendingIntent
+        Intent intent = new Intent(context, AlarmReceiver.class);//the same as up
+        intent.setAction(AlarmReceiver.ACTION_ALARM_RECEIVER);//the same as up
+        boolean isWorking = (PendingIntent.getBroadcast(context, 1001, intent, PendingIntent.FLAG_NO_CREATE) != null);//just changed the flag
+        return isWorking;
+    }
+
+    public static void playClickSound(AudioManager audioManager) {
+        audioManager.playSoundEffect(SoundEffectConstants.CLICK,1.0f);
+    }
+
+    public static void clickAnimate(View view, Context context) {
+        Utils.fadeClick(view, context);
     }
 }

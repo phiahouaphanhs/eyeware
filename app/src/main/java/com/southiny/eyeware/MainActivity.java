@@ -15,7 +15,6 @@ import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -31,12 +30,15 @@ import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
+import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.service.ClockService;
 import com.southiny.eyeware.tool.AdminReceiver;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
 import com.southiny.eyeware.tool.ProtectionLevel;
 import com.southiny.eyeware.tool.Utils;
+
+import java.util.Calendar;
 
 import static com.southiny.eyeware.tool.Utils.zbs;
 
@@ -96,6 +98,44 @@ public class MainActivity extends AppCompatActivity {
         run.setPermissionChanged(false);
         run.save();
 
+        Scoring scoring = run.getScoring();
+
+        /* ***** new arrival ************/
+
+        if (run.isNewArrival()) {
+            // new arrival points !
+            scoring.gainPoints(Constants.AWARD_SCORE_NEW_ARRIVAL);
+            run.setNewArrival(false);
+            run.save();
+            Logger.log(TAG, "receive new arrival point !!");
+            dialogReceiveNewArrivalPoint();
+        }
+
+        /* **** today checkout **********/
+
+        // reset scoring
+        Calendar lastDay = Calendar.getInstance();
+        lastDay.setTimeInMillis(scoring.getCheckoutDayTimestamp());
+        Calendar now = Calendar.getInstance();
+        if (now.get(Calendar.DAY_OF_YEAR) != lastDay.get(Calendar.DAY_OF_YEAR)) {
+            Logger.log(TAG, "reset scoring : day has changed, reset...");
+            scoring.newDay();
+        } else {
+            Logger.log(TAG, "reset scoring : still same day");
+        }
+
+
+        if (scoring.getEarnCheckoutAward() > 0) {
+            // checkout !
+            long newPoint = Constants.AWARD_SCORE_CHECKOUT * scoring.getEarnCheckoutAward();
+            scoring.gainPoints(newPoint);
+            scoring.setEarnCheckoutAward(0);
+            scoring.save();
+            Logger.log(TAG, "receive checkout point !!");
+            dialogReceiveCheckoutPoint(newPoint);
+        }
+
+
         /* **** find view by id ************/
 
         standardCheckIcon = findViewById(R.id.standard_level_check_icon);
@@ -135,6 +175,8 @@ public class MainActivity extends AppCompatActivity {
         breakingModeIconFoot = findViewById(R.id.breaking_mode_icon);
 
         final LinearLayout parentalControlsIconLayout = findViewById(R.id.linearLayout_parental_control_icons);
+        final LinearLayout parentalControlTextLayout = findViewById(R.id.parental_control_text_layout);
+
 
         /* ********************* animation ***********/
 
@@ -189,8 +231,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Logger.log(TAG, "onClick()");
-                playClickSound();
-                clickAnimate(view);
+                Utils.playClickSound(audioManager);
+                Utils.clickAnimate(view, getApplicationContext());
 
                 if (pm.isBluelightFiltering() | pm.isBreakingActivated() | pctrl.isLockScreenActivated()) {
 
@@ -271,8 +313,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Logger.log(TAG, "onclick() settings icon");
-                playClickSound();
-                clickAnimate(view);
+                Utils.playClickSound(audioManager);
+                Utils.clickAnimate(view, getApplicationContext());
                 Intent intent = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent);
             }
@@ -316,7 +358,7 @@ public class MainActivity extends AppCompatActivity {
         passwordActivateSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
+                Utils.playClickSound(audioManager);
             }
         });
 
@@ -324,8 +366,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Logger.log(TAG, "onclick() change password text");
-                playClickSound();
-                clickAnimate(view);
+                Utils.playClickSound(audioManager);
+                Utils.clickAnimate(view, getApplicationContext());
                 dialogChangePassword();
             }
         });
@@ -334,13 +376,27 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Logger.log(TAG, "onclick() forget password");
-                playClickSound();
-                clickAnimate(view);
+                Utils.playClickSound(audioManager);
+                Utils.clickAnimate(view, getApplicationContext());
                 dialogForgetPassword();
             }
         });
 
         // todo : add others
+
+        parentalControlsIconLayout.setOnClickListener(new View.OnClickListener() {
+            private boolean bool = true;
+            @Override
+            public void onClick(View view) {
+                if (bool) {
+                    parentalControlTextLayout.setVisibility(View.VISIBLE);
+                } else {
+                    parentalControlTextLayout.setVisibility(View.GONE);
+                }
+
+                bool = !bool;
+            }
+        });
 
         lockScreenActivateSwitch.setChecked(pctrl.isLockScreenActivated());
         lockScreenActivateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -368,7 +424,7 @@ public class MainActivity extends AppCompatActivity {
         lockScreenActivateSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
+                Utils.playClickSound(audioManager);
             }
         });
 
@@ -376,8 +432,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Logger.log(TAG, "onclick() change lock screen time text");
-                playClickSound();
-                clickAnimate(view);
+                Utils.playClickSound(audioManager);
+                Utils.clickAnimate(view, getApplicationContext());
                 dialogChangeLockScreenTime();
             }
         });
@@ -386,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
         unlockScreenActivateSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
+                Utils.playClickSound(audioManager);
             }
         });
         unlockScreenActivateSwitch.setEnabled(false);
@@ -394,8 +450,8 @@ public class MainActivity extends AppCompatActivity {
         overlayPermissionIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
-                clickAnimate(view);
+                Utils.playClickSound(audioManager);
+                Utils.clickAnimate(view, getApplicationContext());
                 Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
                 startActivityForResult(intent, RESULT_ENABLE_OVERLAY_PERMISSION);
             }
@@ -404,8 +460,8 @@ public class MainActivity extends AppCompatActivity {
         adminPermissionIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
-                clickAnimate(view);
+                Utils.playClickSound(audioManager);
+                Utils.clickAnimate(view, getApplicationContext());
 
                 if (devicePolicyManager.isAdminActive(compName)) {
                     devicePolicyManager.removeActiveAdmin(compName);
@@ -458,13 +514,6 @@ public class MainActivity extends AppCompatActivity {
 
     /******* private methods *******/
     
-    private void playClickSound() {
-        audioManager.playSoundEffect(SoundEffectConstants.CLICK,1.0f);
-    }
-
-    private void clickAnimate(View view) {
-        Utils.fadeClick(view, getApplicationContext());
-    }
 
     private void initInfoOnScreen() {
         Logger.log(TAG, "initInfoOnScreen()");
@@ -539,7 +588,7 @@ public class MainActivity extends AppCompatActivity {
         lockscreenMinuteTextView.setText(zbs(min));
 
         // set activated
-        ConstraintLayout breakingLayout = findViewById(R.id.linearLayout_breaking);
+        ConstraintLayout breakingLayout = findViewById(R.id.computer_mode_field);
         ConstraintLayout breakingForLayout = findViewById(R.id.constraintLayout6);
         if (!pm.isBreakingActivated()) {
             breakingLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
@@ -635,7 +684,7 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
                         startActivityForResult(intent, RESULT_ENABLE_OVERLAY_PERMISSION_FOR_START);
                     }
@@ -643,7 +692,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("No, I don't need blue light filter", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         dialogTurnOffBL();
                     }
                 })
@@ -661,7 +710,7 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         // turn off
                         pm.setBluelightFiltering(false);
                         pm.save();
@@ -676,7 +725,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                     }
                 })
                 .setIcon(R.drawable.ic_face_accent_24dp)
@@ -696,7 +745,7 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION, Uri.parse("package:" + getPackageName()));
                         startActivityForResult(intent, RESULT_ENABLE_OVERLAY_PERMISSION_FOR_START);
                     }
@@ -704,7 +753,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("No, I don't need strong breaking mode", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         dialogChangeBreakingMode();
                     }
                 })
@@ -720,7 +769,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Change and start program", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         // change bm
                         pm.setBreakingMode(BreakingMode.MEDIUM);
                         pm.save();
@@ -735,7 +784,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                     }
                 })
                 .setIcon(R.drawable.ic_face_accent_24dp)
@@ -754,7 +803,7 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
                         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
                         intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "To make " +
@@ -765,7 +814,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("No, I don't need auto lock screen", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         dialogTurnOffLockScreen();
                     }
                 })
@@ -781,7 +830,7 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         // turn off lock screen
                         lockScreenActivateSwitch.setChecked(false);
 
@@ -792,7 +841,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                     }
                 })
                 .setIcon(R.drawable.ic_face_accent_24dp)
@@ -811,7 +860,7 @@ public class MainActivity extends AppCompatActivity {
                 .setMessage(message)
                 .setPositiveButton("Grant", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         lockScreenOnAfterAdminPermissionGranted = true;
                         Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
                         intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
@@ -823,7 +872,7 @@ public class MainActivity extends AppCompatActivity {
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         lockScreenActivateSwitch.setChecked(false);
                     }
                 })
@@ -839,6 +888,7 @@ public class MainActivity extends AppCompatActivity {
         final EditText oldPasswordInputEditText = changePasswordLayout.findViewById(R.id.password_old_input);
         final EditText newPasswordInputEditText = changePasswordLayout.findViewById(R.id.password_new_input);
         final TextView passwordNotMatchTextView = changePasswordLayout.findViewById(R.id.password_not_match_text_view);
+        final TextView newPasswordNotValidTextView = changePasswordLayout.findViewById(R.id.new_password_not_valid_text_view);
         final TextView passwordOldTextView = changePasswordLayout.findViewById(R.id.password_old_text);
         final TextView okButton = changePasswordLayout.findViewById(R.id.change_password_button_ok);
         final TextView cancelButton = changePasswordLayout.findViewById(R.id.change_password_button_cancel);
@@ -858,25 +908,29 @@ public class MainActivity extends AppCompatActivity {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
-                clickAnimate(view);
+                Utils.playClickSound(audioManager);
+                Utils.clickAnimate(view, getApplicationContext());
                 String oldPassword = oldPasswordInputEditText.getText().toString();
                 String newPassword = newPasswordInputEditText.getText().toString();
                 Logger.log(TAG, "new password is " + newPassword);
 
-                if (newPassword.length() > 3) {
-                    passwordNotMatchTextView.setVisibility(View.VISIBLE);
-                    passwordNotMatchTextView.setText("New password should has at least 3 characters.");
-                } else {
-                    if (oldPassword.equals(pctrl.getPassword())) {
+                newPasswordNotValidTextView.setVisibility(View.GONE);
+                passwordNotMatchTextView.setVisibility(View.GONE);
+
+
+                if (oldPassword.equals(pctrl.getPassword())) {
+                    if (newPassword.length() < 3) {
+                        newPasswordNotValidTextView.setVisibility(View.VISIBLE);
+                        newPasswordNotValidTextView.setText("New password should has at least 3 characters.");
+                    } else {
                         pctrl.setPassword(newPassword);
                         pctrl.save();
                         dialog.dismiss();
                         Toast.makeText(MainActivity.this, "password change to " + newPassword, Toast.LENGTH_SHORT).show();
-                    } else {
-                        passwordNotMatchTextView.setVisibility(View.VISIBLE);
-                        passwordNotMatchTextView.setText("Password not matched.");
                     }
+                } else {
+                    passwordNotMatchTextView.setVisibility(View.VISIBLE);
+                    passwordNotMatchTextView.setText("Password not matched.");
                 }
             }
         });
@@ -884,8 +938,8 @@ public class MainActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
-                clickAnimate(view);
+                Utils.playClickSound(audioManager);
+                Utils.clickAnimate(view, getApplicationContext());
                 Logger.log(TAG, "cancel !");
                 dialog.dismiss();
             }
@@ -914,8 +968,8 @@ public class MainActivity extends AppCompatActivity {
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
-                clickAnimate(view);
+                Utils.playClickSound(audioManager);
+                Utils.clickAnimate(view, getApplicationContext());
                 int timeInMinute = Integer.valueOf(lockScreenTimeInputEditText.getText().toString());
                 if (timeInMinute < 3) {
                     lockScreenTimeNotValidTextView.setText("Lock screen time should be more than 3 mins.");
@@ -943,8 +997,8 @@ public class MainActivity extends AppCompatActivity {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
-                clickAnimate(view);
+                Utils.playClickSound(audioManager);
+                Utils.clickAnimate(view, getApplicationContext());
                 Logger.log(TAG, "cancel !");
                 dialog.dismiss();
             }
@@ -965,10 +1019,48 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Got it !", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                     }
                 })
                 .setIcon(R.drawable.ic_info_accent_24dp)
+                .show();
+
+    }
+
+    private void dialogReceiveCheckoutPoint(long newPoints) {
+        String title = "You have received +" + newPoints + " points !";
+        String message = "Checkout " + getString(R.string.app_name) + " every day to earn daily checkout points";
+
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Great !", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Utils.playClickSound(audioManager);
+                    }
+                })
+                .setIcon(R.drawable.ic_coin)
+                .show();
+
+    }
+
+
+    private void dialogReceiveNewArrivalPoint() {
+        Logger.log(TAG, "dialogForgetPassword()");
+        String title = "You have received +" + Constants.AWARD_SCORE_NEW_ARRIVAL + " points !";
+        String message = "Greeting new arrival !\n" + Constants.AWARD_SCORE_NEW_ARRIVAL + " points is a gift for you. \nEnjoy the community !";
+
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Great !", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Utils.playClickSound(audioManager);
+                    }
+                })
+                .setIcon(R.drawable.ic_coin)
                 .show();
 
     }
@@ -1004,7 +1096,7 @@ public class MainActivity extends AppCompatActivity {
                             "You have enabled the App On Top features", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(MainActivity.this,
-                            "Problem to enable the Appear On Top features", Toast.LENGTH_SHORT).show();
+                            "You have disabled the Appear On Top features", Toast.LENGTH_SHORT).show();
                     overlayPermissionIcon.setImageResource(R.drawable.ic_layers_gray_24dp);
                 }
                 break;
@@ -1020,7 +1112,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,
                             "Problem to enable the Appear On Top features", Toast.LENGTH_SHORT).show();
                     overlayPermissionIcon.setImageResource(R.drawable.ic_layers_gray_24dp);
-                    dialogTurnOffBL();
+                    //dialogTurnOffBL();
                 }
                 break;
 
@@ -1060,8 +1152,8 @@ public class MainActivity extends AppCompatActivity {
             nbClick++;
             clickAt = nbClick;
 
-            playClickSound();
-            clickAnimate(view);
+            Utils.playClickSound(audioManager);
+            Utils.clickAnimate(view, getApplicationContext());
             Utils.clockwiseRoundFast(startStopTimerLayout, getApplicationContext());
 
             (new Handler()).postDelayed(new Runnable() {
@@ -1092,10 +1184,10 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            playClickSound();
-            clickAnimate(view);
+            Utils.playClickSound(audioManager);
+            Utils.clickAnimate(view, getApplicationContext());
             Logger.log(TAG, "startProtectionLevelActivity " + protectionLevel.toString());
-            clickAnimate(view);
+            Utils.clickAnimate(view, getApplicationContext());
             Intent intent = new Intent(MainActivity.this, ProtectionLevelEditActivity.class);
             intent.putExtra(ProtectionLevelEditActivity.INTENT_EXTRA_PROTECTION_LEVEL_ORDINAL,
                     protectionLevel.ordinal());

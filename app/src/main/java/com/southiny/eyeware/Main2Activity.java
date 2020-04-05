@@ -28,6 +28,7 @@ import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
+import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.service.BlueLightFilterService;
 import com.southiny.eyeware.service.ClockService;
@@ -42,6 +43,7 @@ import static com.southiny.eyeware.tool.Utils.zbs;
 
 public class Main2Activity extends AppCompatActivity {
     public static final String TAG = Main2Activity.class.getSimpleName();
+    public static boolean isActivityRunning;
 
     private Run run;
     private ProtectionMode pm;
@@ -58,7 +60,8 @@ public class Main2Activity extends AppCompatActivity {
 
     private TextView breakMinuteTextView, breakSecondTextView,
             blMinuteTextView, blSecondTextView,
-            lockScreenMinuteTextView, lockScreenSecondTextView;
+            lockScreenMinuteTextView, lockScreenSecondTextView,
+            todayScoreTextView, totalScoreTextView, levelTextView;
 
     private ImageView breakingModeIcon, vibrationIcon, miracleIcon;
 
@@ -70,6 +73,7 @@ public class Main2Activity extends AppCompatActivity {
     // this is for update UI
     Runnable updateTimerRunnable = new Runnable() {
         private String TAG = Main2Activity.TAG + "updateTimer";
+        private int cpt = 0;
         @Override
         public void run() {
             Logger.log(TAG, "tick !");
@@ -91,6 +95,11 @@ public class Main2Activity extends AppCompatActivity {
             sec = (int) (time_sec % 60);
             lockScreenMinuteTextView.setText(zbs(min));
             lockScreenSecondTextView.setText(zbs(sec));
+
+            cpt++;
+            if (cpt % Constants.DEFAULT_EARN_SCREEN_FILTER_POINT_EVERY_SEC == 0) {
+                updateScoring();
+            }
 
             updateTimerHandler.postDelayed(this, 1000);
         }
@@ -114,6 +123,10 @@ public class Main2Activity extends AppCompatActivity {
         lockScreenMinuteTextView = findViewById(R.id.lockscreen_minute_count);
         lockScreenSecondTextView = findViewById(R.id.lockscreen_second_count);
 
+        totalScoreTextView = findViewById(R.id.total_score_text);
+        todayScoreTextView = findViewById(R.id.today_score);
+        levelTextView = findViewById(R.id.score_level_text);
+
         LinearLayout mainLayout = findViewById(R.id.main_layout);
         Utils.moveUp(mainLayout, getApplicationContext());
 
@@ -126,12 +139,14 @@ public class Main2Activity extends AppCompatActivity {
         pm = run.getCurrentProtectionMode();
         pctrl = run.getParentalControl();
 
+        /**********/
+
         final TextView plTextView = findViewById(R.id.current_protection_level_text_view);
         if (pm.isBreakingActivated()) {
             plTextView.setText(pm.getName());
             Logger.log(TAG, "current protection level is " + pm.getName());
         } else {
-            plTextView.setText("DEACTIVATED");
+            plTextView.setTextColor(getColor(R.color.eyeware_white));
             Logger.log(TAG, "current protection level is deactivated");
         }
 
@@ -149,8 +164,8 @@ public class Main2Activity extends AppCompatActivity {
             public void onClick(View view) {
                 Logger.log(TAG, "onClick() stop button");
                 Logger.log(TAG, "stop " + ClockService.TAG);
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 Intent intent = new Intent(Main2Activity.this, ClockService.class);
                 stopService(intent);
 
@@ -174,8 +189,8 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Logger.log(TAG, "onclick() vibration icon");
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 run.setVibrationActivated(!run.isVibrationActivated());
                 run.save();
                 if (run.isVibrationActivated()) {
@@ -198,8 +213,8 @@ public class Main2Activity extends AppCompatActivity {
                 breakingModeIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        clickAnimate(view);
-                        playClickSound();
+                        Utils.clickAnimate(view, getApplicationContext());
+                        Utils.playClickSound(audioManager);
                         String title = "Strong Discipline (Force-Cut)";
                         String message = "This mode will cover your screen with complete opaque filter during the break time.\n" +
                                 "(!) There's no possibility to close the filter until the break time is ended.";
@@ -212,8 +227,8 @@ public class Main2Activity extends AppCompatActivity {
                 breakingModeIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        clickAnimate(view);
-                        playClickSound();
+                        Utils.clickAnimate(view, getApplicationContext());
+                        Utils.playClickSound(audioManager);
                         String title = "Medium Discipline (Unforce-Cut)";
                         String message = "This mode will cover your screen with a notification screen during the break time.\n" +
                                 "(!) You can close the notification screen at anytime.";
@@ -226,8 +241,8 @@ public class Main2Activity extends AppCompatActivity {
                 breakingModeIcon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        clickAnimate(view);
-                        playClickSound();
+                        Utils.clickAnimate(view, getApplicationContext());
+                        Utils.playClickSound(audioManager);
                         String title = "Light Discipline (No-Cut)";
                         String message = "This mode will notify you with our floating notification when the break time starts, " +
                                 "and will notify you again when the break time ends.\n" +
@@ -245,8 +260,8 @@ public class Main2Activity extends AppCompatActivity {
         miracleIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 dialogAboutApp();
             }
         });
@@ -279,7 +294,7 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 Logger.log(TAG, "dim value is " + seekBar.getProgress());
-                playClickSound();
+                Utils.playClickSound(audioManager);
                 float dim = (float) (Constants.DEFAULT_DIM_MAX_PERCENT - seekBar.getProgress()) / 100F;
                 mBLService.updateCurrentFilterDim(dim);
                 Toast.makeText(Main2Activity.this, seekBar.getProgress() + "%", Toast.LENGTH_SHORT).show();
@@ -299,7 +314,7 @@ public class Main2Activity extends AppCompatActivity {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
-                playClickSound();
+                Utils.playClickSound(audioManager);
                 Logger.log(TAG, "alpha value is " + seekBar.getProgress());
                 float alpha = (float) (Constants.DEFAULT_ALPHA_MAX_PERCENT - seekBar.getProgress()) / 100F;
                 mBLService.updateCurrentFilterAlpha(alpha);
@@ -322,12 +337,16 @@ public class Main2Activity extends AppCompatActivity {
             checkedBLIcon.setImageResource(R.drawable.ic_close_black_24dp);
         }
 
+        updateScoring();
+
     }
 
     @Override
     protected void onStart() {
         super.onStart();
         Logger.log(TAG, "onStart()");
+
+        isActivityRunning = true;
 
         // Bind to ClockService
         Logger.log(TAG, "bind to " + ClockService.TAG + "...");
@@ -338,6 +357,36 @@ public class Main2Activity extends AppCompatActivity {
         Logger.log(TAG, "bind to " + BlueLightFilterService.TAG + "...");
         Intent in = new Intent(this, BlueLightFilterService.class);
         bindService(in, blConnection, Context.BIND_AUTO_CREATE);
+
+        Scoring scoring = run.getScoring();
+
+        /* **** today checkout **********/
+
+
+        int earn = scoring.getEarnCheckoutAward();
+        if (earn > 0) {
+            // checkout !
+            long newPoint = Constants.AWARD_SCORE_CHECKOUT * earn;
+            scoring.gainPoints(newPoint);
+            scoring.setEarnCheckoutAward(0);
+            scoring.save();
+            Logger.log(TAG, "receive checkout point !!");
+            dialogReceiveCheckoutPoint(newPoint);
+        }
+
+        /* **** level up checkout **********/
+
+        earn = scoring.getEarnLevelUpAward();
+        if (earn > 0) {
+            // level up
+            long newPoints = scoring.getScoreEarnedForLevelUp();
+            scoring.gainPoints(newPoints);
+            scoring.setEarnLevelUpAward(0);
+            scoring.setScoreEarnedForLevelUp(0);
+            scoring.save();
+            Logger.log(TAG, "receive level up point !!");
+            dialogReceiveLevelUpPoint(newPoints, earn, scoring.getScoreLevel());
+        }
     }
 
     @Override
@@ -356,6 +405,7 @@ public class Main2Activity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Logger.log(TAG, "onStop()");
+        isActivityRunning = false;
     }
 
     @Override
@@ -364,7 +414,6 @@ public class Main2Activity extends AppCompatActivity {
         Logger.log(TAG, "onDestroy()");
 
         stopUpdateTimer();
-        stopUpdateFilter();
 
         Logger.log(TAG, "unbind " + ClockService.TAG + "...");
         unbindService(cConnection);
@@ -442,14 +491,6 @@ public class Main2Activity extends AppCompatActivity {
 
     /*********** PRIVATE METHODS ********************/
 
-    private void clickAnimate(View view) {
-        Utils.fadeClick(view, getApplicationContext());
-    }
-
-    private void playClickSound() {
-        audioManager.playSoundEffect(SoundEffectConstants.CLICK,1.0f);
-    }
-
     /**
      * pre-require : activity is bound to Watch service
      */
@@ -463,13 +504,6 @@ public class Main2Activity extends AppCompatActivity {
     private void stopUpdateTimer() {
         Logger.log(TAG, "stopUpdateTimer()");
         if (pm.isBreakingActivated()| pm.isBluelightFiltering() | pctrl.isLockScreenActivated()) {
-            updateTimerHandler.removeCallbacks(updateTimerRunnable);
-        }
-    }
-
-    private void stopUpdateFilter() {
-        Logger.log(TAG, "stopUpdateFilter()");
-        if (pm.isBluelightFiltering() && pm.getNbActivatedScreenFilters() > 1) {
             updateTimerHandler.removeCallbacks(updateTimerRunnable);
         }
     }
@@ -491,6 +525,21 @@ public class Main2Activity extends AppCompatActivity {
         } else {
             Logger.err(TAG, "updateProgressBarAndSelectedFilter() mBLService not bound");
         }
+
+    }
+
+    private void updateScoring() {
+        Scoring scoring = SQLRequest.getRun().getScoring();
+        long todayScore = scoring.getScoreOfToday();
+        long totalScore = scoring.getScoreTotal();
+        int level = scoring.getScoreLevel();
+
+        Logger.log(TAG, "updateScoring() level=" + level + " today=" + todayScore + " total=" + totalScore);
+
+        todayScoreTextView.setText(String.valueOf(todayScore));
+        totalScoreTextView.setText(String.valueOf(totalScore));
+        levelTextView.setText(String.valueOf(level));
+
 
     }
 
@@ -543,7 +592,7 @@ public class Main2Activity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
 
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                     }
                 })
                 .setIcon(dw)
@@ -569,7 +618,7 @@ public class Main2Activity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
 
                         (new Handler()).postDelayed(new Runnable() {
                             @Override
@@ -591,11 +640,49 @@ public class Main2Activity extends AppCompatActivity {
                 .setPositiveButton("Understood", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                     }
                 })
                 .setIcon(R.drawable.ic_report_yellow_24dp)
                 .show();
+    }
+
+    private void dialogReceiveCheckoutPoint(long newPoints) {
+        String title = "You have received +" + newPoints + " points !";
+        String message = "Checkout " + getString(R.string.app_name) + " every day to earn daily checkout points";
+
+        new AlertDialog.Builder(this)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Great !", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Utils.playClickSound(audioManager);
+                    }
+                })
+                .setIcon(R.drawable.ic_coin)
+                .show();
+
+    }
+
+    private void dialogReceiveLevelUpPoint(long receivePoints, int nbLevelUp, int level) {
+        String title = "You have received +" + receivePoints + " points !";
+        String message = "For " + nbLevelUp + " level up !\n" +
+                "You've reached level " + level + " which require more than " +
+                Constants.getDefaultMinScoreOfLevel(level) + " points !";
+
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+                .setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("Youpy !", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Utils.playClickSound(audioManager);
+                    }
+                })
+                .setIcon(R.drawable.ic_coin)
+                .show();
+
     }
 
 
@@ -613,8 +700,8 @@ public class Main2Activity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            clickAnimate(view);
-            playClickSound();
+            Utils.clickAnimate(view, getApplicationContext());
+            Utils.playClickSound(audioManager);
             Utils.blinkBlink(breakingModeIcon, getApplicationContext());
             Utils.blinkBlink(vibrationIcon, getApplicationContext());
 

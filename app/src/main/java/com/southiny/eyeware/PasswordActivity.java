@@ -47,11 +47,12 @@ public class PasswordActivity extends AppCompatActivity {
         passwordInputEditText = findViewById(R.id.password_input);
         passwordErrorTextView = findViewById(R.id.password_error_message_text);
         ImageView unlockImageView = findViewById(R.id.unlock_icon);
+        Utils.blinkButterfly(unlockImageView, getApplicationContext());
         unlockImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 onDone();
             }
         });
@@ -89,14 +90,6 @@ public class PasswordActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         Logger.log(TAG, "onDestroy()");
-    }
-
-    private void clickAnimate(View view) {
-        Utils.fadeClick(view, getApplicationContext());
-    }
-
-    private void playClickSound() {
-        audioManager.playSoundEffect(SoundEffectConstants.CLICK,1.0f);
     }
 
     private void onDone() {

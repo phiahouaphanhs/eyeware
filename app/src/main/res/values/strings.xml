@@ -122,11 +122,6 @@
     <string name="break_for_label">Break For</string>
     <string name="auto_change_bluelight_every_label">Change Screen Filter Every</string>
     <string name="filter_colors_label">Filter Colors</string>
-    <string name="error_message_input_pl_name">The name should not be more than 20 characters</string>
-    <string name="error_message_input_break_every">Please enter a number more than 0 minute in "Break Every". </string>
-    <string name="error_message_input_break_for">Please enter a number more than 5 seconds in "Break For". </string>
-    <string name="error_message_input_bluelight_change">Please enter a number more than 0 minute in "Auto Change Bluelight Every". </string>
-
     <!-- Example General eye_exercise -->
     <string name="pref_header_general">General</string>
 

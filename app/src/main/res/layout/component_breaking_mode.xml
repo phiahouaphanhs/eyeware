@@ -20,13 +20,15 @@
         android:id="@+id/notification_cut_icon"
         android:layout_width="60dp"
         android:layout_height="60dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/layout_round_shape_gray"
         android:contentDescription="font_icon"
         android:padding="11dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/unforce_screen_cut_icon"
+        app:layout_constraintEnd_toStartOf="@+id/breaking_mode_test_button"
+        app:layout_constraintTop_toBottomOf="@+id/screen_cut_label"
         app:srcCompat="@drawable/ic_bm_light_white_24dp" />
 
     <ImageView
@@ -36,15 +38,13 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="32dp"
         android:background="@drawable/layout_round_shape_gray"
         android:contentDescription="font_icon"
         android:padding="13dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/screen_cut_label"
-        app:layout_constraintVertical_bias="1.0"
         app:srcCompat="@drawable/ic_bm_medium_white_24dp" />
 
     <ImageView
@@ -52,13 +52,29 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/layout_round_shape_gray"
         android:contentDescription="font_icon"
         android:padding="12dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/unforce_screen_cut_icon"
+        app:layout_constraintStart_toEndOf="@+id/breaking_mode_test_button"
+        app:layout_constraintTop_toBottomOf="@+id/screen_cut_label"
         app:srcCompat="@drawable/ic_bm_strong_white_24dp" />
+
+    <Button
+        android:id="@+id/breaking_mode_test_button"
+        style="@android:style/Widget.Material.Button.Small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="Test"
+        android:textAppearance="@style/TextAppearance.AppCompat.Small.Inverse"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/unforce_screen_cut_icon"
+        app:layout_constraintStart_toStartOf="@+id/unforce_screen_cut_icon"
+        app:layout_constraintTop_toBottomOf="@+id/unforce_screen_cut_icon" />
 
 
 </android.support.constraint.ConstraintLayout>

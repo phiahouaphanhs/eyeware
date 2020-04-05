@@ -1,6 +1,5 @@
 package com.southiny.eyeware.service;
 
-import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -13,18 +12,20 @@ import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
-import android.os.VibrationEffect;
-import android.os.Vibrator;
 import android.support.v4.app.NotificationCompat;
 
 import com.southiny.eyeware.Constants;
-import com.southiny.eyeware.R;
 import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.Run;
 import com.southiny.eyeware.tool.Logger;
 
 public class NotificationService extends Service {
     public static final String TAG = NotificationService.class.getSimpleName();
+
+    public static final String INTENT_EXTRA_CODE = "extra_for_notification_service";
+    public static final int INTENT_EXTRA_BREAK_NOTIF = 1;
+    public static final int INTENT_EXTRA_LOCK_NOTIF = 2;
+    public static final int INTENT_EXTRA_BREAK_NOTIF_SHORT = 3;
 
     private NotificationManager notificationManager;
     private Run run;
@@ -58,37 +59,71 @@ public class NotificationService extends Service {
 
         run = SQLRequest.getRun();
 
-        Logger.log(TAG, "push start notification");
-        int breakingForSec = SQLRequest.getRun().getCurrentProtectionMode().getBreakingFor_sec();
+        int code = intent.getIntExtra(INTENT_EXTRA_CODE, -1) ;
 
-        String title = "LOOK AWAY OR CLOSE EYES";
-       // String message = getString(R.string.notification_message);
-        String message = "If you care";
-        createNotification(title, message);
+        if (code == INTENT_EXTRA_BREAK_NOTIF) {
 
-        Logger.log(TAG, "post a runnable delay " + breakingForSec);
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
+            Logger.log(TAG, "push start notification");
+            int breakingForSec = SQLRequest.getRun().getCurrentProtectionMode().getBreakingFor_sec();
 
-                Logger.log(TAG, "push stop notification");
-                String title = "Thank !";
-                String message = "Good luck with the work";
-                createNotification(title, message);
+            String title = "LOOK AWAY OR CLOSE EYES";
+            // String message = getString(R.string.notification_message);
+            String message = "If you care";
+            createNotification(title, message);
 
-                Logger.log(TAG, "send intent to " + ClockService.TAG);
-                Intent intent = new Intent(getApplicationContext(), ClockService.class);
-                intent.putExtra(ClockService.INTENT_SET_FINISH_NOTIF, true);
-                startForegroundService(intent);
+            Logger.log(TAG, "post a runnable delay " + breakingForSec);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
 
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        notificationManager.cancelAll();
-                    }
-                }, 3000);
-            }
-        }, breakingForSec * 1000);
+                    Logger.log(TAG, "push stop notification");
+                    String title = "Thank !";
+                    String message = "Good luck with the work";
+                    createNotification(title, message);
+
+                    Logger.log(TAG, "send intent to " + ClockService.TAG);
+                    Intent intent = new Intent(getApplicationContext(), ClockService.class);
+                    intent.putExtra(ClockService.INTENT_SET_FINISH_NOTIF, true);
+                    startForegroundService(intent);
+
+                    removeAllNotificationsIn4Sec();
+
+                }
+            }, breakingForSec * 1000);
+
+        } else if (code == INTENT_EXTRA_LOCK_NOTIF) {
+            String title = "20 SECONDS LEFT";
+            // String message = getString(R.string.notification_message);
+            String message = "Before the app lock your phone screen";
+            createNotification(title, message);
+
+            removeAllNotificationsIn4Sec();
+
+        } else if (code == INTENT_EXTRA_BREAK_NOTIF_SHORT) {
+
+            Logger.log(TAG, "push start notification");
+            int breakingForSec = SQLRequest.getRun().getCurrentProtectionMode().getBreakingFor_sec();
+
+            String title = "LOOK AWAY OR CLOSE EYES";
+            String message = "If you care";
+            createNotification(title, message);
+
+            Logger.log(TAG, "post a runnable delay " + breakingForSec);
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+
+                    Logger.log(TAG, "push stop notification");
+                    String title = "Thank !";
+                    String message = "Good luck with the work";
+                    createNotification(title, message);
+
+                    removeAllNotificationsIn4Sec();
+
+                }
+            }, 4000);
+
+        }
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -167,5 +202,14 @@ public class NotificationService extends Service {
 
         Notification notification = builder.build();
         notificationManager.notify(NOTIFY_ID, notification);
+    }
+
+    private void removeAllNotificationsIn4Sec() {
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                notificationManager.cancelAll();
+            }
+        }, 4000);
     }
 }

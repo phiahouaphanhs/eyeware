@@ -3,6 +3,7 @@ package com.southiny.eyeware;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.media.AudioManager;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -43,12 +44,15 @@ public class SettingsActivity extends AppCompatActivity {
         pctrl = run.getParentalControl();
         audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
 
-        TextView resetToDefaultTextView = findViewById(R.id.reset_to_default_text);
-        resetToDefaultTextView.setOnClickListener(new View.OnClickListener() {
+        ImageView settingsIcon = findViewById(R.id.settings_icon);
+        Utils.clockwiseRoundLeft(settingsIcon, getApplicationContext());
+
+        ConstraintLayout resetToDefaultField = findViewById(R.id.reset_to_default_field);
+        resetToDefaultField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 Logger.log(TAG, "onClick() reset to default");
                 dialogRequestPassword();
             }
@@ -71,7 +75,7 @@ public class SettingsActivity extends AppCompatActivity {
         vibrateActivateSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
+                Utils.playClickSound(audioManager);
             }
         });
 
@@ -101,26 +105,26 @@ public class SettingsActivity extends AppCompatActivity {
         computerModeSwitch.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                playClickSound();
+                Utils.playClickSound(audioManager);
             }
         });
 
-        TextView computerModeTextView = findViewById(R.id.computer_mode_text_label);
-        computerModeTextView.setOnClickListener(new View.OnClickListener() {
+        ConstraintLayout computerModeField = findViewById(R.id.computer_mode_field);
+        computerModeField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 dialogComputerModeInfo();
             }
         });
 
-        TextView aboutAppTextView = findViewById(R.id.about_app);
-        aboutAppTextView.setOnClickListener(new View.OnClickListener() {
+        ConstraintLayout aboutAppTextField = findViewById(R.id.about_app_field);
+        aboutAppTextField.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 dialogAboutApp();
             }
         });
@@ -129,8 +133,8 @@ public class SettingsActivity extends AppCompatActivity {
         backIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                clickAnimate(view);
-                playClickSound();
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
                 Logger.log(TAG, "back icon click()");
                 finish();
             }
@@ -144,10 +148,11 @@ public class SettingsActivity extends AppCompatActivity {
                 .setMessage("This action cannot be undone.")
                 .setPositiveButton("Reset", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         SQLRequest.deleteAllData();
                         SQLRequest.whatInDB();
-                        SQLRequest.getRun();
+                        Run run = SQLRequest.getRun();
+                        run.setNewArrival(false);
                         Toast.makeText(SettingsActivity.this, "Reset to default complete", Toast.LENGTH_SHORT).show();
                     }
                 })
@@ -155,7 +160,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                     }
                 })
                 .show();
@@ -184,8 +189,8 @@ public class SettingsActivity extends AppCompatActivity {
             unlockImageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    clickAnimate(view);
-                    playClickSound();
+                    Utils.clickAnimate(view, getApplicationContext());
+                    Utils.playClickSound(audioManager);
                     boolean passed = onDone(passwordInputEditText, passwordErrorTextView);
                     if (passed) {
                         dialog.dismiss();
@@ -219,14 +224,14 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton("Alright, turn it on", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         computerModeSwitch.setChecked(true);
                     }
                 })
                 .setNegativeButton("No, turn it off", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         computerModeSwitch.setChecked(false);
                     }
                 })
@@ -243,7 +248,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         run.setSmartDetectActivated(true);
                         run.setVibrationActivated(true);
                         run.save();
@@ -255,7 +260,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                         computerModeSwitch.setChecked(false);
                     }
                 })
@@ -282,7 +287,7 @@ public class SettingsActivity extends AppCompatActivity {
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
-                        playClickSound();
+                        Utils.playClickSound(audioManager);
                     }
                 })
                 .show();
@@ -320,13 +325,5 @@ public class SettingsActivity extends AppCompatActivity {
             }
             return true;
         }
-    }
-
-    private void playClickSound() {
-        audioManager.playSoundEffect(SoundEffectConstants.CLICK,1.0f);
-    }
-
-    private void clickAnimate(View view) {
-        Utils.fadeClick(view, getApplicationContext());
     }
 }

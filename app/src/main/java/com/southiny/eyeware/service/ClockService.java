@@ -11,13 +11,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.Binder;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.provider.Settings;
 import android.support.v4.app.NotificationCompat;
+import android.widget.Toast;
 
 import com.southiny.eyeware.Constants;
 import com.southiny.eyeware.Main2Activity;
@@ -27,10 +27,13 @@ import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
+import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.tool.AdminReceiver;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
+import com.southiny.eyeware.tool.Utils;
 
+import java.util.Calendar;
 import java.util.Objects;
 
 public class ClockService extends Service {
@@ -40,6 +43,7 @@ public class ClockService extends Service {
     private Run run;
     private ProtectionMode pm;
     private ParentalControl pctrl;
+    private Scoring scoring;
     private long cptBreakSec, cptBluelightChangeSec, cptLockScreenSec, cptUnLockScreenSec;
     private boolean breakFinished = true;
 
@@ -128,6 +132,13 @@ public class ClockService extends Service {
 
         pm = run.getCurrentProtectionMode();
         pctrl = run.getParentalControl();
+        scoring = run.getScoring();
+
+        // set alarm
+        Logger.log(TAG, "set midnight alarm at 0 05");
+        Utils.setMidnightAlarmIfNotExist(getApplicationContext(), 0, 5);
+
+
 
         // register run change listener
         /*Logger.log(TAG, "register run change listener...");
@@ -180,6 +191,8 @@ public class ClockService extends Service {
                     case LIGHT:
                         Logger.log(TAG, "Light : Push Notification...");
                         intent = new Intent(getApplicationContext(), NotificationService.class);
+                        intent.putExtra(NotificationService.INTENT_EXTRA_CODE,
+                                NotificationService.INTENT_EXTRA_BREAK_NOTIF);
                         startService(intent);
                         break;
 
@@ -207,6 +220,16 @@ public class ClockService extends Service {
                 }
 
                 breakFinished = false;
+
+                scoring = SQLRequest.getRun().getScoring();
+                // gain points
+                long newPoints = Utils.getBreakingPoints(pm.getBreakingMode(), pm.getBreakingEvery_sec(), pm.getBreakingFor_sec());
+                Logger.log(TAG, "gain point ! +" + newPoints);
+                scoring.gainPoints(newPoints);
+                if (Main2Activity.isActivityRunning) {
+                    Toast.makeText(getApplicationContext(), "+" + newPoints + " points !", Toast.LENGTH_SHORT).show();
+
+                }
 
                 // reset
                 cptBreakSec = pm.getBreakingEvery_sec();
@@ -288,6 +311,15 @@ public class ClockService extends Service {
 
                 if (cptLockScreenSec > 0) {
                     Logger.log(TAG, "lock tick ! " + cptLockScreenSec);
+
+                    if (cptLockScreenSec == 20) {
+                        Logger.log(TAG, "send intent to notification service, lock screen time less than 20s");
+                        Intent intent = new Intent(ClockService.this, NotificationService.class);
+                        intent.putExtra(NotificationService.INTENT_EXTRA_CODE,
+                                NotificationService.INTENT_EXTRA_LOCK_NOTIF);
+                        startService(intent);
+                    }
+
                     cptLockScreenSec -= 1;
                     // post runnable
                     lockAndUnlockScreenHandler.postDelayed(this, 1000);

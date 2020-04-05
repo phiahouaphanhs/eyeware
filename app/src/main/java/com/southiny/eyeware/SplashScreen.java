@@ -16,9 +16,11 @@ import com.reactiveandroid.ReActiveConfig;
 import com.reactiveandroid.internal.database.DatabaseConfig;
 import com.southiny.eyeware.database.AppDatabase;
 import com.southiny.eyeware.database.SQLRequest;
+import com.southiny.eyeware.database.model.Award;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
+import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.service.ClockService;
 import com.southiny.eyeware.tool.Logger;
@@ -33,7 +35,9 @@ public class SplashScreen extends Activity {
 
     public DatabaseConfig appDatabase = new DatabaseConfig.Builder(AppDatabase.class)
             .disableMigrationsChecking()
-            .addModelClasses(Run.class, ProtectionMode.class, ScreenFilter.class, ParentalControl.class)
+            .addModelClasses(Run.class, ProtectionMode.class,
+                    ScreenFilter.class, ParentalControl.class,
+                    Scoring.class, Award.class)
             .build();
 
     @Override

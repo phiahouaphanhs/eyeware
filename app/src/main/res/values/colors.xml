@@ -18,6 +18,7 @@
     <color name="eyeware_yellow">#FDFD6C</color>
     <color name="eyeware_pink">#FF1493</color>
     <color name="eyeware_cream">#FFF090</color>
+    <color name="eyeware_gold">	#FFFF00</color>
 
     <color name="overlay_color_gold">#FFF86A</color> <!-- #8FAF8903 -->
     <color name="overlay_color_green">#92035E01</color>
