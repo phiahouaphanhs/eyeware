@@ -46,6 +46,9 @@ public class ClockService extends Service {
     private Scoring scoring;
     private long cptBreakSec, cptBluelightChangeSec, cptLockScreenSec, cptUnLockScreenSec;
     private boolean breakFinished = true;
+    private long cptEarnSurprise = 0;
+
+    private long currentScoreOfToday, currentTotalScore, currentLevel;
 
     //private RunChangeListener runChangeListener;
     private UserInteractionReceiver userInteractionReceiver;
@@ -134,8 +137,8 @@ public class ClockService extends Service {
         pctrl = run.getParentalControl();
         scoring = run.getScoring();
 
-        // set alarm
         Logger.log(TAG, "set midnight alarm at 0 05");
+        Utils.unSetMidNightAlarmIfExist(getApplicationContext());
         Utils.setMidnightAlarmIfNotExist(getApplicationContext(), 0, 5);
 
 
@@ -174,7 +177,14 @@ public class ClockService extends Service {
 
         @Override
         public void run() {
+            // check if should earn surprise point
+            cptEarnSurprise++;
+            if (cptEarnSurprise % Constants.DEFAULT_EARN_SURPRISE_POINT_BACKGROUND_EVERY_SEC == 0) {
+                scoring = SQLRequest.getRun().getScoring();
+                scoring.raiseScoreEarnedForSurprise(Utils.getRandomSurprisePoints());
+            }
 
+            // do the main work
             if (cptBreakSec > 0) {
 
                 Logger.log(TAG, "break tick ! " + cptBreakSec);
@@ -276,7 +286,15 @@ public class ClockService extends Service {
 
         @Override
         public void run() {
+            // check if should earn surprise point
+            cptEarnSurprise++;
 
+            if (! isRunningBreaking && (cptEarnSurprise % Constants.DEFAULT_EARN_SURPRISE_POINT_BACKGROUND_EVERY_SEC == 0)) {
+                scoring = SQLRequest.getRun().getScoring();
+                scoring.raiseScoreEarnedForSurprise(Utils.getRandomSurprisePoints());
+            }
+
+            // do the main work
             if (cptBluelightChangeSec > 0) {
 
                 Logger.log(TAG, "BL tick ! " + cptBluelightChangeSec);
@@ -377,6 +395,8 @@ public class ClockService extends Service {
         Logger.log(TAG, "user interaction receiver unregistered.");
         /*ReActiveAndroid.unregisterForModelStateChanges(Run.class, runChangeListener);
         Logger.log(TAG, "run change listener unregistered.");*/
+
+        Utils.unSetMidNightAlarmIfExist(getApplicationContext());
     }
 
     /* ********* METHODS ***************/

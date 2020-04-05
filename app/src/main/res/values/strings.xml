@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">No More Eye Strain</string>
     <string name="global_wait_message">Please wait for a moment&#8230;</string>
-    <string name="version_text">Version 1.0</string>
+    <string name="version_text">Version 1.0.4</string>
 
     <!-- activity titles -->
     <string name="title_activity_splash_screen">SplashScreen</string>

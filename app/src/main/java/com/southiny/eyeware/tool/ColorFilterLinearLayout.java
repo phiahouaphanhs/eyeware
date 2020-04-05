@@ -27,11 +27,6 @@ public class ColorFilterLinearLayout extends LinearLayout {
     private ImageView image;
 
 
-    // should never be called
-    public ColorFilterLinearLayout(Context context) {
-        super(context);
-    }
-
     public ColorFilterLinearLayout(Context context, int id, String colorCode, float alpha) {
         super(context);
         this.id = id;

@@ -28,12 +28,21 @@ public class AlarmReceiver extends BroadcastReceiver {
         Logger.log(TAG, "onReceive alarm");
 
         // reset today scoring and checkout value
-        Logger.log(TAG, "set scoring to new day");
-        SQLRequest.getRun().getScoring().newDay();
+        Scoring scoring = SQLRequest.getRun().getScoring();
+        Calendar lastDay = Calendar.getInstance();
+        lastDay.setTimeInMillis(scoring.getCheckoutDayTimestamp());
+        Calendar now = Calendar.getInstance();
+        if (now.get(Calendar.DAY_OF_YEAR) != lastDay.get(Calendar.DAY_OF_YEAR)) {
+            Logger.log(TAG, "reset scoring : day has changed, reset...");
+            scoring.newDay();
 
-        if (Main2Activity.isActivityRunning) {
-            Toast.makeText(context, "Start new day", Toast.LENGTH_SHORT).show();
+            if (Main2Activity.isActivityRunning) {
+                Toast.makeText(context, "Start new day", Toast.LENGTH_SHORT).show();
 
+            }
+
+        } else {
+            Logger.log(TAG, "reset scoring : still same day");
         }
     }
 }

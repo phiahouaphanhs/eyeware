@@ -140,15 +140,20 @@ public final class Constants {
 
     /***************/
 
+    public static final int DEFAULT_EARN_SURPRISE_POINT_FOREGROUND_EVERY_SEC = 2 * 60;
+
+    public static final int DEFAULT_EARN_SURPRISE_POINT_BACKGROUND_EVERY_SEC = 60 * 60;
+
     public static final int DEFAULT_EARN_SCREEN_FILTER_POINT_EVERY_SEC = 20;
     public static final int DEFAULT_UNIT_SCORE_SCREEN_FILTER = 10;
     public static final int DEFAULT_UNIT_SCORE_CHANGE_SCREEN_FILTER = 10;
 
     public static final long AWARD_SCORE_DEFAULT = 1;
-    public static final long AWARD_SCORE_EXCELLENCY = 10000; // consecutively get 3 TODAY_PERFORMANCE or consecutively get 7 REACH_GOAL
+    public static final long AWARD_SCORE_EXCELLENCY = 10000; // daily get TODAY_PERFORMANCE for 3 days consecutive or daily get LEVEL_UP for 7 days consecutive
     public static final long AWARD_SCORE_TODAY_PERFORMANCE = 1352; // get two time the goal point
-    public static final long AWARD_SCORE_SURPRISE_BASE = 100;
-    public static final long AWARD_SCORE_REACH_GOAL_BASE = 120; // level up
+    public static final long AWARD_SCORE_SURPRISE_MAX = 100;
+    public static final long AWARD_SCORE_SURPRISE_MIN = 50;
+    public static final long AWARD_SCORE_LEVEL_UP_BASE = 120; // level up
     public static final long AWARD_SCORE_CHAMPION = 2000;
     public static final long AWARD_SCORE_NEW_ARRIVAL = 123;
     public static final long AWARD_SCORE_CHECKOUT = 125;
@@ -162,30 +167,23 @@ public final class Constants {
     public static final long DEFAULT_MIN_SCORE_OF_LEVEL_5 = 2800;
     public static final long DEFAULT_MIN_SCORE_OF_LEVEL_6 = 7000;
     public static final long DEFAULT_MIN_SCORE_OF_LEVEL_7 = 16000;
-    private static final double LEVEL_SCORE_INCREASE_RATE = 1.5; // 0 < rate <= 1
+    public static final double LEVEL_SCORE_INCREASE_RATE = 1.5; // 0 < rate <= 1
 
-    public static long getDefaultMinScoreOfLevel(int level) {
-        assert level > 1;
-
-        if (level == 2) return DEFAULT_MIN_SCORE_OF_LEVEL_2;
-
-        if (level == 3) return DEFAULT_MIN_SCORE_OF_LEVEL_3;
-
-        if (level == 4) return DEFAULT_MIN_SCORE_OF_LEVEL_4;
-
-        if (level == 5) return DEFAULT_MIN_SCORE_OF_LEVEL_5;
-
-        if (level == 6) return DEFAULT_MIN_SCORE_OF_LEVEL_6;
-
-        if (level == 7) return DEFAULT_MIN_SCORE_OF_LEVEL_7;
-
-        return getDefaultMinScoreOfLevelAbove7(level);
+    // earn excellency conditions
+    public static boolean shouldEarnExcellency(int nbConsecutiveTodayPerformance, int nbConsecutiveLevelUp) {
+        return (nbConsecutiveTodayPerformance >= 3) || (nbConsecutiveLevelUp >= 7);
     }
 
-    // level > 7
-    private static long getDefaultMinScoreOfLevelAbove7(int level) {
-        return (int) Math.pow(LEVEL_SCORE_INCREASE_RATE, (level-7)) * DEFAULT_MIN_SCORE_OF_LEVEL_7;
-    }
+    public static final String how = "You'll earn points :\n" +
+            "- Each time taking a break\n" +
+            "- Every 20 Seconds of putting on our screen filter" +
+            "- Each time screen filter change automatically\n\n" +
+            "You'll earn awards :\n" +
+            "- For daily checkout\n" +
+            "- For level up\n" +
+            "- For reaching x2 current goal points\n" +
+            "- For excellency (7 consecutive level up, or 7 consecutively reaching x2 current goal points)\n" +
+            "- Surprisingly at sometime of the day (You'll earn faster when you turn on both breaking and screen filtering, or when you stay in our application screen for a long time";
 
 
 }

@@ -27,12 +27,14 @@ import android.widget.Toast;
 
 
 import com.southiny.eyeware.database.SQLRequest;
+import com.southiny.eyeware.database.model.Award;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
 import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.service.ClockService;
 import com.southiny.eyeware.tool.AdminReceiver;
+import com.southiny.eyeware.tool.AwardType;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
 import com.southiny.eyeware.tool.ProtectionLevel;
@@ -100,20 +102,32 @@ public class MainActivity extends AppCompatActivity {
 
         Scoring scoring = run.getScoring();
 
-        /* ***** new arrival ************/
+        /* ***** check scoring and ************/
 
         if (run.isNewArrival()) {
             // new arrival points !
             scoring.gainPoints(Constants.AWARD_SCORE_NEW_ARRIVAL);
             run.setNewArrival(false);
             run.save();
+            Award award = new Award(AwardType.NEW_ARRIVAL_AWARD, Constants.AWARD_SCORE_NEW_ARRIVAL,
+                    System.currentTimeMillis(), Award.NO_EXPIRATION);
+            award.save();
             Logger.log(TAG, "receive new arrival point !!");
-            dialogReceiveNewArrivalPoint();
+            String message = "Greeting new arrival !\n" + Constants.AWARD_SCORE_NEW_ARRIVAL + " points is a gift for you\nEnjoy our community !";
+            dialogReceivePoints(Constants.AWARD_SCORE_NEW_ARRIVAL, message, "Nice !");
         }
 
-        /* **** today checkout **********/
+        // check excellency award
+        if (scoring.getScoreEarnedForExcellency() > 0) {
+            // earn excellency !
+            long newPoints = scoring.getScoreEarnedForExcellency();
+            scoring.earnExcellencyAward(newPoints);
+            Logger.log(TAG, "receive excellency award !");
+            String message = "For Excellency ! You've done incredibly well these last days\n Congratulation for your achievement !";
+            dialogReceivePoints(newPoints, message, "Oh my gosh !");
+        }
 
-        // reset scoring
+        // check reset scoring (must after check excellency award)
         Calendar lastDay = Calendar.getInstance();
         lastDay.setTimeInMillis(scoring.getCheckoutDayTimestamp());
         Calendar now = Calendar.getInstance();
@@ -124,15 +138,14 @@ public class MainActivity extends AppCompatActivity {
             Logger.log(TAG, "reset scoring : still same day");
         }
 
-
+        // check checkout award (must after check reset scoring)
         if (scoring.getEarnCheckoutAward() > 0) {
             // checkout !
-            long newPoint = Constants.AWARD_SCORE_CHECKOUT * scoring.getEarnCheckoutAward();
-            scoring.gainPoints(newPoint);
-            scoring.setEarnCheckoutAward(0);
-            scoring.save();
+            long newPoints = Constants.AWARD_SCORE_CHECKOUT * scoring.getEarnCheckoutAward();
+            scoring.earnCheckoutAward(newPoints);
             Logger.log(TAG, "receive checkout point !!");
-            dialogReceiveCheckoutPoint(newPoint);
+            String message = "Checkout " + getString(R.string.app_name) + " every day to earn daily checkout points";
+            dialogReceivePoints(newPoints, message, "Great !");
         }
 
 
@@ -1027,14 +1040,13 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void dialogReceiveCheckoutPoint(long newPoints) {
+    private void dialogReceivePoints(long newPoints, String message, String buttonTitle) {
         String title = "You have received +" + newPoints + " points !";
-        String message = "Checkout " + getString(R.string.app_name) + " every day to earn daily checkout points";
 
         new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton("Great !", new DialogInterface.OnClickListener() {
+                .setPositiveButton(buttonTitle, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Utils.playClickSound(audioManager);
@@ -1042,27 +1054,6 @@ public class MainActivity extends AppCompatActivity {
                 })
                 .setIcon(R.drawable.ic_coin)
                 .show();
-
-    }
-
-
-    private void dialogReceiveNewArrivalPoint() {
-        Logger.log(TAG, "dialogForgetPassword()");
-        String title = "You have received +" + Constants.AWARD_SCORE_NEW_ARRIVAL + " points !";
-        String message = "Greeting new arrival !\n" + Constants.AWARD_SCORE_NEW_ARRIVAL + " points is a gift for you. \nEnjoy the community !";
-
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Great !", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Utils.playClickSound(audioManager);
-                    }
-                })
-                .setIcon(R.drawable.ic_coin)
-                .show();
-
     }
 
 
@@ -1090,7 +1081,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case RESULT_ENABLE_OVERLAY_PERMISSION:
-                if (resultCode == Activity.RESULT_OK) {
+                if (resultCode == 0) {
                     overlayPermissionIcon.setImageResource(R.drawable.ic_layers_blue_24dp);
                     Toast.makeText(MainActivity.this,
                             "You have enabled the App On Top features", Toast.LENGTH_SHORT).show();
@@ -1102,7 +1093,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case RESULT_ENABLE_OVERLAY_PERMISSION_FOR_START:
-                if (resultCode ==  Activity.RESULT_OK) {
+                if (resultCode ==  0) {
                     // re call start
                     Toast.makeText(MainActivity.this,
                             "You have enabled the App On Top features", Toast.LENGTH_SHORT).show();
@@ -1112,7 +1103,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this,
                             "Problem to enable the Appear On Top features", Toast.LENGTH_SHORT).show();
                     overlayPermissionIcon.setImageResource(R.drawable.ic_layers_gray_24dp);
-                    //dialogTurnOffBL();
+                    dialogTurnOffBL();
                 }
                 break;
 

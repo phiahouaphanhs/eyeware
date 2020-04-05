@@ -3,11 +3,8 @@ package com.southiny.eyeware.tool;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
-import android.support.constraint.ConstraintLayout;
-import android.support.v7.app.AlertDialog;
 import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.animation.Animation;
@@ -17,6 +14,7 @@ import com.southiny.eyeware.Constants;
 import com.southiny.eyeware.R;
 
 import java.util.Calendar;
+import java.util.Random;
 
 public final class Utils {
 
@@ -26,6 +24,13 @@ public final class Utils {
         } else {
             return String.valueOf(value);
         }
+    }
+
+    public static String getStringDatetimeFromTimestamp(long timestamp) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTimeInMillis(timestamp);
+        return calendar.get(Calendar.DAY_OF_MONTH) + "-" + calendar.get(Calendar.MONTH) + "-" + calendar.get(Calendar.YEAR) +
+                " " + calendar.get(Calendar.HOUR) + ":" + calendar.get(Calendar.MINUTE);
     }
 
     public static String getTransparencyCodeByAlpha(float alpha) {
@@ -107,9 +112,15 @@ public final class Utils {
         view.startAnimation(animation);
     }
 
-    public static void move(View view, Context context) {
+    public static void moveUpDownInfinite(View view, Context context) {
         Animation animation = AnimationUtils.loadAnimation(context,
-                R.anim.move);
+                R.anim.move_up_down_infinite);
+        view.startAnimation(animation);
+    }
+
+    public static void moveLeftRightInfinite(View view, Context context) {
+        Animation animation = AnimationUtils.loadAnimation(context,
+                R.anim.move_left_right_infinite);
         view.startAnimation(animation);
     }
 
@@ -128,6 +139,12 @@ public final class Utils {
     public static void moveUp(View view, Context context) {
         Animation animation = AnimationUtils.loadAnimation(context,
                 R.anim.move_up);
+        view.startAnimation(animation);
+    }
+
+    public static void moveUpLong(View view, Context context) {
+        Animation animation = AnimationUtils.loadAnimation(context,
+                R.anim.move_up_long_fast);
         view.startAnimation(animation);
     }
 
@@ -224,13 +241,43 @@ public final class Utils {
         return "Mystery of nature";
     }
 
-    public static long getReachLevelPoint(int level) {
-        return Constants.AWARD_SCORE_REACH_GOAL_BASE * (level - 1);
+    public static long getDefaultMinScoreOfLevel(int level) {
+        assert level > 1;
+
+        if (level == 2) return Constants.DEFAULT_MIN_SCORE_OF_LEVEL_2;
+
+        if (level == 3) return Constants.DEFAULT_MIN_SCORE_OF_LEVEL_3;
+
+        if (level == 4) return Constants.DEFAULT_MIN_SCORE_OF_LEVEL_4;
+
+        if (level == 5) return Constants.DEFAULT_MIN_SCORE_OF_LEVEL_5;
+
+        if (level == 6) return Constants.DEFAULT_MIN_SCORE_OF_LEVEL_6;
+
+        if (level == 7) return Constants.DEFAULT_MIN_SCORE_OF_LEVEL_7;
+
+        return getDefaultMinScoreOfLevelAbove7(level);
+    }
+
+    // level > 7
+    private static long getDefaultMinScoreOfLevelAbove7(int level) {
+        return (int) Math.pow(Constants.LEVEL_SCORE_INCREASE_RATE, (level-7)) * Constants.DEFAULT_MIN_SCORE_OF_LEVEL_7;
+    }
+
+    public static long getReachLevelPoints(int level) {
+        return Constants.AWARD_SCORE_LEVEL_UP_BASE * (level - 1);
+    }
+
+    public static long getRandomSurprisePoints() {
+        Random random = new Random();
+        return random.nextInt
+                ((int) (Constants.AWARD_SCORE_SURPRISE_MAX + 1 - Constants.AWARD_SCORE_SURPRISE_MIN))
+                + Constants.AWARD_SCORE_SURPRISE_MIN;
     }
 
     public static void setMidnightAlarmIfNotExist(Context context, int hour, int minute) {
 
-        if (checkIfHasAlarm(context)) {
+        if (hasAlarm(context)) {
             Logger.log("Utils", "already has alarm, don't set it");
         } else {
             Logger.log("Utils", "no alarm yet, set it");
@@ -251,6 +298,23 @@ public final class Utils {
 
             alarmMgr.setInexactRepeating(AlarmManager.RTC, calendar.getTimeInMillis(),
                     AlarmManager.INTERVAL_DAY, alarmIntent);
+        }
+    }
+
+    public static void unSetMidNightAlarmIfExist(Context context) {
+        if (hasAlarm(context)) {
+
+            //and stopping
+            AlarmManager alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            Intent intent = new Intent(context, AlarmReceiver.class);//the same as up
+            intent.setAction(AlarmReceiver.ACTION_ALARM_RECEIVER);//the same as up
+            PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1001, intent, PendingIntent.FLAG_CANCEL_CURRENT);//the same as up
+            assert alarmMgr != null;
+            alarmMgr.cancel(pendingIntent);//important
+            pendingIntent.cancel();//important
+
+        } else {
+            Logger.log("Utils", "alarm has never been set");
         }
     }
 
@@ -277,12 +341,11 @@ public final class Utils {
         Log.d(TAG, "alarm is " + (isWorking ? "" : "not") + " working...");
     }*/
 
-    private static boolean checkIfHasAlarm(Context context) {
+    private static boolean hasAlarm(Context context) {
         //checking if alarm is working with pendingIntent
         Intent intent = new Intent(context, AlarmReceiver.class);//the same as up
         intent.setAction(AlarmReceiver.ACTION_ALARM_RECEIVER);//the same as up
-        boolean isWorking = (PendingIntent.getBroadcast(context, 1001, intent, PendingIntent.FLAG_NO_CREATE) != null);//just changed the flag
-        return isWorking;
+        return (PendingIntent.getBroadcast(context, 1001, intent, PendingIntent.FLAG_NO_CREATE) != null);//just changed the flag
     }
 
     public static void playClickSound(AudioManager audioManager) {

@@ -70,7 +70,7 @@ public class BlueLightFilterService extends Service {
 
             Logger.log(TAG, "gain point ! +" + newPoints);
 
-            scoring = SQLRequest.getRun().getScoring();
+            Scoring scoring = SQLRequest.getRun().getScoring();
             scoring.gainPoints(newPoints);
             gainPointHandler.postDelayed(this,
                     Constants.DEFAULT_EARN_SCREEN_FILTER_POINT_EVERY_SEC * 1000);
@@ -115,7 +115,6 @@ public class BlueLightFilterService extends Service {
         ProtectionMode pm = SQLRequest.getRun().getCurrentProtectionMode();
         sfs = pm.getActivatedScreenFiltersByOrder();
         currentFilterIndex = sfs.size() - 1;
-        scoring = SQLRequest.getRun().getScoring();
 
         /****** FOREGROUND ************/
 
@@ -156,7 +155,7 @@ public class BlueLightFilterService extends Service {
             // receive only from clock service (auto change filter only, not manual)
             case ADD_CODE:
                 // gain point when auto changed
-                scoring = SQLRequest.getRun().getScoring();
+                Scoring scoring = SQLRequest.getRun().getScoring();
                 Logger.log(TAG, "gain point ! +" + Constants.DEFAULT_UNIT_SCORE_CHANGE_SCREEN_FILTER);
                 scoring.gainPoints(Constants.DEFAULT_UNIT_SCORE_CHANGE_SCREEN_FILTER);
                 if (Main2Activity.isActivityRunning) {

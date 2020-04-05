@@ -9,6 +9,7 @@ import android.media.AudioManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
@@ -25,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.southiny.eyeware.database.SQLRequest;
+import com.southiny.eyeware.database.model.Award;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
@@ -32,6 +34,7 @@ import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.service.BlueLightFilterService;
 import com.southiny.eyeware.service.ClockService;
+import com.southiny.eyeware.tool.AwardCard;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.ColorFilterLinearLayout;
 import com.southiny.eyeware.tool.Logger;
@@ -48,6 +51,7 @@ public class Main2Activity extends AppCompatActivity {
     private Run run;
     private ProtectionMode pm;
     private ParentalControl pctrl;
+    private Scoring scoring;
     private AudioManager audioManager;
 
     private SeekBar dimBar, alphaBar;
@@ -97,7 +101,25 @@ public class Main2Activity extends AppCompatActivity {
             lockScreenSecondTextView.setText(zbs(sec));
 
             cpt++;
+
+            // earn foreground surprise points
+            if (cpt % Constants.DEFAULT_EARN_SURPRISE_POINT_FOREGROUND_EVERY_SEC == 0) {
+                // earn surprise award
+                long newPoints = Utils.getRandomSurprisePoints();
+                scoring.gainPoints(newPoints);
+                String message = "Surprise gift from our admin !";
+                dialogReceivePoints(newPoints, message, "Wow !");
+                updateScoring();
+            }
+
+
             if (cpt % Constants.DEFAULT_EARN_SCREEN_FILTER_POINT_EVERY_SEC == 0) {
+
+                checkLevelUp();
+                checkEarnTodayPerformancePoints();
+                checkSurprisePoints();
+
+                // update anyway
                 updateScoring();
             }
 
@@ -123,12 +145,28 @@ public class Main2Activity extends AppCompatActivity {
         lockScreenMinuteTextView = findViewById(R.id.lockscreen_minute_count);
         lockScreenSecondTextView = findViewById(R.id.lockscreen_second_count);
 
-        totalScoreTextView = findViewById(R.id.total_score_text);
+        totalScoreTextView = findViewById(R.id.total_score);
         todayScoreTextView = findViewById(R.id.today_score);
         levelTextView = findViewById(R.id.score_level_text);
 
         LinearLayout mainLayout = findViewById(R.id.main_layout);
-        Utils.moveUp(mainLayout, getApplicationContext());
+        Utils.moveUpLong(mainLayout, getApplicationContext());
+
+        LinearLayout breakClockLayout = findViewById(R.id.computer_mode_field);
+        Utils.moveRightLeft(breakClockLayout, getApplicationContext());
+
+        final LinearLayout scoringBoard = findViewById(R.id.component_scoring);
+        Utils.moveLeftRight(scoringBoard, getApplicationContext());
+
+        ConstraintLayout blAndLockClockLayout = findViewById(R.id.dark_pattern_field);
+        Utils.moveRightLeft(blAndLockClockLayout, getApplicationContext());
+
+        /*(new Handler()).postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Utils.moveLeftRightInfinite(scoringBoard, getApplicationContext());
+            }
+        }, 3000);*/
 
 
         /***************************/
@@ -139,7 +177,35 @@ public class Main2Activity extends AppCompatActivity {
         pm = run.getCurrentProtectionMode();
         pctrl = run.getParentalControl();
 
+        scoring = run.getScoring();
+
+        /* **** check awards **********/
+
+        // checkout award
+
+        if (scoring.getEarnCheckoutAward() > 0) {
+            // checkout !
+            long newPoints = Constants.AWARD_SCORE_CHECKOUT * scoring.getEarnCheckoutAward();
+            scoring.earnCheckoutAward(newPoints);
+            Logger.log(TAG, "receive checkout point !!");
+            String message = "Checkout " + getString(R.string.app_name) + " every day to earn daily checkout points";
+            dialogReceivePoints(newPoints, message, "Great !");
+        }
+
+        // others
+
+        checkLevelUp();
+        checkEarnTodayPerformancePoints();
+        checkSurprisePoints();
+
+        // update UI
+
+        updateScoring();
+
         /**********/
+
+        TextView goalScoreTextView = findViewById(R.id.goal_score);
+        goalScoreTextView.setText(String.valueOf(scoring.getGoalPoints()));
 
         final TextView plTextView = findViewById(R.id.current_protection_level_text_view);
         if (pm.isBreakingActivated()) {
@@ -256,13 +322,33 @@ public class Main2Activity extends AppCompatActivity {
         breakingModeIcon.setImageResource(dw);
 
         miracleIcon = findViewById(R.id.miracle_icon_in_clock);
-        Utils.move(miracleIcon, getApplicationContext());
+        Utils.moveUpDownInfinite(miracleIcon, getApplicationContext());
         miracleIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Utils.clickAnimate(view, getApplicationContext());
                 Utils.playClickSound(audioManager);
                 dialogAboutApp();
+            }
+        });
+
+        ImageView awardIcon = findViewById(R.id.award_icon);
+        awardIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
+                dialogAwardList();
+            }
+        });
+
+        ImageView howToGainPointIcon = findViewById(R.id.how_to_earn_icon);
+        howToGainPointIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
+                dialogHowToGainPoint();
             }
         });
 
@@ -357,36 +443,6 @@ public class Main2Activity extends AppCompatActivity {
         Logger.log(TAG, "bind to " + BlueLightFilterService.TAG + "...");
         Intent in = new Intent(this, BlueLightFilterService.class);
         bindService(in, blConnection, Context.BIND_AUTO_CREATE);
-
-        Scoring scoring = run.getScoring();
-
-        /* **** today checkout **********/
-
-
-        int earn = scoring.getEarnCheckoutAward();
-        if (earn > 0) {
-            // checkout !
-            long newPoint = Constants.AWARD_SCORE_CHECKOUT * earn;
-            scoring.gainPoints(newPoint);
-            scoring.setEarnCheckoutAward(0);
-            scoring.save();
-            Logger.log(TAG, "receive checkout point !!");
-            dialogReceiveCheckoutPoint(newPoint);
-        }
-
-        /* **** level up checkout **********/
-
-        earn = scoring.getEarnLevelUpAward();
-        if (earn > 0) {
-            // level up
-            long newPoints = scoring.getScoreEarnedForLevelUp();
-            scoring.gainPoints(newPoints);
-            scoring.setEarnLevelUpAward(0);
-            scoring.setScoreEarnedForLevelUp(0);
-            scoring.save();
-            Logger.log(TAG, "receive level up point !!");
-            dialogReceiveLevelUpPoint(newPoints, earn, scoring.getScoreLevel());
-        }
     }
 
     @Override
@@ -405,6 +461,7 @@ public class Main2Activity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         Logger.log(TAG, "onStop()");
+
         isActivityRunning = false;
     }
 
@@ -529,7 +586,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     private void updateScoring() {
-        Scoring scoring = SQLRequest.getRun().getScoring();
+        scoring = SQLRequest.getRun().getScoring();
         long todayScore = scoring.getScoreOfToday();
         long totalScore = scoring.getScoreTotal();
         int level = scoring.getScoreLevel();
@@ -541,6 +598,45 @@ public class Main2Activity extends AppCompatActivity {
         levelTextView.setText(String.valueOf(level));
 
 
+    }
+
+    private void checkLevelUp() {
+        scoring = SQLRequest.getRun().getScoring();
+        int earn = scoring.getEarnLevelUpAward();
+        if ( earn > 0) {
+            // level up
+            long newPoints = scoring.getScoreEarnedForLevelUp();
+            scoring.earnLevelUpAward(newPoints);
+            Logger.log(TAG, "receive level up point !!");
+            String message = "For " + earn + " level up !\n" +
+                    "You've reached level " + scoring.getScoreLevel() + " which require more than " +
+                    Utils.getDefaultMinScoreOfLevel(scoring.getScoreLevel()) + " points !";
+            dialogReceivePoints(newPoints,  message, "Youpy !");
+        }
+    }
+
+    private void checkSurprisePoints() {
+        scoring = SQLRequest.getRun().getScoring();
+        if ( scoring.getScoreEarnedForSurprise() > 0) {
+            // earn surprise !
+            long newPoints = scoring.getScoreEarnedForSurprise();
+            scoring.earnSurpriseAward(newPoints);
+            Logger.log(TAG, "receive surprise point !!");
+            String message = "Surprise gift from our admin !";
+            dialogReceivePoints(newPoints, message, "Wow !");
+        }
+    }
+
+    private void checkEarnTodayPerformancePoints() {
+        scoring = SQLRequest.getRun().getScoring();
+        if (!scoring.isHasEarnTodayPerformance() && scoring.getScoreOfToday() >= scoring.getGoalPoints()) {
+            // earn today performance !
+            long newPoints = scoring.getScoreEarnedForTodayPerformance();
+            scoring.earnTodayPerformanceAward(newPoints);
+            Logger.log(TAG, "receive today performance point !!");
+            String message = "For today out performed ! You have reach x2 goal points\nGood job ^^b !";
+            dialogReceivePoints(newPoints, message, "Oh La La !");
+        }
     }
 
     private void addFilterCards() {
@@ -623,7 +719,7 @@ public class Main2Activity extends AppCompatActivity {
                         (new Handler()).postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                Utils.move(miracleIcon, getApplicationContext());
+                                Utils.moveUpDownInfinite(miracleIcon, getApplicationContext());
                             }
                         }, 2000);
                     }
@@ -647,34 +743,13 @@ public class Main2Activity extends AppCompatActivity {
                 .show();
     }
 
-    private void dialogReceiveCheckoutPoint(long newPoints) {
+    private void dialogReceivePoints(long newPoints, String message, String buttonTitle) {
         String title = "You have received +" + newPoints + " points !";
-        String message = "Checkout " + getString(R.string.app_name) + " every day to earn daily checkout points";
-
-        new AlertDialog.Builder(this)
-                .setTitle(title)
-                .setMessage(message)
-                .setPositiveButton("Great !", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        Utils.playClickSound(audioManager);
-                    }
-                })
-                .setIcon(R.drawable.ic_coin)
-                .show();
-
-    }
-
-    private void dialogReceiveLevelUpPoint(long receivePoints, int nbLevelUp, int level) {
-        String title = "You have received +" + receivePoints + " points !";
-        String message = "For " + nbLevelUp + " level up !\n" +
-                "You've reached level " + level + " which require more than " +
-                Constants.getDefaultMinScoreOfLevel(level) + " points !";
 
         new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                 .setTitle(title)
                 .setMessage(message)
-                .setPositiveButton("Youpy !", new DialogInterface.OnClickListener() {
+                .setPositiveButton(buttonTitle, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Utils.playClickSound(audioManager);
@@ -682,9 +757,51 @@ public class Main2Activity extends AppCompatActivity {
                 })
                 .setIcon(R.drawable.ic_coin)
                 .show();
-
     }
 
+    private void dialogAwardList() {
+        Logger.log(TAG, "dialogAwardList()");
+        LayoutInflater inflater = this.getLayoutInflater();
+        View globeLayout = inflater.inflate(R.layout.component_award_list, null);
+        LinearLayout cardsLayout = globeLayout.findViewById(R.id.award_card_layout);
+
+        ArrayList<Award> awards = SQLRequest.getAwards();
+
+        for (int i = awards.size() - 1; i > 0; i--) {
+            cardsLayout.addView(new AwardCard(getApplicationContext(), awards.get(i)));
+        }
+
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
+                .setTitle("My Awards")
+                .setView(globeLayout)
+                .setPositiveButton("Close", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Utils.playClickSound(audioManager);
+                    }
+                })
+                .setIcon(R.drawable.ic_coin_accent)
+                .show();
+    }
+
+    private void dialogHowToGainPoint() {
+        String title = "How to gain points ?";
+
+        LayoutInflater inflater = this.getLayoutInflater();
+        View globeLayout = inflater.inflate(R.layout.component_how_to_earn, null);
+
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+                .setTitle(title)
+                .setView(globeLayout)
+                .setPositiveButton("Got ya !", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Utils.playClickSound(audioManager);
+                    }
+                })
+                .setIcon(R.drawable.ic_miracle_9big)
+                .show();
+    }
 
 
     /********* INNER CLASS *****************/

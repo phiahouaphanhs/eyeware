@@ -48,7 +48,7 @@ public class TestActivity extends AppCompatActivity {
     public void move(View view){
         ImageView image = (ImageView)findViewById(R.id.imageView);
         Animation animation1 =
-                AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move);
+                AnimationUtils.loadAnimation(getApplicationContext(), R.anim.move_up_down_infinite);
         image.startAnimation(animation1);
     }
 

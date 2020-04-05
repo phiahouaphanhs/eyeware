@@ -76,7 +76,7 @@
                     android:layout_marginEnd="16dp"
                     android:text="@string/main_unknown_mode"
                     android:textColor="@color/eyeware_black"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:textAlignment="center"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -88,12 +88,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
-                    android:layout_marginBottom="32dp"
                     android:gravity="center"
                     android:text="@string/default_min_sec"
                     android:textColor="@color/eyeware_white"
-                    android:textSize="55sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="40sp"
                     app:layout_constraintEnd_toStartOf="@id/separator"
                     app:layout_constraintTop_toBottomOf="@id/current_protection_level_text_view" />
 
@@ -101,10 +99,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
                     android:gravity="center"
                     android:text="@string/minute_text"
                     android:textColor="@color/eyeware_white"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="@+id/timer_minute_count"
                     app:layout_constraintTop_toBottomOf="@+id/timer_minute_count" />
 
@@ -119,7 +119,7 @@
                     android:gravity="center"
                     android:text="@string/time_separator"
                     android:textColor="@color/eyeware_white"
-                    android:textSize="35sp"
+                    android:textSize="20sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -131,12 +131,10 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="8dp"
-                    android:layout_marginBottom="32dp"
                     android:gravity="center"
                     android:text="@string/default_min_sec"
                     android:textColor="@color/eyeware_white"
-                    android:textSize="55sp"
-                    app:layout_constraintBottom_toBottomOf="parent"
+                    android:textSize="40sp"
                     app:layout_constraintStart_toEndOf="@+id/separator"
                     app:layout_constraintTop_toBottomOf="@id/current_protection_level_text_view" />
 
@@ -144,10 +142,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
+                    android:layout_marginBottom="16dp"
                     android:gravity="center"
                     android:text="@string/second_text"
                     android:textColor="@color/eyeware_white"
-                    android:textSize="15sp"
+                    android:textSize="12sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="@+id/timer_second_count"
                     app:layout_constraintTop_toBottomOf="@+id/timer_second_count" />
 
@@ -160,10 +160,11 @@
 
 
     <LinearLayout
-        android:id="@+id/linearLayout"
+        android:id="@+id/component_scoring"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -183,22 +184,7 @@
         android:padding="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/linearLayout">
-
-
-        <ImageView
-            android:id="@+id/prize_icon"
-            android:layout_width="119dp"
-            android:layout_height="83dp"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/lockscreen_clock"
-            app:layout_constraintStart_toEndOf="@id/bl_clock"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_prize" />
+        app:layout_constraintTop_toBottomOf="@+id/component_scoring">
 
         <android.support.constraint.ConstraintLayout
             android:id="@+id/bl_clock"
@@ -355,19 +341,6 @@
 
         </android.support.constraint.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/score_level_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="1"
-            android:textColor="@color/eyeware_gold"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="@+id/prize_icon"
-            app:layout_constraintStart_toStartOf="@+id/prize_icon"
-            app:layout_constraintTop_toTopOf="@+id/prize_icon" />
-
 
     </android.support.constraint.ConstraintLayout>
 
@@ -396,10 +369,11 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:background="@drawable/layout_round_shape_black"
+        app:layout_constraintBottom_toBottomOf="@+id/dark_pattern_field"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/computer_mode_field"
-        android:background="@drawable/layout_round_shape_black"
+        app:layout_constraintTop_toTopOf="@+id/dark_pattern_field"
         app:srcCompat="@mipmap/ic_launcher_miracle_foreground" />
 
 

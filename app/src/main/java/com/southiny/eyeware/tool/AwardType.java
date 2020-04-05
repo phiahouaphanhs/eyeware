@@ -1,12 +1,9 @@
 package com.southiny.eyeware.tool;
 
-import com.southiny.eyeware.Constants;
-import com.southiny.eyeware.database.SQLRequest;
-
 public enum AwardType {
     EXCELLENCY_AWARD, TODAY_PERFORMANCE_AWARD, SURPRISE_AWARD,
     DOUBLE_SCORE_AWARD, TRIPLE_SCORE_AWARD,
-    REACH_GOAL_AWARD, CHAMPION_AWARD, NEW_ARRIVAL_AWARD, TODAY_CHECKOUT_AWARD;
+    LEVEL_UP_AWARD, CHAMPION_AWARD, NEW_ARRIVAL_AWARD, TODAY_CHECKOUT_AWARD;
 
 
     public static AwardType getAwardTypeByOrdinal(int ordinal) {
@@ -21,7 +18,7 @@ public enum AwardType {
 
         if (ordinal == TRIPLE_SCORE_AWARD.ordinal()) return TRIPLE_SCORE_AWARD;
 
-        if (ordinal == REACH_GOAL_AWARD.ordinal()) return REACH_GOAL_AWARD;
+        if (ordinal == LEVEL_UP_AWARD.ordinal()) return LEVEL_UP_AWARD;
 
         if (ordinal == CHAMPION_AWARD.ordinal()) return CHAMPION_AWARD;
 
@@ -45,8 +42,8 @@ public enum AwardType {
                 return "Double Score Award";
             case TRIPLE_SCORE_AWARD:
                 return "Triple Score Award";
-            case REACH_GOAL_AWARD:
-                return "Goal Reach Award";
+            case LEVEL_UP_AWARD:
+                return "Level Up Award";
             case CHAMPION_AWARD:
                 return "Champion Award";
             case NEW_ARRIVAL_AWARD:
@@ -59,7 +56,7 @@ public enum AwardType {
     }
 
 
-    public long getScore() {
+    /*public long getScore() {
         switch (this) {
             case EXCELLENCY_AWARD:
                 return Constants.AWARD_SCORE_EXCELLENCY;
@@ -71,8 +68,8 @@ public enum AwardType {
                 return SQLRequest.getRun().getScoring().getScoreTotal() * 2;
             case TRIPLE_SCORE_AWARD:
                 return SQLRequest.getRun().getScoring().getScoreTotal() * 3;
-            case REACH_GOAL_AWARD:
-                return Constants.AWARD_SCORE_REACH_GOAL_BASE;
+            case LEVEL_UP_AWARD:
+                return Constants.AWARD_SCORE_LEVEL_UP_BASE;
             case CHAMPION_AWARD:
                 return Constants.AWARD_SCORE_CHAMPION;
             case NEW_ARRIVAL_AWARD:
@@ -82,5 +79,5 @@ public enum AwardType {
             default:
                 return Constants.AWARD_SCORE_DEFAULT;
         }
-    }
+    }*/
 }
