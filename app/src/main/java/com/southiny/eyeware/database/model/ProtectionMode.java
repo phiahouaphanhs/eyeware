@@ -186,31 +186,23 @@ public class ProtectionMode extends Model {
         setScreenFilters(Constants.GAMER_SCREEN_FILTERS_ACTIVATION);
     }
 
-    private void setScreenFilters (final boolean[] SCREEN_FILTERS_ACTIVATION) {
+    private void setScreenFilters (final ScreenFilter[] screenFilters) {
 
-        screenFilter0 = Constants.DEFAULT_SCREEN_FILTERS[0];
-        screenFilter0.setActivated(SCREEN_FILTERS_ACTIVATION[0]);
+        screenFilter0 = screenFilters[0];
 
-        screenFilter1 = Constants.DEFAULT_SCREEN_FILTERS[1];
-        screenFilter1.setActivated(SCREEN_FILTERS_ACTIVATION[1]);
+        screenFilter1 = screenFilters[1];
 
-        screenFilter2 = Constants.DEFAULT_SCREEN_FILTERS[2];
-        screenFilter2.setActivated(SCREEN_FILTERS_ACTIVATION[2]);
+        screenFilter2 = screenFilters[2];
 
-        screenFilter3 = Constants.DEFAULT_SCREEN_FILTERS[3];
-        screenFilter3.setActivated(SCREEN_FILTERS_ACTIVATION[3]);
+        screenFilter3 = screenFilters[3];
 
-        screenFilter4 = Constants.DEFAULT_SCREEN_FILTERS[4];
-        screenFilter4.setActivated(SCREEN_FILTERS_ACTIVATION[4]);
+        screenFilter4 = screenFilters[4];
 
-        screenFilter5 = Constants.DEFAULT_SCREEN_FILTERS[5];
-        screenFilter5.setActivated(SCREEN_FILTERS_ACTIVATION[5]);
+        screenFilter5 = screenFilters[5];
 
-        screenFilter6 = Constants.DEFAULT_SCREEN_FILTERS[6];
-        screenFilter6.setActivated(SCREEN_FILTERS_ACTIVATION[6]);
+        screenFilter6 = screenFilters[6];
 
-        screenFilter7 = Constants.DEFAULT_SCREEN_FILTERS[7];
-        screenFilter7.setActivated(SCREEN_FILTERS_ACTIVATION[7]);
+        screenFilter7 = screenFilters[7];
     }
 
     public void reset() {
@@ -332,7 +324,7 @@ public class ProtectionMode extends Model {
             screenFilters.add(i, screenFilter4);
         }
 
-        if (screenFilter5.isActivated()) screenFilters.add(screenFilter5);{
+        if (screenFilter5.isActivated()) {
             int i = positionToAdd(screenFilter5, screenFilters);
             screenFilters.add(i, screenFilter5);
         }

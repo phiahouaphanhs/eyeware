@@ -47,11 +47,11 @@ public class ScreenFilter extends Model {
         order = 0;
     }
 
-    public ScreenFilter(String code, float dimAmount, float screenAlpha, int order) {
+    public ScreenFilter(String code, float dimAmount, float screenAlpha, boolean isActivated, int order) {
         this.colorCode = code;
         this.dimAmount = dimAmount;
         this.screenAlpha = screenAlpha;
-        isActivated = false;
+        this.isActivated = isActivated;
         this.order = order;
     }
 

@@ -236,13 +236,15 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="32dp"
         android:text="@string/change_lock_screen_time_text"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@color/colorAccent"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/constraintLayout4" />
 
-    <View
+   <!-- <View
         android:id="@+id/divider12"
         android:layout_width="0dp"
         android:layout_height="1dp"
@@ -311,6 +313,6 @@
         android:textColor="@color/eyeware_gray"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintLayout5" />
+        app:layout_constraintTop_toBottomOf="@+id/constraintLayout5" />-->
 
 </android.support.constraint.ConstraintLayout>

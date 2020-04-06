@@ -51,7 +51,7 @@ tools:context=".LockPhoneActivity">
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ic_check_black_24dp"/>
+            android:background="@drawable/ic_check_accent_24dp"/>
 
         <TextView
             android:layout_width="wrap_content"

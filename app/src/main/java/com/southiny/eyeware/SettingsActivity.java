@@ -153,6 +153,7 @@ public class SettingsActivity extends AppCompatActivity {
                         SQLRequest.whatInDB();
                         Run run = SQLRequest.getRun();
                         run.setNewArrival(false);
+                        run.save();
                         Toast.makeText(SettingsActivity.this, "Reset to default complete", Toast.LENGTH_SHORT).show();
                     }
                 })

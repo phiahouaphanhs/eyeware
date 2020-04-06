@@ -125,8 +125,8 @@ public class BlueLightFilterService extends Service {
 
         Notification notification =
                 new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
-                        .setContentTitle("Tap to manage screen filter")
-                        // .setContentText(getText(R.string.notification_message))
+                        .setContentTitle("Program is running")
+                        .setContentText("Tap to manage")
                         .setSmallIcon(R.drawable.ic_miracle_head2)
                         .setContentIntent(pendingIntent)
                         .setShowWhen(false) // to hide timestamp

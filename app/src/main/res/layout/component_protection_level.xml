@@ -54,7 +54,8 @@
             android:padding="@dimen/fab_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_edit_black_24dp" />
+            style="@style/AlertDialog.AppCompat.Light"
+            app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
         <ImageView
             android:id="@+id/high_level_check_icon"
@@ -67,7 +68,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_check_black_24dp" />
+            app:srcCompat="@drawable/ic_check_accent_24dp" />
 
         <Button
             android:id="@+id/standard_button"
@@ -95,7 +96,7 @@
             android:padding="@dimen/fab_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/high_button"
-            app:srcCompat="@drawable/ic_edit_black_24dp" />
+            app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
         <ImageView
             android:id="@+id/standard_level_check_icon"
@@ -108,7 +109,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/high_button"
-            app:srcCompat="@drawable/ic_check_black_24dp" />
+            app:srcCompat="@drawable/ic_check_accent_24dp" />
 
         <ImageView
             android:id="@+id/low_mode_edit_icon"
@@ -119,7 +120,7 @@
             android:padding="@dimen/fab_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/standard_button"
-            app:srcCompat="@drawable/ic_edit_black_24dp" />
+            app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
         <Button
             android:id="@+id/low_button"
@@ -149,7 +150,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/standard_button"
-            app:srcCompat="@drawable/ic_check_black_24dp" />
+            app:srcCompat="@drawable/ic_check_accent_24dp" />
 
         <ImageView
             android:id="@+id/gamer_mode_edit_icon"
@@ -160,7 +161,7 @@
             android:padding="@dimen/fab_margin"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/low_button"
-            app:srcCompat="@drawable/ic_edit_black_24dp" />
+            app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
         <Button
             android:id="@+id/gamer_button"
@@ -192,7 +193,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/low_button"
-            app:srcCompat="@drawable/ic_check_black_24dp" />
+            app:srcCompat="@drawable/ic_check_accent_24dp" />
 
         <ImageView
             android:id="@+id/customised_level_check_icon"
@@ -205,7 +206,7 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/gamer_button"
-            app:srcCompat="@drawable/ic_check_black_24dp" />
+            app:srcCompat="@drawable/ic_check_accent_24dp" />
 
     </android.support.constraint.ConstraintLayout>
 

@@ -13,7 +13,6 @@
         android:layout_marginTop="24dp"
         android:text="@string/filter_colors_label"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-        android:textColor="@color/eyeware_black"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,7 +48,7 @@
         android:padding="4dp"
         app:layout_constraintEnd_toEndOf="@+id/layout_change_color_gold"
         app:layout_constraintTop_toTopOf="@+id/layout_change_color_gold"
-        app:srcCompat="@drawable/ic_edit_black_24dp" />
+        app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
     <LinearLayout
         android:id="@+id/layout_change_color_green"
@@ -83,7 +82,7 @@
         android:padding="4dp"
         app:layout_constraintEnd_toEndOf="@+id/layout_change_color_green"
         app:layout_constraintTop_toTopOf="@+id/layout_change_color_green"
-        app:srcCompat="@drawable/ic_edit_black_24dp" />
+        app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
     <LinearLayout
         android:id="@+id/layout_change_color_pink"
@@ -117,7 +116,7 @@
         android:padding="4dp"
         app:layout_constraintEnd_toEndOf="@+id/layout_change_color_pink"
         app:layout_constraintTop_toTopOf="@+id/layout_change_color_pink"
-        app:srcCompat="@drawable/ic_edit_black_24dp" />
+        app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
     <LinearLayout
         android:id="@+id/layout_change_color_brown"
@@ -152,7 +151,7 @@
         android:padding="4dp"
         app:layout_constraintEnd_toEndOf="@+id/layout_change_color_brown"
         app:layout_constraintTop_toTopOf="@+id/layout_change_color_brown"
-        app:srcCompat="@drawable/ic_edit_black_24dp" />
+        app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
     <LinearLayout
         android:id="@+id/layout_change_color_purple"
@@ -185,7 +184,7 @@
         android:padding="4dp"
         app:layout_constraintEnd_toEndOf="@+id/layout_change_color_purple"
         app:layout_constraintTop_toTopOf="@+id/layout_change_color_purple"
-        app:srcCompat="@drawable/ic_edit_black_24dp" />
+        app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
     <LinearLayout
         android:id="@+id/layout_change_color_red"
@@ -220,7 +219,7 @@
         android:padding="4dp"
         app:layout_constraintEnd_toEndOf="@+id/layout_change_color_red"
         app:layout_constraintTop_toTopOf="@+id/layout_change_color_red"
-        app:srcCompat="@drawable/ic_edit_black_24dp" />
+        app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
     <LinearLayout
         android:id="@+id/layout_change_color_orange"
@@ -256,7 +255,7 @@
         android:padding="4dp"
         app:layout_constraintEnd_toEndOf="@+id/layout_change_color_orange"
         app:layout_constraintTop_toTopOf="@+id/layout_change_color_orange"
-        app:srcCompat="@drawable/ic_edit_black_24dp" />
+        app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
 
     <LinearLayout
@@ -292,7 +291,7 @@
         android:padding="4dp"
         app:layout_constraintEnd_toEndOf="@+id/layout_change_color_blue"
         app:layout_constraintTop_toTopOf="@+id/layout_change_color_blue"
-        app:srcCompat="@drawable/ic_edit_black_24dp" />
+        app:srcCompat="@drawable/ic_edit_accent_24dp" />
 
     <View
         android:id="@+id/divider"

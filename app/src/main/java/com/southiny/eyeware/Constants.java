@@ -1,6 +1,7 @@
 package com.southiny.eyeware;
 
 import com.reactiveandroid.query.Delete;
+import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.tool.AwardType;
 import com.southiny.eyeware.tool.BreakingMode;
@@ -31,14 +32,14 @@ public final class Constants {
     public static final int DEFAULT_ALPHA_MIN_PERCENT = 10; // %
 
     public static final ScreenFilter[] DEFAULT_SCREEN_FILTERS = {
-            new ScreenFilter( "#555500", 0.47F,  0.14F, 1),
-            new ScreenFilter("#FF0309", 0.47F,  0.14F, 2),
-            new ScreenFilter( "#FFB102", 0.47F,  0.14F, 3),
-            new ScreenFilter( "#00AA00", 0.47F,  0.14F, 4),
-            new ScreenFilter( "#04FFD0", 0.47F,  0.14F, 5),
-            new ScreenFilter( "#FFE401", 0.28F,  0.14F, 6),
-            new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, 7),
-            new ScreenFilter( "#06F0FF", 0.36F,  0.15F, 8),
+            new ScreenFilter( "#555500", 0.47F,  0.14F, true, 1),
+            new ScreenFilter( "#FF0309", 0.47F,  0.14F, true, 2),
+            new ScreenFilter( "#FFB102", 0.47F,  0.14F, true, 3),
+            new ScreenFilter( "#00AA00", 0.47F,  0.14F, true, 4),
+            new ScreenFilter( "#04FFD0", 0.47F,  0.14F, true, 5),
+            new ScreenFilter( "#FFE401", 0.28F,  0.14F, true, 6),
+            new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, true, 7),
+            new ScreenFilter( "#06F0FF", 0.36F,  0.15F, true, 8),
     };
 
     /*****************/
@@ -57,15 +58,15 @@ public final class Constants {
     public static final int HIGH_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 10 * 60;
     public static final boolean HIGH_BLUELIGHT_FILTER_CHANGE = true;
     public static final BreakingMode HIGH_BREAKING_MODE = BreakingMode.STRONG;
-    public static final boolean[] HIGH_SCREEN_FILTERS_ACTIVATION = {
-            true,
-            true,
-            true,
-            true,
-            false,
-            false,
-            false,
-            false
+    public static final ScreenFilter[] HIGH_SCREEN_FILTERS_ACTIVATION = {
+            new ScreenFilter( "#555500", 0.47F,  0.14F, true, 1),
+            new ScreenFilter( "#FF0309", 0.47F,  0.14F, true, 2),
+            new ScreenFilter( "#FFB102", 0.47F,  0.14F, true, 3),
+            new ScreenFilter( "#00AA00", 0.47F,  0.14F, true, 4),
+            new ScreenFilter( "#04FFD0", 0.47F,  0.14F, true, 5),
+            new ScreenFilter( "#FFE401", 0.28F,  0.14F, true, 6),
+            new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, true, 7),
+            new ScreenFilter( "#06F0FF", 0.36F,  0.15F, true, 8),
     };
 
     public static final int STANDARD_BREAKING_EVERY_SEC =  20 * 60;
@@ -74,15 +75,15 @@ public final class Constants {
     public static final int STANDARD_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 20 * 60;
     public static final boolean STANDARD_BLUELIGHT_FILTER_CHANGE = true;
     public static final BreakingMode STANDARD_BREAKING_MODE = BreakingMode.MEDIUM;
-    public static final boolean[] STANDARD_SCREEN_FILTERS_ACTIVATION = {
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
-            true,
+    public static final ScreenFilter[] STANDARD_SCREEN_FILTERS_ACTIVATION = {
+            new ScreenFilter( "#555500", 0.47F,  0.14F, true, 1),
+            new ScreenFilter( "#FF0309", 0.47F,  0.14F, true, 2),
+            new ScreenFilter( "#FFB102", 0.47F,  0.14F, true, 3),
+            new ScreenFilter( "#00AA00", 0.47F,  0.14F, true, 4),
+            new ScreenFilter( "#04FFD0", 0.47F,  0.14F, true, 5),
+            new ScreenFilter( "#FFE401", 0.28F,  0.14F, true, 6),
+            new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, true, 7),
+            new ScreenFilter( "#06F0FF", 0.36F,  0.15F, true, 8),
     };
 
     public static final int LOW_BREAKING_EVERY_SEC =  30 * 60;
@@ -91,15 +92,15 @@ public final class Constants {
     public static final int LOW_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 30 * 60;
     public static final boolean LOW_BLUELIGHT_FILTER_CHANGE = true;
     public static final BreakingMode LOW_BREAKING_MODE = BreakingMode.LIGHT;
-    public static final boolean[] LOW_SCREEN_FILTERS_ACTIVATION = {
-            true,
-            true,
-            true,
-            true,
-            false,
-            false,
-            false,
-            false
+    public static final ScreenFilter[] LOW_SCREEN_FILTERS_ACTIVATION = {
+            new ScreenFilter( "#555500", 0.47F,  0.14F, true, 1),
+            new ScreenFilter( "#FF0309", 0.47F,  0.14F, true, 2),
+            new ScreenFilter( "#FFB102", 0.47F,  0.14F, true, 3),
+            new ScreenFilter( "#00AA00", 0.47F,  0.14F, true, 4),
+            new ScreenFilter( "#04FFD0", 0.47F,  0.14F, true, 5),
+            new ScreenFilter( "#FFE401", 0.28F,  0.14F, true, 6),
+            new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, true, 7),
+            new ScreenFilter( "#06F0FF", 0.36F,  0.15F, true, 8),
     };
 
     public static final int GAMER_BREAKING_EVERY_SEC =  60 * 60;
@@ -108,15 +109,15 @@ public final class Constants {
     public static final int GAMER_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 10 * 60;
     public static final boolean GAMER_BLUELIGHT_FILTER_CHANGE = true;
     public static final BreakingMode GAMER_BREAKING_MODE = BreakingMode.LIGHT;
-    public static final boolean[] GAMER_SCREEN_FILTERS_ACTIVATION = {
-            true,
-            true,
-            true,
-            true,
-            false,
-            false,
-            false,
-            false
+    public static final ScreenFilter[] GAMER_SCREEN_FILTERS_ACTIVATION = {
+            new ScreenFilter( "#555500", 0.47F,  0.14F, true, 1),
+            new ScreenFilter( "#FF0309", 0.47F,  0.14F, true, 2),
+            new ScreenFilter( "#FFB102", 0.47F,  0.14F, true, 3),
+            new ScreenFilter( "#00AA00", 0.47F,  0.14F, true, 4),
+            new ScreenFilter( "#04FFD0", 0.47F,  0.14F, true, 5),
+            new ScreenFilter( "#FFE401", 0.28F,  0.14F, true, 6),
+            new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, true, 7),
+            new ScreenFilter( "#06F0FF", 0.36F,  0.15F, true, 8),
     };
 
 

@@ -22,7 +22,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="20dp"
             android:contentDescription="@string/content_description_check_breaking_icon"
-            android:src="@drawable/ic_check_black_24dp"
+            android:src="@drawable/ic_check_accent_24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -80,7 +80,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="12dp"
             android:contentDescription="@string/content_description_check_breaking_icon"
-            android:src="@drawable/ic_check_black_24dp"
+            android:src="@drawable/ic_check_accent_24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

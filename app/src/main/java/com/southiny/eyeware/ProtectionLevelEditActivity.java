@@ -17,14 +17,12 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.SeekBar;
 import android.widget.Switch;
@@ -599,9 +597,11 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             public void onColorSelected(ColorEnvelope colorEnvelope) {
                 Logger.log(TAG, "onColorSelected()");
 
-                temp_selectedColorCode  = '#' + colorEnvelope.getColorHtml();
+                boolean isNotWhite = isNotWhite(colorPickerView.getSelectorX(), colorPickerView.getSelectorY());
 
-                setActivateSeekBars(colorPickerView.getSelectorX(), colorPickerView.getSelectorY());
+                if (isNotWhite) {
+                    temp_selectedColorCode  = '#' + colorEnvelope.getColorHtml();
+                }
 
                 String text = temp_selectedColorCode;
                 selectResultTextView.setText(text);
@@ -626,14 +626,8 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
             }
 
-            private void setActivateSeekBars(float x, float y) {
-                if (x != 328F && y != 328F) {
-                    dimBar.setEnabled(true);
-                    alphaBar.setEnabled(true);
-                } else {
-                    dimBar.setEnabled(false);
-                    alphaBar.setEnabled(false);
-                }
+            private boolean isNotWhite(float x, float y) {
+                return (x != 328F && y != 328F);
             }
         });
 
@@ -688,7 +682,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
         final AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(changeColorCodeLayout)
-                .setIcon(R.drawable.ic_edit_black_24dp)
+                .setIcon(R.drawable.ic_edit_accent_24dp)
                 .setCancelable(false)
                 .show();
 

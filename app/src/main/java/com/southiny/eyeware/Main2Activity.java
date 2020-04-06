@@ -106,7 +106,7 @@ public class Main2Activity extends AppCompatActivity {
             if (cpt % Constants.DEFAULT_EARN_SURPRISE_POINT_FOREGROUND_EVERY_SEC == 0) {
                 // earn surprise award
                 long newPoints = Utils.getRandomSurprisePoints();
-                scoring.gainPoints(newPoints);
+                scoring.earnSurpriseAward(newPoints);
                 String message = "Surprise gift from our admin !";
                 dialogReceivePoints(newPoints, message, "Wow !");
                 updateScoring();
@@ -205,7 +205,7 @@ public class Main2Activity extends AppCompatActivity {
         /**********/
 
         TextView goalScoreTextView = findViewById(R.id.goal_score);
-        goalScoreTextView.setText(String.valueOf(scoring.getGoalPoints()));
+        goalScoreTextView.setText(String.valueOf(scoring.getGoalPoints() * 2));
 
         final TextView plTextView = findViewById(R.id.current_protection_level_text_view);
         if (pm.isBreakingActivated()) {
@@ -415,12 +415,12 @@ public class Main2Activity extends AppCompatActivity {
 
         if (!pm.isBreakingActivated()) {
             ImageView checkedBreakingIcon = findViewById(R.id.icon_check_breaking);
-            checkedBreakingIcon.setImageResource(R.drawable.ic_close_black_24dp);
+            checkedBreakingIcon.setImageResource(R.drawable.ic_close_accent_24dp);
         }
 
         if (!pm.isBluelightFiltering()) {
             ImageView checkedBLIcon = findViewById(R.id.icon_check_bluelight);
-            checkedBLIcon.setImageResource(R.drawable.ic_close_black_24dp);
+            checkedBLIcon.setImageResource(R.drawable.ic_close_accent_24dp);
         }
 
         updateScoring();
@@ -785,7 +785,7 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     private void dialogHowToGainPoint() {
-        String title = "How to gain points ?";
+        String title = "How to earn points ?";
 
         LayoutInflater inflater = this.getLayoutInflater();
         View globeLayout = inflater.inflate(R.layout.component_how_to_earn, null);

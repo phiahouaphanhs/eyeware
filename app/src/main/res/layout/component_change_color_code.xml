@@ -22,9 +22,7 @@
             android:layout_marginTop="16dp"
             android:text="Choose Filter Color"
             android:textAlignment="center"
-            android:textColor="@color/eyeware_black"
-            android:textSize="20sp"
-            android:textStyle="bold"
+            android:textAppearance="@style/TextAppearance.AppCompat.Light.SearchResult.Title"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.skydoves.colorpickerpreference.ColorPickerView
@@ -49,7 +47,7 @@
             android:layout_marginTop="16dp"
             android:layout_marginEnd="32dp"
             android:text="Color Code"
-            android:textColor="@color/eyeware_black"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/colorPickerView" />
 
@@ -60,7 +58,7 @@
             android:layout_marginStart="32dp"
             android:layout_marginTop="16dp"
             android:text="Color Temperature"
-            android:textColor="@color/eyeware_black"
+            android:textAppearance="@style/TextAppearance.AppCompat.Small"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/colorPickerView" />
 
@@ -107,7 +105,59 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <include layout="@layout/component_dim_alpha_ajust" />
+            <android.support.constraint.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/brightess_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="24dp"
+                    android:text="@string/screen_brightness_label"
+                    android:textColor="@color/eyeware_black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+                <SeekBar
+                    android:id="@+id/brightness_level_seek_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/brightess_label" />
+
+                <TextView
+                    android:id="@+id/transparency_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="48dp"
+                    android:text="@string/filter_transparency_label"
+                    android:textColor="@color/eyeware_black"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/brightness_level_seek_bar" />
+
+
+                <SeekBar
+                    android:id="@+id/transparency_level_seek_bar"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="32dp"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="32dp"
+                    android:layout_marginBottom="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/transparency_label" />
+
+            </android.support.constraint.ConstraintLayout>
 
         </LinearLayout>
 
@@ -129,6 +179,7 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/layout_round_shape_cream"
                 android:padding="8dp"
+                android:textColor="@color/eyeware_black"
                 android:text="1" />
 
             <RadioButton
@@ -138,6 +189,7 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/layout_round_shape_cream"
                 android:padding="8dp"
+                android:textColor="@color/eyeware_black"
                 android:text="2" />
 
             <RadioButton
@@ -147,6 +199,7 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/layout_round_shape_cream"
                 android:padding="8dp"
+                android:textColor="@color/eyeware_black"
                 android:text="3" />
 
             <RadioButton
@@ -156,6 +209,7 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/layout_round_shape_cream"
                 android:padding="8dp"
+                android:textColor="@color/eyeware_black"
                 android:text="4" />
 
         </LinearLayout>
@@ -178,6 +232,7 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/layout_round_shape_cream"
                 android:padding="8dp"
+                android:textColor="@color/eyeware_black"
                 android:text="5" />
 
             <RadioButton
@@ -187,6 +242,7 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/layout_round_shape_cream"
                 android:padding="8dp"
+                android:textColor="@color/eyeware_black"
                 android:text="6" />
 
 
@@ -197,6 +253,7 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/layout_round_shape_cream"
                 android:padding="8dp"
+                android:textColor="@color/eyeware_black"
                 android:text="7" />
 
             <RadioButton
@@ -206,6 +263,7 @@
                 android:layout_margin="8dp"
                 android:background="@drawable/layout_round_shape_cream"
                 android:padding="8dp"
+                android:textColor="@color/eyeware_black"
                 android:text="8" />
 
         </LinearLayout>

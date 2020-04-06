@@ -3,17 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.southiny.eyeware">
 
-    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-    <uses-permission android:name="android.permission.VIBRATE" /> <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <!--<uses-permission android:name="android.permission.VIBRATE" />--> <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <!--<uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD" /> -->
     <uses-permission
         android:name="android.permission.BIND_DEVICE_ADMIN"
         tools:ignore="ProtectedPermissions" />
-    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <!--<uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />-->
 
     <application
         android:allowBackup="true"

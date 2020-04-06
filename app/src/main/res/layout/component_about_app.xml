@@ -90,8 +90,8 @@
 
                         <ImageView
                             android:id="@+id/covid_icon"
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
                             android:layout_margin="@dimen/fab_margin"
                             app:srcCompat="@drawable/ic_covid"
                             tools:layout_editor_absoluteX="59dp"
@@ -116,7 +116,6 @@
                             android:text="This app is a solution for you"
                             android:textAlignment="center"
                             android:textColor="@color/colorAccent"
-                            android:textSize="18sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>

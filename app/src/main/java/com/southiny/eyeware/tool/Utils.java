@@ -60,7 +60,9 @@ public final class Utils {
     public static long getBluelightFilteringPoints(float dim, float alpha) {
         float percent = (dim + alpha) / 2F;
 
-        return (long) (percent * Constants.DEFAULT_UNIT_SCORE_SCREEN_FILTER);
+        long points = (long) (percent * Constants.DEFAULT_UNIT_SCORE_SCREEN_FILTER);
+
+        return (points > 0) ? points : 1;
     }
 
     public static void clockwiseLeftRightFade(View view, Context context){

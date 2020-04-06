@@ -1,11 +1,13 @@
 package com.southiny.eyeware;
 
 import android.app.Activity;
+import android.app.UiModeManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -47,6 +49,9 @@ import static com.southiny.eyeware.tool.Utils.zbs;
 public class MainActivity extends AppCompatActivity {
 
     public static final String TAG = MainActivity.class.getSimpleName();
+    private static final int BREAKING_BODY_CLICK = 1;
+    private static final int FILTER_ARM_CLICK = 2;
+    private static final int LOCK_ARM_CLICK = 3;
 
     private Run run;
     private ProtectionMode pm;
@@ -58,7 +63,7 @@ public class MainActivity extends AppCompatActivity {
     ImageView standardEditIcon, highEditIcon, lowEditIcon, gamerEditIcon;
     ImageView standardCheckIcon, highCheckIcon, lowCheckIcon, gamerCheckIcon;
     ImageView overlayPermissionIcon, adminPermissionIcon;
-    Switch passwordActivateSwitch, lockScreenActivateSwitch, unlockScreenActivateSwitch;
+    Switch passwordActivateSwitch, lockScreenActivateSwitch;
     ConstraintLayout lockScreenLayout, breakForFoot;
     LinearLayout startStopTimerLayout, breakingBody, filterArm, lockArm;
     ImageView breakingModeIconFoot;
@@ -100,18 +105,15 @@ public class MainActivity extends AppCompatActivity {
         run.setPermissionChanged(false);
         run.save();
 
-        Scoring scoring = run.getScoring();
+        final Scoring scoring = run.getScoring();
 
         /* ***** check scoring and ************/
 
         if (run.isNewArrival()) {
             // new arrival points !
-            scoring.gainPoints(Constants.AWARD_SCORE_NEW_ARRIVAL);
+            scoring.earnNewArrivalAward(Constants.AWARD_SCORE_NEW_ARRIVAL);
             run.setNewArrival(false);
             run.save();
-            Award award = new Award(AwardType.NEW_ARRIVAL_AWARD, Constants.AWARD_SCORE_NEW_ARRIVAL,
-                    System.currentTimeMillis(), Award.NO_EXPIRATION);
-            award.save();
             Logger.log(TAG, "receive new arrival point !!");
             String message = "Greeting new arrival !\n" + Constants.AWARD_SCORE_NEW_ARRIVAL + " points is a gift for you\nEnjoy our community !";
             dialogReceivePoints(Constants.AWARD_SCORE_NEW_ARRIVAL, message, "Nice !");
@@ -223,9 +225,9 @@ public class MainActivity extends AppCompatActivity {
         LinearLayout mainLayout = findViewById(R.id.main_layout);
         Utils.moveUp(mainLayout, getApplicationContext());
 
-        breakingBody.setOnClickListener(new RobotOnClickListener());
-        filterArm.setOnClickListener(new RobotOnClickListener());
-        lockArm.setOnClickListener(new RobotOnClickListener());
+        breakingBody.setOnClickListener(new RobotOnClickListener(BREAKING_BODY_CLICK));
+        filterArm.setOnClickListener(new RobotOnClickListener(FILTER_ARM_CLICK));
+        lockArm.setOnClickListener(new RobotOnClickListener(LOCK_ARM_CLICK));
         breakForFoot.setOnClickListener(new Robot2OnClickListener(false));
         breakingModeIconFoot.setOnClickListener(new Robot2OnClickListener(true));
 
@@ -358,12 +360,21 @@ public class MainActivity extends AppCompatActivity {
         passwordActivateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
-                pctrl.setPasswordActivated(isChecked);
-                pctrl.save();
+
                 if (isChecked) {
-                    Toast.makeText(MainActivity.this, "parental control on", Toast.LENGTH_SHORT).show();
+                    if (pctrl.getPassword().equals(Constants.DEFAULT_PASSWORD)) {
+                        passwordActivateSwitch.setChecked(false);
+                        dialogChangePassword();
+                    } else {
+                        pctrl.setPasswordActivated(true);
+                        pctrl.save();
+                        Toast.makeText(MainActivity.this, "password on", Toast.LENGTH_SHORT).show();
+                    }
                 } else {
-                    Toast.makeText(MainActivity.this, "parental control off", Toast.LENGTH_SHORT).show();
+                    pctrl.setPasswordActivated(false);
+                    pctrl.save();
+                    Toast.makeText(MainActivity.this, "password off", Toast.LENGTH_SHORT).show();
+
                 }
             }
         });
@@ -395,7 +406,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // todo : add others
 
         parentalControlsIconLayout.setOnClickListener(new View.OnClickListener() {
             private boolean bool = true;
@@ -415,11 +425,7 @@ public class MainActivity extends AppCompatActivity {
         lockScreenActivateSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-                if (checked && !devicePolicyManager.isAdminActive(compName)) {
-                    lockScreenActivateSwitch.setChecked(!checked);
-                    dialogAskDeviceAdminPermissionForTurnOnLockScreen();
-
-                } else if (checked) {
+                if (checked) {
                     lockScreenLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
                     pctrl.setLockScreenActivated(true);
                     pctrl.save();
@@ -451,15 +457,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        unlockScreenActivateSwitch = findViewById(R.id.switch_unlock_screen);
-        unlockScreenActivateSwitch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Utils.playClickSound(audioManager);
-            }
-        });
-        unlockScreenActivateSwitch.setEnabled(false);
-
         overlayPermissionIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -489,6 +486,125 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+       /* final ImageView nightModeIcon = findViewById(R.id.night_mode_phone_adjust_button);
+        int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (mode == Configuration.UI_MODE_NIGHT_YES) {
+            UiModeManager uiManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+            //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            assert uiManager != null;
+            uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
+            nightModeIcon.setBackground(getDrawable(R.drawable.layout_round_shape_blue));
+        }
+
+       nightModeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utils.playClickSound(audioManager);
+                int mode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+                UiModeManager uiManager = (UiModeManager) getSystemService(Context.UI_MODE_SERVICE);
+                //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+                assert uiManager != null;
+
+                if (mode == Configuration.UI_MODE_NIGHT_NO) {
+                    // turn on night mode
+                    uiManager.setNightMode(UiModeManager.MODE_NIGHT_YES);
+                    Toast.makeText(MainActivity.this, "Dark mode on", Toast.LENGTH_SHORT).show();
+                    nightModeIcon.setBackground(getDrawable(R.drawable.layout_round_shape_blue));
+
+                } else {
+                    uiManager.setNightMode(UiModeManager.MODE_NIGHT_NO);
+                    Toast.makeText(MainActivity.this, "Dark mode off", Toast.LENGTH_SHORT).show();
+                    nightModeIcon.setBackground(getDrawable(R.drawable.layout_round_shape_gray));
+
+                }
+            }
+        });*/
+
+        final ImageView screenBrightnessAutoIcon = findViewById(R.id.brightness_auto_phone_adjust_button);
+
+        try {
+            int brightnessMode = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE);
+            if (brightnessMode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+                screenBrightnessAutoIcon.setBackground(getDrawable(R.drawable.layout_round_shape_blue));
+            }
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        screenBrightnessAutoIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
+
+                if (!Settings.System.canWrite(getApplicationContext())) {
+                    dialogAskWriteSettingsPermission("turn on/off screen brightness auto adjust");
+                } else {
+                    int brightnessMode = Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL;
+
+                    try {
+                        brightnessMode = Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE);
+                    } catch (Settings.SettingNotFoundException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (brightnessMode == Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC) {
+                        // turn off auto mode
+                        android.provider.Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE,
+                                Settings.System.SCREEN_BRIGHTNESS_MODE_MANUAL);
+                        Toast.makeText(MainActivity.this, "Brightness Auto Adjust Off", Toast.LENGTH_SHORT).show();
+                        screenBrightnessAutoIcon.setBackground(getDrawable(R.drawable.layout_round_shape_gray));
+                    } else {
+                        // turn on auto mode
+                        android.provider.Settings.System.putInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS_MODE,
+                                Settings.System.SCREEN_BRIGHTNESS_MODE_AUTOMATIC);
+                        Toast.makeText(MainActivity.this, "Brightness Auto Adjust On", Toast.LENGTH_SHORT).show();
+                        screenBrightnessAutoIcon.setBackground(getDrawable(R.drawable.layout_round_shape_blue));
+
+
+                    }
+                }
+            }
+        });
+
+        ImageView fontAdjustIcon = findViewById(R.id.font_phone_adjust_button);
+        fontAdjustIcon.setOnClickListener(new View.OnClickListener() {
+            private float[] scales = {1.3F, 1.5F, 1.7F, 2.0F};
+            @Override
+            public void onClick(View view) {
+                Utils.clickAnimate(view, getApplicationContext());
+                Utils.playClickSound(audioManager);
+
+                if(!Settings.System.canWrite(getApplicationContext())) {
+                    dialogAskWriteSettingsPermission("adjust font size");
+                } else {
+                    float currentScale = getResources().getConfiguration().fontScale;
+
+                    float newScale;
+                    if (currentScale == scales[scales.length - 1]) {
+                        newScale = (float) scales[0];
+                    } else {
+                        Logger.log(TAG, "current scale is " + currentScale);
+                        newScale = currentScale;
+                        boolean found = false;
+                        for (int i = 0; !found && i < scales.length; i++) {
+                            if (scales[i] > newScale) {
+                                Logger.log(TAG, scales[i] + " > " + newScale);
+                                newScale = (float) scales[i];
+                                found = true;
+                            }
+                        }
+                    }
+
+                    Toast.makeText(MainActivity.this, "Change scale to " + newScale, Toast.LENGTH_SHORT).show();
+                    android.provider.Settings.System.putFloat(getContentResolver(), Settings.System.FONT_SCALE,
+                            newScale);
+                }
+            }
+        });
+
+
+
+        // todo : add others
     }
 
     @Override
@@ -526,7 +642,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     /******* private methods *******/
-    
 
     private void initInfoOnScreen() {
         Logger.log(TAG, "initInfoOnScreen()");
@@ -601,28 +716,9 @@ public class MainActivity extends AppCompatActivity {
         lockscreenMinuteTextView.setText(zbs(min));
 
         // set activated
-        ConstraintLayout breakingLayout = findViewById(R.id.computer_mode_field);
-        ConstraintLayout breakingForLayout = findViewById(R.id.constraintLayout6);
-        if (!pm.isBreakingActivated()) {
-            breakingLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
-            breakingModeIconFoot.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
-            breakingForLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
-        } else {
-            breakingLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
-            breakingModeIconFoot.setBackground(getDrawable(R.drawable.layout_round_shape_accent));
-            breakingForLayout.setBackground(getDrawable(R.drawable.layout_round_shape_accent));
-        }
-        ConstraintLayout blLayout = findViewById(R.id.constraintLayout_bl_filter);
-        if (!pm.isBluelightFiltering()) {
-            blLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
-        } else {
-            blLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
-        }
-        if(!pctrl.isLockScreenActivated()) {
-            lockScreenLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
-        } else {
-            lockScreenLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
-        }
+        setBreakingActivation(pm.isBreakingActivated());
+        setBluelightFilteringActivation(pm.isBluelightFiltering());
+        setLockScreenActivation(pctrl.isLockScreenActivated());
 
         // set button names
         standardButton.setText(run.getProtectionModeStandard().getName());
@@ -633,6 +729,36 @@ public class MainActivity extends AppCompatActivity {
         // set selected button
         ProtectionLevel pl = pm.getProtectionLevel();
         setSelectedButton(pl);
+    }
+
+    private void setBreakingActivation(boolean activated) {
+        ConstraintLayout breakingLayout = findViewById(R.id.computer_mode_field);
+        if (activated) {
+            breakingLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
+            breakingModeIconFoot.setBackground(getDrawable(R.drawable.layout_round_shape_accent));
+            breakForFoot.setBackground(getDrawable(R.drawable.layout_round_shape_accent));
+        } else {
+            breakingLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+            breakingModeIconFoot.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+            breakForFoot.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+        }
+    }
+
+    private void setBluelightFilteringActivation(boolean activated) {
+        ConstraintLayout blLayout = findViewById(R.id.constraintLayout_bl_filter);
+        if (activated) {
+            blLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
+        } else {
+            blLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+        }
+    }
+
+    private void setLockScreenActivation(boolean activated) {
+        if(activated) {
+            lockScreenLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
+        } else {
+            lockScreenLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
+        }
     }
 
     private void setSelectedButton(ProtectionLevel pl) {
@@ -861,10 +987,10 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    private void dialogAskDeviceAdminPermissionForTurnOnLockScreen() {
-        Logger.log(TAG, "dialogAskDeviceAdminPermissionForTurnOnLockScreen()");
-        String title = "Device Admin Permission";
-        String message = "To manage lock screen, please grant us the device admin permission. " +
+    private void dialogAskWriteSettingsPermission(String action) {
+        Logger.log(TAG, "dialogAskAskWriteSettingsPermission()");
+        String title = "Change System Settings Permission";
+        String message = "To " + action + ", please grant us the permission to change system settings. " +
                 "You can turn this off later on. " +
                 "Grant the permission ?";
 
@@ -874,22 +1000,17 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("Grant", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         Utils.playClickSound(audioManager);
-                        lockScreenOnAfterAdminPermissionGranted = true;
-                        Intent intent = new Intent(DevicePolicyManager.ACTION_ADD_DEVICE_ADMIN);
-                        intent.putExtra(DevicePolicyManager.EXTRA_DEVICE_ADMIN, compName);
-                        intent.putExtra(DevicePolicyManager.EXTRA_ADD_EXPLANATION, "To make " +
-                                getString(R.string.app_name) + " lock screen automatically, please grant us the admin permission");
-                        startActivityForResult(intent, RESULT_ENABLE_ADMIN_PERMISSION);
+                        Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS, Uri.parse("package:" + getPackageName()));
+                        startActivityForResult(intent, 0);
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         Utils.playClickSound(audioManager);
-                        lockScreenActivateSwitch.setChecked(false);
                     }
                 })
-                .setIcon(R.drawable.ic_build_accent_24dp)
+                .setIcon(R.drawable.ic_face_accent_24dp)
                 .show();
     }
 
@@ -1023,8 +1144,7 @@ public class MainActivity extends AppCompatActivity {
         String title = "Forget password, what can I do ?";
         String message = "In order to prevent children from resetting password, " +
                 "we don't support password reset. " +
-                "A solution to this could be uninstall and re-install the application. " +
-                "Factory default password is " + Constants.DEFAULT_PASSWORD + ".";
+                "A solution to this could be uninstall and re-install the application.";
 
         new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
                 .setTitle(title)
@@ -1068,20 +1188,14 @@ public class MainActivity extends AppCompatActivity {
                     Toast.makeText(MainActivity.this, "You have enabled the Admin Device features", Toast.LENGTH_SHORT).show();
                     adminPermissionIcon.setImageResource(R.drawable.ic_build_blue_24dp);
 
-                    if (lockScreenOnAfterAdminPermissionGranted) {
-                        lockScreenActivateSwitch.setChecked(true);
-                        lockScreenOnAfterAdminPermissionGranted = false;
-                    }
                 } else {
                     Toast.makeText(MainActivity.this, "Problem to enable the Admin Device features", Toast.LENGTH_SHORT).show();
                     adminPermissionIcon.setImageResource(R.drawable.ic_build_gray_24dp);
-                    lockScreenActivateSwitch.setChecked(false);
                 }
-                pctrl.save();
                 break;
 
             case RESULT_ENABLE_OVERLAY_PERMISSION:
-                if (resultCode == 0) {
+                if (Settings.canDrawOverlays(getApplicationContext())) {
                     overlayPermissionIcon.setImageResource(R.drawable.ic_layers_blue_24dp);
                     Toast.makeText(MainActivity.this,
                             "You have enabled the App On Top features", Toast.LENGTH_SHORT).show();
@@ -1093,7 +1207,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case RESULT_ENABLE_OVERLAY_PERMISSION_FOR_START:
-                if (resultCode ==  0) {
+                if (Settings.canDrawOverlays(getApplicationContext())) {
                     // re call start
                     Toast.makeText(MainActivity.this,
                             "You have enabled the App On Top features", Toast.LENGTH_SHORT).show();
@@ -1190,7 +1304,13 @@ public class MainActivity extends AppCompatActivity {
 
     private class RobotOnClickListener implements View.OnClickListener {
 
+        private int type;
         private int clickAt;
+
+
+        public RobotOnClickListener(int type) {
+            this.type = type;
+        }
 
         @Override
         public void onClick(final View view) {
@@ -1217,6 +1337,44 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             }, 6000);
+
+            // action
+            boolean activated;
+            switch (this.type) {
+                case BREAKING_BODY_CLICK:
+                    activated = !pm.isBreakingActivated();
+                    pm.setBreakingActivated(activated);
+                    pm.save();
+                    setBreakingActivation(activated);
+                    if (activated) {
+                        Toast.makeText(MainActivity.this, "Breaking on", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Breaking off", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case FILTER_ARM_CLICK:
+                    activated = !pm.isBluelightFiltering();
+                    pm.setBluelightFiltering(activated);
+                    pm.save();
+                    setBluelightFilteringActivation(activated);
+                    if (activated) {
+                        Toast.makeText(MainActivity.this, "Screen filtering on", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Screen filtering off", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case LOCK_ARM_CLICK:
+                    activated = !pctrl.isLockScreenActivated();
+                    pctrl.setLockScreenActivated(activated);
+                    pctrl.save();
+                    setLockScreenActivation(activated);
+                    if (activated) {
+                        Toast.makeText(MainActivity.this, "Lock Screen on", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(MainActivity.this, "Lock Screen off", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+            }
         }
     }
 

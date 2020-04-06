@@ -273,6 +273,13 @@ public class Scoring extends Model {
 
     /***************/
 
+    public void earnNewArrivalAward(long newPoints) {
+        gainPoints(newPoints);
+        Award award = new Award(AwardType.NEW_ARRIVAL_AWARD, newPoints,
+                System.currentTimeMillis(), Award.NO_EXPIRATION);
+        award.save();
+    }
+
     public void earnCheckoutAward(long newPoints) {
         this.earnCheckoutAward = 0;
         gainPoints(newPoints);

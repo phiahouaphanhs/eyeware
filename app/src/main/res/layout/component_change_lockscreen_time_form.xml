@@ -34,6 +34,7 @@
 
             <EditText
                 android:id="@+id/lock_screen_time_input_text"
+                style="@android:style/Widget.DeviceDefault.EditText"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
@@ -54,7 +55,7 @@
                 android:layout_marginEnd="32dp"
                 android:layout_marginBottom="16dp"
                 android:text="@string/minute_text"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                android:textColor="@color/eyeware_black"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -94,8 +95,9 @@
                 android:paddingTop="15dp"
                 android:paddingEnd="25dp"
                 android:paddingBottom="15dp"
-                android:text="@string/password_form_ok_button"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:text="OK"
+                android:textSize="15sp"
+                android:textColor="@color/black_overlay"
                 app:layout_constraintEnd_toStartOf="@+id/divider9"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -123,8 +125,9 @@
                 android:paddingTop="15dp"
                 android:paddingEnd="25dp"
                 android:paddingBottom="15dp"
-                android:text="@string/password_form_cancel_button"
-                android:textAppearance="@style/TextAppearance.AppCompat.Button"
+                android:text="CANCEL"
+                android:textSize="16sp"
+                android:textColor="@color/black_overlay"
                 app:layout_constraintStart_toEndOf="@+id/divider9"
                 app:layout_constraintTop_toTopOf="parent" />
 

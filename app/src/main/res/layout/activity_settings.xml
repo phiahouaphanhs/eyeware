@@ -37,7 +37,7 @@
                     android:layout_marginTop="8dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
+                    app:srcCompat="@drawable/ic_arrow_back_accent_24dp" />
 
                 <ImageView
                     android:id="@+id/settings_icon"
@@ -49,7 +49,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/ic_settings_black_24dp" />
+                    app:srcCompat="@drawable/ic_settings_accent_24dp" />
 
                 <TextView
                     android:id="@+id/settings_title"
@@ -59,7 +59,6 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="8dp"
                     android:text="@string/main_settings_title"
-                    android:textColor="@color/eyeware_black"
                     android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -93,7 +92,6 @@
                         android:layout_marginBottom="8dp"
                         android:text="@string/pref_title_vibrate"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        android:textColor="@color/eyeware_black"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -137,7 +135,6 @@
                         android:layout_marginBottom="8dp"
                         android:text="Computer mode"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        android:textColor="@color/eyeware_black"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -154,7 +151,7 @@
 
                 </android.support.constraint.ConstraintLayout>
 
-                <View
+               <!-- <View
                     android:id="@+id/divider13"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
@@ -229,7 +226,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                </android.support.constraint.ConstraintLayout>
+                </android.support.constraint.ConstraintLayout>-->
 
                 <View
                     android:id="@+id/divider4"
@@ -239,7 +236,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/change_language_field" />
+                    app:layout_constraintTop_toBottomOf="@+id/computer_mode_field" />
 
                 <android.support.constraint.ConstraintLayout
                     android:id="@+id/reset_to_default_field"
@@ -256,7 +253,6 @@
                         android:layout_marginBottom="8dp"
                         android:text="@string/reset_to_default_title"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        android:textColor="@color/eyeware_black"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -287,7 +283,6 @@
                         android:layout_marginStart="16dp"
                         android:text="About app"
                         android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                        android:textColor="@color/eyeware_black"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />

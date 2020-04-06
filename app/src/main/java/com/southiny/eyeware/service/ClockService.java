@@ -108,8 +108,8 @@ public class ClockService extends Service {
 
         Notification notification =
                 new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
-                        .setContentTitle("Using smart devices without fear of losing sight")
-                        //.setContentText("Using smart devices without fear of losing sight")
+                        //.setContentTitle("Using smart devices without fear of losing sight")
+                        .setContentText("No fear of losing sight")
                         .setSmallIcon(R.drawable.ic_miracle_head2)
                         .setContentIntent(pendingIntent)
                         .setShowWhen(false) // to hide timestamp

@@ -204,7 +204,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/layout_round_shape_gray_shade_white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/award_icon"
+            app:layout_constraintEnd_toStartOf="@+id/score_level_text"
             app:layout_constraintStart_toEndOf="@+id/divider22"
             app:layout_constraintTop_toBottomOf="@+id/prize_icon"
             app:srcCompat="@drawable/ic_miracle_9big" />
@@ -213,6 +213,7 @@
             android:id="@+id/award_icon"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="15dp"
             android:layout_marginBottom="8dp"
@@ -220,14 +221,14 @@
             android:padding="12dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/score_level_text"
+            app:layout_constraintStart_toEndOf="@+id/how_to_earn_icon"
             app:layout_constraintTop_toBottomOf="@+id/prize_icon"
             app:srcCompat="@drawable/ic_coin_accent" />
 
         <ImageView
             android:id="@+id/prize_icon"
-            android:layout_width="86dp"
-            android:layout_height="69dp"
+            android:layout_width="47dp"
+            android:layout_height="55dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
@@ -240,7 +241,7 @@
             android:id="@+id/score_level_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:text="1"
             android:textColor="@color/eyeware_gold"
             android:textSize="25sp"
