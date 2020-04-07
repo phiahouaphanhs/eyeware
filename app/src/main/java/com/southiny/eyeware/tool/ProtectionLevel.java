@@ -1,21 +1,19 @@
 package com.southiny.eyeware.tool;
 
-import com.southiny.eyeware.R;
-
 public enum ProtectionLevel {
-    STANDARD, HIGH, LOW, GAMER, UNKNOWN;
+    STREAMING, READING, SOCIAL_MEDIA, DAYLIGHT, UNKNOWN;
 
     /*public int getStringIndex() {
         switch (this) {
-            case STANDARD:
+            case STREAMING:
                 return R.string.main_standard_mode;
-            case HIGH:
+            case READING:
                 return R.string.main_high_mode;
-            case LOW:
+            case SOCIAL_MEDIA:
                 return R.string.main_low_mode;
             case CUSTOMISED:
                 return R.string.main_customised_mode;
-            case GAMER:
+            case DAYLIGHT:
                 return R.string.main_gamer_mode;
             default:
                 return R.string.main_unknown_mode;
@@ -28,13 +26,13 @@ public enum ProtectionLevel {
 
     public static ProtectionLevel getProtectionLevelByOrdinal(int ordinal) {
 
-        if (ordinal == STANDARD.ordinal()) return STANDARD;
+        if (ordinal == STREAMING.ordinal()) return STREAMING;
 
-        if (ordinal == HIGH.ordinal()) return HIGH;
+        if (ordinal == READING.ordinal()) return READING;
 
-        if (ordinal == LOW.ordinal()) return LOW;
+        if (ordinal == SOCIAL_MEDIA.ordinal()) return SOCIAL_MEDIA;
 
-        if (ordinal == GAMER.ordinal()) return GAMER;
+        if (ordinal == DAYLIGHT.ordinal()) return DAYLIGHT;
 
         return UNKNOWN;
     }
@@ -42,14 +40,14 @@ public enum ProtectionLevel {
     @Override
     public String toString() {
         switch (this) {
-            case STANDARD:
-                return "STANDARD";
-            case HIGH:
-                return "HIGH";
-            case LOW:
-                return "LOW";
-            case GAMER:
-                return "GAMING/STREAMING";
+            case READING:
+                return "READING";
+            case STREAMING:
+                return "STREAMING";
+            case SOCIAL_MEDIA:
+                return "SOCIAL MEDIA";
+            case DAYLIGHT:
+                return "SOFT / DAYLIGHT";
             default:
                 return "UNKNOWN";
         }

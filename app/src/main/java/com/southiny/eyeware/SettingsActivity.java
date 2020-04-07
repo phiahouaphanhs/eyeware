@@ -179,7 +179,7 @@ public class SettingsActivity extends AppCompatActivity {
             LayoutInflater inflater = this.getLayoutInflater();
             View passwordLayout = inflater.inflate(R.layout.activity_password, null);
 
-            final AlertDialog dialog = new AlertDialog.Builder(this)
+            final AlertDialog dialog = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                     .setView(passwordLayout)
                     .show();
 
@@ -283,7 +283,7 @@ public class SettingsActivity extends AppCompatActivity {
         Utils.moveLeftRight(card3, getApplicationContext());
 
         new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
-                .setTitle("About App")
+                .setTitle(getString(R.string.app_name))
                 .setView(layout)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override

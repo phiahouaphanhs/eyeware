@@ -144,11 +144,11 @@ public final class Utils {
         view.startAnimation(animation);
     }
 
-    public static void moveUpLong(View view, Context context) {
+    /*public static void moveUpLong(View view, Context context) {
         Animation animation = AnimationUtils.loadAnimation(context,
                 R.anim.move_up_long_fast);
         view.startAnimation(animation);
-    }
+    }*/
 
     public static void moveDown(View view, Context context) {
         Animation animation = AnimationUtils.loadAnimation(context,

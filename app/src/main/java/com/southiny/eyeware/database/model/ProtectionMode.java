@@ -1,20 +1,15 @@
 package com.southiny.eyeware.database.model;
 
-import android.support.annotation.NonNull;
-
 import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.annotation.PrimaryKey;
 import com.reactiveandroid.annotation.Table;
 import com.southiny.eyeware.Constants;
 import com.southiny.eyeware.database.AppDatabase;
-import com.southiny.eyeware.database.SQLRequest;
 import com.southiny.eyeware.tool.BreakingMode;
-import com.southiny.eyeware.tool.Logger;
 import com.southiny.eyeware.tool.ProtectionLevel;
 
 import java.util.ArrayList;
-import java.util.List;
 
 @Table(name = ProtectionMode.TABLE_NAME, database = AppDatabase.class)
 public class ProtectionMode extends Model {
@@ -129,61 +124,61 @@ public class ProtectionMode extends Model {
     }
 
     public void setStandard() {
-        protectionLevelOrdinal = ProtectionLevel.STANDARD.ordinal(); // this is the real id
-        name = ProtectionLevel.STANDARD.toString();
-        breakingActivated = Constants.STANDARD_BREAKING_ACTIVATE;
-        breakingEvery_sec = Constants.STANDARD_BREAKING_EVERY_SEC;
-        breakingFor_sec = Constants.STANDARD_BREAKING_FOR_SEC;
-        blueLightFilterChangeEvery_sec = Constants.STANDARD_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
-        bluelightFiltering = Constants.STANDARD_BLUELIGHT_FILTER_CHANGE;
+        protectionLevelOrdinal = ProtectionLevel.STREAMING.ordinal(); // this is the real id
+        name = ProtectionLevel.STREAMING.toString();
+        breakingActivated = Constants.STREAMING_BREAKING_ACTIVATE;
+        breakingEvery_sec = Constants.STREAMING_BREAKING_EVERY_SEC;
+        breakingFor_sec = Constants.STREAMING_BREAKING_FOR_SEC;
+        blueLightFilterChangeEvery_sec = Constants.STREAMING_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
+        bluelightFiltering = Constants.STREAMING_BLUELIGHT_FILTER_CHANGE;
 
-        breakingModeOrdinal = Constants.STANDARD_BREAKING_MODE.ordinal();
+        breakingModeOrdinal = Constants.STREAMING_BREAKING_MODE.ordinal();
 
-        setScreenFilters(Constants.STANDARD_SCREEN_FILTERS_ACTIVATION);
+        setScreenFilters(Constants.STREAMING_SCREEN_FILTERS_ACTIVATION);
 
 
     }
 
     public void setHigh() {
-        protectionLevelOrdinal = ProtectionLevel.HIGH.ordinal(); // this is the real id
-        name = ProtectionLevel.HIGH.toString();
-        breakingActivated = Constants.HIGH_BREAKING_ACTIVATE;
-        breakingEvery_sec = Constants.HIGH_BREAKING_EVERY_SEC;
-        breakingFor_sec = Constants.HIGH_BREAKING_FOR_SEC;
-        blueLightFilterChangeEvery_sec = Constants.HIGH_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
-        bluelightFiltering = Constants.HIGH_BLUELIGHT_FILTER_CHANGE;
+        protectionLevelOrdinal = ProtectionLevel.READING.ordinal(); // this is the real id
+        name = ProtectionLevel.READING.toString();
+        breakingActivated = Constants.READING_BREAKING_ACTIVATE;
+        breakingEvery_sec = Constants.READING_BREAKING_EVERY_SEC;
+        breakingFor_sec = Constants.READING_BREAKING_FOR_SEC;
+        blueLightFilterChangeEvery_sec = Constants.READING_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
+        bluelightFiltering = Constants.READING_BLUELIGHT_FILTER_CHANGE;
 
-        breakingModeOrdinal = Constants.HIGH_BREAKING_MODE.ordinal();
+        breakingModeOrdinal = Constants.READING_BREAKING_MODE.ordinal();
 
-        setScreenFilters(Constants.HIGH_SCREEN_FILTERS_ACTIVATION);
+        setScreenFilters(Constants.READING_SCREEN_FILTERS_ACTIVATION);
     }
 
     public void setLow() {
-        protectionLevelOrdinal = ProtectionLevel.LOW.ordinal(); // this is the real id
-        name = ProtectionLevel.LOW.toString();
-        breakingActivated = Constants.LOW_BREAKING_ACTIVATE;
-        breakingEvery_sec = Constants.LOW_BREAKING_EVERY_SEC;
-        breakingFor_sec = Constants.LOW_BREAKING_FOR_SEC;
-        blueLightFilterChangeEvery_sec = Constants.LOW_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
-        bluelightFiltering = Constants.LOW_BLUELIGHT_FILTER_CHANGE;
+        protectionLevelOrdinal = ProtectionLevel.SOCIAL_MEDIA.ordinal(); // this is the real id
+        name = ProtectionLevel.SOCIAL_MEDIA.toString();
+        breakingActivated = Constants.SOCIAL_MEDIA_BREAKING_ACTIVATE;
+        breakingEvery_sec = Constants.SOCIAL_MEDIA_BREAKING_EVERY_SEC;
+        breakingFor_sec = Constants.SOCIAL_MEDIA_BREAKING_FOR_SEC;
+        blueLightFilterChangeEvery_sec = Constants.SOCIAL_MEDIA_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
+        bluelightFiltering = Constants.SOCIAL_MEDIA_BLUELIGHT_FILTER_CHANGE;
 
-        breakingModeOrdinal = Constants.LOW_BREAKING_MODE.ordinal();
+        breakingModeOrdinal = Constants.SOCIAL_MEDIA_BREAKING_MODE.ordinal();
 
-        setScreenFilters(Constants.LOW_SCREEN_FILTERS_ACTIVATION);
+        setScreenFilters(Constants.SOCIAL_MEDIA_SCREEN_FILTERS_ACTIVATION);
     }
 
     public void setGamer() {
-        protectionLevelOrdinal = ProtectionLevel.GAMER.ordinal(); // this is the real id
-        name = ProtectionLevel.GAMER.toString();
-        breakingActivated = Constants.GAMER_BREAKING_ACTIVATE;
-        breakingEvery_sec = Constants.GAMER_BREAKING_EVERY_SEC;
-        breakingFor_sec = Constants.GAMER_BREAKING_FOR_SEC;
-        blueLightFilterChangeEvery_sec = Constants.GAMER_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
-        bluelightFiltering = Constants.GAMER_BLUELIGHT_FILTER_CHANGE;
+        protectionLevelOrdinal = ProtectionLevel.DAYLIGHT.ordinal(); // this is the real id
+        name = ProtectionLevel.DAYLIGHT.toString();
+        breakingActivated = Constants.DAYLIGHT_BREAKING_ACTIVATE;
+        breakingEvery_sec = Constants.DAYLIGHT_BREAKING_EVERY_SEC;
+        breakingFor_sec = Constants.DAYLIGHT_BREAKING_FOR_SEC;
+        blueLightFilterChangeEvery_sec = Constants.DAYLIGHT_BLUELIGHT_FILTER_CHANGE_EVERY_SEC;
+        bluelightFiltering = Constants.DAYLIGHT_BLUELIGHT_FILTER_CHANGE;
 
-        breakingModeOrdinal = Constants.GAMER_BREAKING_MODE.ordinal();
+        breakingModeOrdinal = Constants.DAYLIGHT_BREAKING_MODE.ordinal();
 
-        setScreenFilters(Constants.GAMER_SCREEN_FILTERS_ACTIVATION);
+        setScreenFilters(Constants.DAYLIGHT_SCREEN_FILTERS_ACTIVATION);
     }
 
     private void setScreenFilters (final ScreenFilter[] screenFilters) {
@@ -207,13 +202,13 @@ public class ProtectionMode extends Model {
 
     public void reset() {
 
-        if (protectionLevelOrdinal == ProtectionLevel.STANDARD.ordinal()) this.setStandard();
+        if (protectionLevelOrdinal == ProtectionLevel.STREAMING.ordinal()) this.setStandard();
 
-        else if (protectionLevelOrdinal == ProtectionLevel.HIGH.ordinal()) this.setHigh();
+        else if (protectionLevelOrdinal == ProtectionLevel.READING.ordinal()) this.setHigh();
 
-        else if (protectionLevelOrdinal == ProtectionLevel.LOW.ordinal()) this.setLow();
+        else if (protectionLevelOrdinal == ProtectionLevel.SOCIAL_MEDIA.ordinal()) this.setLow();
 
-        else if (protectionLevelOrdinal == ProtectionLevel.GAMER.ordinal()) this.setGamer();
+        else if (protectionLevelOrdinal == ProtectionLevel.DAYLIGHT.ordinal()) this.setGamer();
     }
 
     public Long getId() {
@@ -343,14 +338,14 @@ public class ProtectionMode extends Model {
     }
 
     private int positionToAdd(ScreenFilter screenFilter, ArrayList<ScreenFilter> screenFilters) {
-        boolean add = false;
-        int i;
-        for (i = 0; !add && i < screenFilters.size(); i++) {
+        int size = screenFilters.size();
+        int position = size;
+        for (int i = 0; position == size && i < size; i++) {
             if (screenFilter.getOrder() < screenFilters.get(i).getOrder()) {
-                add = true;
+                position = i;
             }
         }
-        return i;
+        return position;
     }
 
     public int getNbActivatedScreenFilters() {

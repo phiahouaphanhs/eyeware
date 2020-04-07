@@ -150,7 +150,7 @@ public class Main2Activity extends AppCompatActivity {
         levelTextView = findViewById(R.id.score_level_text);
 
         LinearLayout mainLayout = findViewById(R.id.main_layout);
-        Utils.moveUpLong(mainLayout, getApplicationContext());
+        Utils.moveUp(mainLayout, getApplicationContext());
 
         LinearLayout breakClockLayout = findViewById(R.id.computer_mode_field);
         Utils.moveRightLeft(breakClockLayout, getApplicationContext());
@@ -208,13 +208,8 @@ public class Main2Activity extends AppCompatActivity {
         goalScoreTextView.setText(String.valueOf(scoring.getGoalPoints() * 2));
 
         final TextView plTextView = findViewById(R.id.current_protection_level_text_view);
-        if (pm.isBreakingActivated()) {
-            plTextView.setText(pm.getName());
-            Logger.log(TAG, "current protection level is " + pm.getName());
-        } else {
-            plTextView.setTextColor(getColor(R.color.eyeware_white));
-            Logger.log(TAG, "current protection level is deactivated");
-        }
+        plTextView.setText(pm.getName());
+        Logger.log(TAG, "current protection level is " + pm.getName());
 
         Logger.log(TAG, "set on click to stop button");
         final Button stopButton = findViewById(R.id.stop_button);
@@ -643,12 +638,6 @@ public class Main2Activity extends AppCompatActivity {
         Logger.log(TAG, "addFilterCards()");
 
         LinearLayout filterGlobeLayout = new LinearLayout(this);
-        filterGlobeLayout.setOnScrollChangeListener(new View.OnScrollChangeListener() {
-            @Override
-            public void onScrollChange(View view, int i, int i1, int i2, int i3) {
-                audioManager.playSoundEffect(SoundEffectConstants.NAVIGATION_RIGHT,1.0f);
-            }
-        });
         filterGlobeLayout.setLayoutParams(new LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
@@ -681,7 +670,7 @@ public class Main2Activity extends AppCompatActivity {
 
     private void dialogBreakingModeInfo(String title, String message, int dw) {
         Logger.log(TAG, "dialogBreakingModeInfo()");
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Alright", new DialogInterface.OnClickListener() {
@@ -709,7 +698,7 @@ public class Main2Activity extends AppCompatActivity {
         Utils.moveLeftRight(card3, getApplicationContext());
 
         new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
-                .setTitle("About App")
+                .setTitle(getString(R.string.app_name))
                 .setView(layout)
                 .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     @Override
@@ -730,7 +719,7 @@ public class Main2Activity extends AppCompatActivity {
 
     private void dialogPermissionChangedInfo() {
         Logger.log(TAG, "dialogPermissionChangedInfo()");
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("App Permissions Have Been Changed")
                 .setMessage("Some functions might not work properly. Restart the app is recommended.")
                 .setPositiveButton("Understood", new DialogInterface.OnClickListener() {
@@ -746,7 +735,7 @@ public class Main2Activity extends AppCompatActivity {
     private void dialogReceivePoints(long newPoints, String message, String buttonTitle) {
         String title = "You have received +" + newPoints + " points !";
 
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(buttonTitle, new DialogInterface.OnClickListener() {
@@ -790,7 +779,7 @@ public class Main2Activity extends AppCompatActivity {
         LayoutInflater inflater = this.getLayoutInflater();
         View globeLayout = inflater.inflate(R.layout.component_how_to_earn, null);
 
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle(title)
                 .setView(globeLayout)
                 .setPositiveButton("Got ya !", new DialogInterface.OnClickListener() {

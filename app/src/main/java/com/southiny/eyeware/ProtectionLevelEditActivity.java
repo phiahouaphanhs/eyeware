@@ -89,16 +89,16 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
 
         Logger.log(TAG, "received ordinal = " + ordinal);
 
-        if (ordinal == ProtectionLevel.STANDARD.ordinal()) {
+        if (ordinal == ProtectionLevel.STREAMING.ordinal()) {
             pm = run.getProtectionModeStandard();
             Logger.log(TAG, "is standard mode");
-        } else if (ordinal == ProtectionLevel.HIGH.ordinal()) {
+        } else if (ordinal == ProtectionLevel.READING.ordinal()) {
             pm = run.getProtectionModeHigh();
             Logger.log(TAG, "is high mode");
-        } else if (ordinal == ProtectionLevel.LOW.ordinal()) {
+        } else if (ordinal == ProtectionLevel.SOCIAL_MEDIA.ordinal()) {
             pm = run.getProtectionModeLow();
             Logger.log(TAG, "is low mode");
-        } else if (ordinal == ProtectionLevel.GAMER.ordinal()) {
+        } else if (ordinal == ProtectionLevel.DAYLIGHT.ordinal()) {
             pm = run.getProtectionModeGamer();
             Logger.log(TAG, "is gamer mode");
         } else {
@@ -680,7 +680,7 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             }
         });
 
-        final AlertDialog dialog = new AlertDialog.Builder(this)
+        final AlertDialog dialog = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setView(changeColorCodeLayout)
                 .setIcon(R.drawable.ic_edit_accent_24dp)
                 .setCancelable(false)
@@ -941,7 +941,11 @@ public class ProtectionLevelEditActivity extends AppCompatActivity {
             Utils.playClickSound(audioManager);
             scs[index].setActivated(!scs[index].isActivated());
             setActivatedColor(index, scs[index].isActivated());
-
+            if (scs[index].isActivated()) {
+                Toast.makeText(ProtectionLevelEditActivity.this, "On", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(ProtectionLevelEditActivity.this, "Off", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 

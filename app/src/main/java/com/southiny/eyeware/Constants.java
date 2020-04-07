@@ -32,14 +32,14 @@ public final class Constants {
     public static final int DEFAULT_ALPHA_MIN_PERCENT = 10; // %
 
     public static final ScreenFilter[] DEFAULT_SCREEN_FILTERS = {
-            new ScreenFilter( "#555500", 0.47F,  0.14F, true, 1),
-            new ScreenFilter( "#FF0309", 0.47F,  0.14F, true, 2),
-            new ScreenFilter( "#FFB102", 0.47F,  0.14F, true, 3),
-            new ScreenFilter( "#00AA00", 0.47F,  0.14F, true, 4),
-            new ScreenFilter( "#04FFD0", 0.47F,  0.14F, true, 5),
-            new ScreenFilter( "#FFE401", 0.28F,  0.14F, true, 6),
-            new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, true, 7),
-            new ScreenFilter( "#06F0FF", 0.36F,  0.15F, true, 8),
+            new ScreenFilter( "#555500", 0F,  0.14F, true, 1),
+            new ScreenFilter( "#FF0309", 0F,  0.14F, true, 2),
+            new ScreenFilter( "#FFB102", 0F,  0.14F, true, 3),
+            new ScreenFilter( "#00AA00", 0F,  0.14F, true, 4),
+            new ScreenFilter( "#04FFD0", 0F,  0.14F, true, 5),
+            new ScreenFilter( "#FFE401", 0F,  0.14F, true, 6),
+            new ScreenFilter( "#B4A2FF", 0F,  0.14F, true, 7),
+            new ScreenFilter( "#06F0FF", 0F,  0.15F, true, 8),
     };
 
     /*****************/
@@ -52,64 +52,75 @@ public final class Constants {
     public static final int BLUELIGHT_FILTER_CHANGE_EVERY_MIN_SEC = 1 * 60;
     public static final int BLUELIGHT_FILTER_CHANGE_EVERY_MAX_SEC = 120 * 60;
 
-    public static final int HIGH_BREAKING_EVERY_SEC =  10 * 60;
-    public static final int HIGH_BREAKING_FOR_SEC = 10;
-    public static final boolean HIGH_BREAKING_ACTIVATE = true;
-    public static final int HIGH_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 10 * 60;
-    public static final boolean HIGH_BLUELIGHT_FILTER_CHANGE = true;
-    public static final BreakingMode HIGH_BREAKING_MODE = BreakingMode.STRONG;
-    public static final ScreenFilter[] HIGH_SCREEN_FILTERS_ACTIVATION = {
-            new ScreenFilter( "#555500", 0.47F,  0.14F, true, 1),
-            new ScreenFilter( "#FF0309", 0.47F,  0.14F, true, 2),
-            new ScreenFilter( "#FFB102", 0.47F,  0.14F, true, 3),
-            new ScreenFilter( "#00AA00", 0.47F,  0.14F, true, 4),
-            new ScreenFilter( "#04FFD0", 0.47F,  0.14F, true, 5),
-            new ScreenFilter( "#FFE401", 0.28F,  0.14F, true, 6),
-            new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, true, 7),
-            new ScreenFilter( "#06F0FF", 0.36F,  0.15F, true, 8),
+    public static final int READING_BREAKING_EVERY_SEC =  20 * 60;
+    public static final int READING_BREAKING_FOR_SEC = 20;
+    public static final boolean READING_BREAKING_ACTIVATE = true;
+    public static final int READING_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 20 * 60;
+    public static final boolean READING_BLUELIGHT_FILTER_CHANGE = true;
+    public static final BreakingMode READING_BREAKING_MODE = BreakingMode.STRONG;
+    public static final ScreenFilter[] READING_SCREEN_FILTERS_ACTIVATION = { // reading
+            new ScreenFilter( "#555500", 0.58F,  0.11F, true, 1),
+            new ScreenFilter( "#FF0309", 0.58F,  0.03F, true, 2),
+            new ScreenFilter( "#FFB102", 0.58F,  0.03F, true, 3),
+            new ScreenFilter( "#FFE401", 0.59F,  0.04F, true, 4),
+            new ScreenFilter( "#B4A2FF", 0.59F,  0.04F, false, 5),
+            new ScreenFilter( "#06F0FF", 0.59F,  0.04F, false, 6),
+            new ScreenFilter( "#04FFD0", 0.59F,  0.04F, false, 7),
+            new ScreenFilter( "#00AA00", 0.56F,  0.05F, false, 8),
     };
 
-    public static final int STANDARD_BREAKING_EVERY_SEC =  20 * 60;
-    public static final int STANDARD_BREAKING_FOR_SEC = 20;
-    public static final boolean STANDARD_BREAKING_ACTIVATE = true;
-    public static final int STANDARD_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 20 * 60;
-    public static final boolean STANDARD_BLUELIGHT_FILTER_CHANGE = true;
-    public static final BreakingMode STANDARD_BREAKING_MODE = BreakingMode.MEDIUM;
-    public static final ScreenFilter[] STANDARD_SCREEN_FILTERS_ACTIVATION = {
-            new ScreenFilter( "#555500", 0.47F,  0.14F, true, 1),
-            new ScreenFilter( "#FF0309", 0.47F,  0.14F, true, 2),
-            new ScreenFilter( "#FFB102", 0.47F,  0.14F, true, 3),
-            new ScreenFilter( "#00AA00", 0.47F,  0.14F, true, 4),
-            new ScreenFilter( "#04FFD0", 0.47F,  0.14F, true, 5),
-            new ScreenFilter( "#FFE401", 0.28F,  0.14F, true, 6),
-            new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, true, 7),
-            new ScreenFilter( "#06F0FF", 0.36F,  0.15F, true, 8),
+    public static final int STREAMING_BREAKING_EVERY_SEC =  30 * 60;
+    public static final int STREAMING_BREAKING_FOR_SEC = 10;
+    public static final boolean STREAMING_BREAKING_ACTIVATE = true;
+    public static final int STREAMING_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 10 * 60;
+    public static final boolean STREAMING_BLUELIGHT_FILTER_CHANGE = true;
+    public static final BreakingMode STREAMING_BREAKING_MODE = BreakingMode.MEDIUM;
+    public static final ScreenFilter[] STREAMING_SCREEN_FILTERS_ACTIVATION = { // streaming
+            new ScreenFilter( "#555500", 0.58F,  0.11F, true, 1),
+            new ScreenFilter( "#FF0309", 0.58F,  0.03F, true, 2),
+            new ScreenFilter( "#FFB102", 0.58F,  0.03F, true, 3),
+            new ScreenFilter( "#B4A2FF", 0.59F,  0.04F, true, 4),
+            new ScreenFilter( "#FFE401", 0.59F,  0.04F, true, 5),
+            new ScreenFilter( "#06F0FF", 0.59F,  0.04F, false, 6),
+            new ScreenFilter( "#04FFD0", 0.59F,  0.04F, false, 7),
+            new ScreenFilter( "#00AA00", 0.56F,  0.05F, false, 8),
     };
 
-    public static final int LOW_BREAKING_EVERY_SEC =  30 * 60;
-    public static final int LOW_BREAKING_FOR_SEC = 10;
-    public static final boolean LOW_BREAKING_ACTIVATE = true;
-    public static final int LOW_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 30 * 60;
-    public static final boolean LOW_BLUELIGHT_FILTER_CHANGE = true;
-    public static final BreakingMode LOW_BREAKING_MODE = BreakingMode.LIGHT;
-    public static final ScreenFilter[] LOW_SCREEN_FILTERS_ACTIVATION = {
-            new ScreenFilter( "#555500", 0.47F,  0.14F, true, 1),
-            new ScreenFilter( "#FF0309", 0.47F,  0.14F, true, 2),
-            new ScreenFilter( "#FFB102", 0.47F,  0.14F, true, 3),
-            new ScreenFilter( "#00AA00", 0.47F,  0.14F, true, 4),
-            new ScreenFilter( "#04FFD0", 0.47F,  0.14F, true, 5),
-            new ScreenFilter( "#FFE401", 0.28F,  0.14F, true, 6),
-            new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, true, 7),
-            new ScreenFilter( "#06F0FF", 0.36F,  0.15F, true, 8),
+    public static final int SOCIAL_MEDIA_BREAKING_EVERY_SEC =  20 * 60;
+    public static final int SOCIAL_MEDIA_BREAKING_FOR_SEC = 10;
+    public static final boolean SOCIAL_MEDIA_BREAKING_ACTIVATE = true;
+    public static final int SOCIAL_MEDIA_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 10 * 60;
+    public static final boolean SOCIAL_MEDIA_BLUELIGHT_FILTER_CHANGE = true;
+    public static final BreakingMode SOCIAL_MEDIA_BREAKING_MODE = BreakingMode.MEDIUM;
+    public static final ScreenFilter[] SOCIAL_MEDIA_SCREEN_FILTERS_ACTIVATION = { // social media
+            new ScreenFilter("#555500", 0.50F, 0.11F, true, 1),
+            new ScreenFilter("#FF0309", 0.50F, 0.03F, true, 2),
+            new ScreenFilter("#FFB102", 0.50F, 0.03F, true, 3),
+            new ScreenFilter("#FFE401", 0.50F, 0.04F, true, 4),
+            new ScreenFilter("#B4A2FF", 0.50F, 0.04F, false, 5),
+            new ScreenFilter("#06F0FF", 0.50F, 0.04F, false, 6),
+            new ScreenFilter("#04FFD0", 0.50F, 0.04F, false, 7),
+            new ScreenFilter("#00AA00", 0.50F, 0.05F, false, 8),
     };
 
-    public static final int GAMER_BREAKING_EVERY_SEC =  60 * 60;
-    public static final int GAMER_BREAKING_FOR_SEC = 10; // not needed
-    public static final boolean GAMER_BREAKING_ACTIVATE = false;
-    public static final int GAMER_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 10 * 60;
-    public static final boolean GAMER_BLUELIGHT_FILTER_CHANGE = true;
-    public static final BreakingMode GAMER_BREAKING_MODE = BreakingMode.LIGHT;
-    public static final ScreenFilter[] GAMER_SCREEN_FILTERS_ACTIVATION = {
+    public static final int DAYLIGHT_BREAKING_EVERY_SEC =  20 * 60;
+    public static final int DAYLIGHT_BREAKING_FOR_SEC = 20;
+    public static final boolean DAYLIGHT_BREAKING_ACTIVATE = true;
+    public static final int DAYLIGHT_BLUELIGHT_FILTER_CHANGE_EVERY_SEC = 20 * 60;
+    public static final boolean DAYLIGHT_BLUELIGHT_FILTER_CHANGE = true;
+    public static final BreakingMode DAYLIGHT_BREAKING_MODE = BreakingMode.LIGHT;
+    public static final ScreenFilter[] DAYLIGHT_SCREEN_FILTERS_ACTIVATION = { // soft daylight
+            new ScreenFilter( "#555500", 0F,  0.14F, true, 1),
+            new ScreenFilter( "#FF0309", 0F,  0.14F, true, 2),
+            new ScreenFilter( "#FFB102", 0F,  0.14F, true, 3),
+            new ScreenFilter( "#00AA00", 0F,  0.14F, true, 4),
+            new ScreenFilter( "#04FFD0", 0F,  0.14F, true, 5),
+            new ScreenFilter( "#FFE401", 0F,  0.14F, true, 6),
+            new ScreenFilter( "#B4A2FF", 0F,  0.14F, true, 7),
+            new ScreenFilter( "#06F0FF", 0F,  0.15F, true, 8),
+    };
+
+        /*{
             new ScreenFilter( "#555500", 0.47F,  0.14F, true, 1),
             new ScreenFilter( "#FF0309", 0.47F,  0.14F, true, 2),
             new ScreenFilter( "#FFB102", 0.47F,  0.14F, true, 3),
@@ -118,7 +129,7 @@ public final class Constants {
             new ScreenFilter( "#FFE401", 0.28F,  0.14F, true, 6),
             new ScreenFilter( "#B4A2FF", 0.47F,  0.14F, true, 7),
             new ScreenFilter( "#06F0FF", 0.36F,  0.15F, true, 8),
-    };
+    };*/
 
 
     /*******/
@@ -145,7 +156,7 @@ public final class Constants {
 
     public static final int DEFAULT_EARN_SURPRISE_POINT_BACKGROUND_EVERY_SEC = 60 * 60;
 
-    public static final int DEFAULT_EARN_SCREEN_FILTER_POINT_EVERY_SEC = 20;
+    public static final int DEFAULT_EARN_SCREEN_FILTER_POINT_EVERY_SEC = 30;
     public static final int DEFAULT_UNIT_SCORE_SCREEN_FILTER = 10;
     public static final int DEFAULT_UNIT_SCORE_CHANGE_SCREEN_FILTER = 10;
 

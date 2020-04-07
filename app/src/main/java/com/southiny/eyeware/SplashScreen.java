@@ -113,12 +113,6 @@ public class SplashScreen extends Activity {
                 Run run = SQLRequest.getRun();
                 Intent intent;
 
-                ArrayList<ScreenFilter> scs = run.getCurrentProtectionMode().getActivatedScreenFiltersByOrder();
-                for (int i = 0; i < scs.size(); i++) {
-                    Logger.log(TAG, scs.get(i).print());
-                }
-
-
                 // start main activity
                 if (isServiceRunning(ClockService.class.getName(), SplashScreen.this)) {
                   //if (run.isTimerRunning()) {

@@ -137,7 +137,7 @@ public class WaitActivity extends AppCompatActivity {
         final Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             private int nb = 0;
-            private static final int nbMax = 3;
+            private static final int nbMax = 6;
             @Override
             public void run() {
                 // start main activity
@@ -146,7 +146,7 @@ public class WaitActivity extends AppCompatActivity {
 
                     if (nb < nbMax) {
                         nb++;
-                        handler.postDelayed(this, 1000);
+                        handler.postDelayed(this, 500);
                     } else { // clock service is really running
                         Intent intent;
                         Run run = SQLRequest.getRun();

@@ -1,13 +1,11 @@
 package com.southiny.eyeware;
 
 import android.app.Activity;
-import android.app.UiModeManager;
 import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.res.Configuration;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,14 +27,12 @@ import android.widget.Toast;
 
 
 import com.southiny.eyeware.database.SQLRequest;
-import com.southiny.eyeware.database.model.Award;
 import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
 import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.service.ClockService;
 import com.southiny.eyeware.tool.AdminReceiver;
-import com.southiny.eyeware.tool.AwardType;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
 import com.southiny.eyeware.tool.ProtectionLevel;
@@ -342,10 +338,10 @@ public class MainActivity extends AppCompatActivity {
         gamerButton.setOnClickListener(new PLButtonClickListener(run.getProtectionModeGamer()));
 
         // set on click to edit icons
-        standardEditIcon.setOnClickListener(new PLEditIconClickListener(ProtectionLevel.STANDARD));
-        highEditIcon.setOnClickListener(new PLEditIconClickListener(ProtectionLevel.HIGH));
-        lowEditIcon.setOnClickListener(new PLEditIconClickListener(ProtectionLevel.LOW));
-        gamerEditIcon.setOnClickListener(new PLEditIconClickListener(ProtectionLevel.GAMER));
+        standardEditIcon.setOnClickListener(new PLEditIconClickListener(ProtectionLevel.STREAMING));
+        highEditIcon.setOnClickListener(new PLEditIconClickListener(ProtectionLevel.READING));
+        lowEditIcon.setOnClickListener(new PLEditIconClickListener(ProtectionLevel.SOCIAL_MEDIA));
+        gamerEditIcon.setOnClickListener(new PLEditIconClickListener(ProtectionLevel.DAYLIGHT));
 
         Utils.blinkBlink(standardButton, getApplicationContext());
         Utils.blinkBlink(highButton, getApplicationContext());
@@ -429,13 +425,13 @@ public class MainActivity extends AppCompatActivity {
                     lockScreenLayout.setBackground(getDrawable(R.drawable.layout_round_shape_yellow_shade_blue));
                     pctrl.setLockScreenActivated(true);
                     pctrl.save();
-                    Toast.makeText(MainActivity.this, "Lock Screen has turn on", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Lock Screen on", Toast.LENGTH_SHORT).show();
 
                 } else { // not checked
                     lockScreenLayout.setBackground(getDrawable(R.drawable.layout_round_shape_gray_shade_white));
                     pctrl.setLockScreenActivated(false);
                     pctrl.save();
-                    Toast.makeText(MainActivity.this, "Lock Screen has turn off", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this, "Lock Screen off", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -765,27 +761,27 @@ public class MainActivity extends AppCompatActivity {
         Logger.log(TAG, "setSelectedButton " + pl.toString());
 
         switch (pl) {
-            case STANDARD:
+            case STREAMING:
                 _setSelected(standardButton, standardCheckIcon);
                 _setUnselected(highButton, highCheckIcon);
                 _setUnselected(lowButton, lowCheckIcon);
                 _setUnselected(gamerButton, gamerCheckIcon);
                 break;
 
-            case HIGH:
+            case READING:
                 _setUnselected(standardButton, standardCheckIcon);
                 _setSelected(highButton, highCheckIcon);
                 _setUnselected(lowButton, lowCheckIcon);
                 _setUnselected(gamerButton, gamerCheckIcon);
                 break;
 
-            case LOW:
+            case SOCIAL_MEDIA:
                 _setUnselected(standardButton, standardCheckIcon);
                 _setUnselected(highButton, highCheckIcon);
                 _setSelected(lowButton, lowCheckIcon);
                 _setUnselected(gamerButton, gamerCheckIcon);
                 break;
-            case GAMER:
+            case DAYLIGHT:
                 _setUnselected(standardButton, standardCheckIcon);
                 _setUnselected(highButton, highCheckIcon);
                 _setUnselected(lowButton, lowCheckIcon);
@@ -818,7 +814,7 @@ public class MainActivity extends AppCompatActivity {
                 " You can turn this off later on. " +
                 "Grant the permission ?";
 
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -844,7 +840,7 @@ public class MainActivity extends AppCompatActivity {
         String title = "Turn off screen filtering ?";
         String message = "Turn it off and start the program";
 
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -879,7 +875,7 @@ public class MainActivity extends AppCompatActivity {
                 "You can turn this off later on. " +
                 "Grant the permission ?";
 
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("Overlay Permission")
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -902,7 +898,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void dialogChangeBreakingMode() {
         Logger.log(TAG, "dialogChangeBreakingMode()");
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("Change breaking mode ?")
                 .setMessage("Change to Medium breaking mode")
                 .setPositiveButton("Change and start program", new DialogInterface.OnClickListener() {
@@ -937,7 +933,7 @@ public class MainActivity extends AppCompatActivity {
                 "You can turn this off later on. " +
                 "Grant the permission ?";
 
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -963,7 +959,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void dialogTurnOffLockScreen() {
         Logger.log(TAG, "dialogTurnOffLockScreen()");
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("Turn off auto lock screen ?")
                 .setMessage("Turn it off and start the program")
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
@@ -994,7 +990,7 @@ public class MainActivity extends AppCompatActivity {
                 "You can turn this off later on. " +
                 "Grant the permission ?";
 
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Grant", new DialogInterface.OnClickListener() {
@@ -1033,7 +1029,7 @@ public class MainActivity extends AppCompatActivity {
             passwordOldTextView.setVisibility(View.GONE);
         }
 
-        final AlertDialog dialog = new AlertDialog.Builder(this)
+        final AlertDialog dialog = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("Change Password")
                 .setView(changePasswordLayout)
                 .setIcon(R.drawable.ic_security_accent_24dp)
@@ -1092,7 +1088,7 @@ public class MainActivity extends AppCompatActivity {
 
         lockScreenTimeInputEditText.setText(String.valueOf(pctrl.getLockScreenInSec() / 60));
 
-        final AlertDialog dialog = new AlertDialog.Builder(this)
+        final AlertDialog dialog = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle("Change Lock Screen Time")
                 //.setMessage(message)
                 .setView(changeLockScreenLayout)
@@ -1146,7 +1142,7 @@ public class MainActivity extends AppCompatActivity {
                 "we don't support password reset. " +
                 "A solution to this could be uninstall and re-install the application.";
 
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton("Got it !", new DialogInterface.OnClickListener() {
@@ -1163,7 +1159,7 @@ public class MainActivity extends AppCompatActivity {
     private void dialogReceivePoints(long newPoints, String message, String buttonTitle) {
         String title = "You have received +" + newPoints + " points !";
 
-        new AlertDialog.Builder(this, R.style.Theme_AppCompat_DayNight_Dialog_Alert)
+        new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert)
                 .setTitle(title)
                 .setMessage(message)
                 .setPositiveButton(buttonTitle, new DialogInterface.OnClickListener() {
@@ -1365,14 +1361,15 @@ public class MainActivity extends AppCompatActivity {
                     break;
                 case LOCK_ARM_CLICK:
                     activated = !pctrl.isLockScreenActivated();
-                    pctrl.setLockScreenActivated(activated);
+                    lockScreenActivateSwitch.setChecked(activated);
+                    /*pctrl.setLockScreenActivated(activated);
                     pctrl.save();
                     setLockScreenActivation(activated);
                     if (activated) {
                         Toast.makeText(MainActivity.this, "Lock Screen on", Toast.LENGTH_SHORT).show();
                     } else {
                         Toast.makeText(MainActivity.this, "Lock Screen off", Toast.LENGTH_SHORT).show();
-                    }
+                    }*/
                     break;
             }
         }

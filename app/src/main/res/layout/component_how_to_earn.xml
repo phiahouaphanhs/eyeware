@@ -64,12 +64,12 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="@dimen/fab_margin"
             android:layout_marginStart="@dimen/fab_margin"
             android:layout_marginEnd="@dimen/fab_margin"
             android:background="@drawable/layout_round_shape_blue"
-            android:textColor="@color/eyeware_white"
-            android:text="Every 20 Seconds of putting on our screen filter"/>
+            android:padding="@dimen/fab_margin"
+            android:text="Every 30 seconds of putting on our screen filter"
+            android:textColor="@color/eyeware_white" />
 
         <android.support.v4.widget.Space
             android:layout_width="match_parent"
@@ -149,7 +149,7 @@
             android:paddingTop="4dp"
             android:paddingEnd="@dimen/fab_margin"
             android:paddingBottom="4dp"
-            android:text='7 consecutive "level up", or 3 consecutive "reaching dialy goal points"'
+            android:text='7 consecutive "level up", or 3 consecutive "reaching daily goal points"'
             android:textColor="@color/eyeware_white"
             android:textSize="12sp"
             android:textStyle="italic" />
@@ -174,13 +174,13 @@
             android:layout_marginStart="@dimen/fab_margin"
             android:layout_marginEnd="@dimen/fab_margin"
             android:paddingStart="@dimen/fab_margin"
-            android:paddingEnd="@dimen/fab_margin"
             android:paddingTop="4dp"
+            android:paddingEnd="@dimen/fab_margin"
             android:paddingBottom="4dp"
-            android:textStyle="italic"
+            android:text="You'll earn faster when you turn on both breaking and screen filtering, or when you stay on the app  for some time"
+            android:textColor="@color/eyeware_white"
             android:textSize="12sp"
-            android:text="You'll earn faster when you turn on both breaking and screen filtering, or when you stay on our application for a some amount of time"
-            android:textColor="@color/eyeware_white" />
+            android:textStyle="italic" />
 
         <android.support.v4.widget.Space
             android:layout_width="match_parent"

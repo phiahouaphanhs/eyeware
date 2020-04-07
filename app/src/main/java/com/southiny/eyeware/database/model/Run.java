@@ -1,7 +1,5 @@
 package com.southiny.eyeware.database.model;
 
-import android.support.annotation.NonNull;
-
 import com.reactiveandroid.Model;
 import com.reactiveandroid.annotation.Column;
 import com.reactiveandroid.annotation.PrimaryKey;
@@ -9,9 +7,6 @@ import com.reactiveandroid.annotation.Table;
 import com.southiny.eyeware.Constants;
 import com.southiny.eyeware.database.AppDatabase;
 import com.southiny.eyeware.tool.Language;
-import com.southiny.eyeware.tool.ProtectionLevel;
-
-import java.util.ArrayList;
 
 @Table(name = Run.TABLE_NAME, database = AppDatabase.class)
 public class Run extends Model {
@@ -184,28 +179,28 @@ public class Run extends Model {
 
     public void setCurrentProtectionMode(ProtectionMode protectionMode) {
         switch (protectionMode.getProtectionLevel()) {
-            case STANDARD:
+            case STREAMING:
                 protectionModeStandard.setCurrent(true);
                 protectionModeHigh.setCurrent(false);
                 protectionModeLow.setCurrent(false);
                 protectionModeGamer.setCurrent(false);
                 break;
 
-            case HIGH:
+            case READING:
                 protectionModeStandard.setCurrent(false);
                 protectionModeHigh.setCurrent(true);
                 protectionModeLow.setCurrent(false);
                 protectionModeGamer.setCurrent(false);
                 break;
 
-            case LOW:
+            case SOCIAL_MEDIA:
                 protectionModeStandard.setCurrent(false);
                 protectionModeHigh.setCurrent(false);
                 protectionModeLow.setCurrent(true);
                 protectionModeGamer.setCurrent(false);
                 break;
 
-            case GAMER:
+            case DAYLIGHT:
                 protectionModeStandard.setCurrent(false);
                 protectionModeHigh.setCurrent(false);
                 protectionModeLow.setCurrent(false);
