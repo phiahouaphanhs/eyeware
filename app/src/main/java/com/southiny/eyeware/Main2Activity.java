@@ -1,9 +1,11 @@
 package com.southiny.eyeware;
 
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.ServiceConnection;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -14,7 +16,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -47,6 +48,7 @@ import static com.southiny.eyeware.tool.Utils.zbs;
 public class Main2Activity extends AppCompatActivity {
     public static final String TAG = Main2Activity.class.getSimpleName();
     public static boolean isActivityRunning;
+    public static Main2Activity currentInstance = null;
 
     private Run run;
     private ProtectionMode pm;
@@ -135,6 +137,14 @@ public class Main2Activity extends AppCompatActivity {
         Logger.log(TAG, "onCreate()");
 
         audioManager = (AudioManager)getSystemService(Context.AUDIO_SERVICE);
+        currentInstance = this;
+
+        /*NotificationActionBroadcastReceiver stopActionBroadcastReceiver = new NotificationActionBroadcastReceiver();
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction("com.southiny.eyeware.intent.STOP_PROGRAM");
+        registerReceiver(stopActionBroadcastReceiver, intentFilter);*/
+
+        /*****************/
 
         breakMinuteTextView = findViewById(R.id.timer_minute_count);
         breakSecondTextView = findViewById(R.id.timer_second_count);
@@ -224,19 +234,9 @@ public class Main2Activity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Logger.log(TAG, "onClick() stop button");
-                Logger.log(TAG, "stop " + ClockService.TAG);
                 Utils.clickAnimate(view, getApplicationContext());
                 Utils.playClickSound(audioManager);
-                Intent intent = new Intent(Main2Activity.this, ClockService.class);
-                stopService(intent);
-
-                Toast.makeText(Main2Activity.this, getString(R.string.home_timer_stop_message), Toast.LENGTH_SHORT).show();
-
-                intent = new Intent(Main2Activity.this, MainActivity.class);
-                startActivity(intent);
-
-                Logger.log(TAG, "finished.");
-                finish();
+                stopProgram();
             }
         });
 
@@ -542,6 +542,21 @@ public class Main2Activity extends AppCompatActivity {
     };
 
     /*********** PRIVATE METHODS ********************/
+
+    private void stopProgram() {
+        Logger.log(TAG, "stop " + ClockService.TAG);
+
+        Intent intent = new Intent(Main2Activity.this, ClockService.class);
+        stopService(intent);
+
+        Toast.makeText(Main2Activity.this, getString(R.string.home_timer_stop_message), Toast.LENGTH_SHORT).show();
+
+        intent = new Intent(Main2Activity.this, MainActivity.class);
+        startActivity(intent);
+
+        Logger.log(TAG, "finished.");
+        finish();
+    }
 
     /**
      * pre-require : activity is bound to Watch service

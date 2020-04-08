@@ -82,6 +82,9 @@
 
         <receiver android:name=".tool.AlarmReceiver" />
 
+        <receiver android:name=".tool.NotificationActionReceiver">
+        </receiver>
+
         <service
             android:name=".service.BlueLightFilterService"
             android:exported="false" />

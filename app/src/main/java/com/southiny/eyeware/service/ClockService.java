@@ -31,14 +31,17 @@ import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.tool.AdminReceiver;
 import com.southiny.eyeware.tool.BreakingMode;
 import com.southiny.eyeware.tool.Logger;
+import com.southiny.eyeware.tool.NotificationActionReceiver;
 import com.southiny.eyeware.tool.Utils;
 
-import java.util.Calendar;
 import java.util.Objects;
 
 public class ClockService extends Service {
 
     public static final String TAG = ClockService.class.getSimpleName();
+    public static final String INTENT_SET_FINISH_NOTIF = "set_finish_notif";
+    public static final String INTENT_STOP_PROGRAM_ACTION = "clock_service_stop_code";
+    public static ClockService currentInstance;
 
     private Run run;
     private ProtectionMode pm;
@@ -47,8 +50,6 @@ public class ClockService extends Service {
     private long cptBreakSec, cptBluelightChangeSec, cptLockScreenSec, cptUnLockScreenSec;
     private boolean breakFinished = true;
     private long cptEarnSurprise = 0;
-
-    private long currentScoreOfToday, currentTotalScore, currentLevel;
 
     //private RunChangeListener runChangeListener;
     private UserInteractionReceiver userInteractionReceiver;
@@ -64,9 +65,6 @@ public class ClockService extends Service {
     private boolean isRunningBL = false;
     private boolean isRunningNonInteract = false;
     private boolean isRunningReInteract = false;
-
-    public static final String INTENT_SET_FINISH_NOTIF = "set_finish_notif";
-
 
     // Binder given to clients
     private final IBinder binder = new LocalBinder();
@@ -97,25 +95,49 @@ public class ClockService extends Service {
         super.onCreate();
         Logger.log(TAG, "onCreate()");
 
+        currentInstance = this;
+
+        // get run
+        Logger.log(TAG, "get run ...");
+        run = SQLRequest.getRun();
+        Logger.log(TAG, "Run id : " + run.getId());
+
+        pm = run.getCurrentProtectionMode();
+        pctrl = run.getParentalControl();
+        scoring = run.getScoring();
+
         /****** FOREGROUND ************/
 
+        // action button
+        Intent stopIntent = new Intent(this, NotificationActionReceiver.class);
+        stopIntent.setAction(INTENT_STOP_PROGRAM_ACTION);
+        stopIntent.putExtra(Constants.CHANNEL_ID, 0);
+        PendingIntent stopPendingIntent =
+                PendingIntent.getBroadcast(this, 0, stopIntent, 0);
 
+        // notification
         Intent notificationIntent = new Intent(this, Main2Activity.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
         createNotificationChannel();
 
-        Notification notification =
+        NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
-                        //.setContentTitle("Using smart devices without fear of losing sight")
+                        .setContentTitle(pm.getName() + " mode")
                         .setContentText("No fear of losing sight")
                         .setSmallIcon(R.drawable.ic_miracle_head2)
                         .setContentIntent(pendingIntent)
                         .setShowWhen(false) // to hide timestamp
                         .setPriority(NotificationCompat.PRIORITY_MIN)
-                        .setColor(getColor(R.color.colorAccent))
-                        .build();
+                        .setColor(getColor(R.color.colorAccent));
+
+        if (!pctrl.isPasswordActivated()) {
+         builder.addAction(R.drawable.ic_close_accent_24dp, "STOP",
+                    stopPendingIntent);
+        }
+
+        Notification notification = builder.build();
 
         startForeground(1, notification);
 
@@ -127,15 +149,6 @@ public class ClockService extends Service {
         Logger.log(TAG, "(start BL foreground) send intent to " + BlueLightFilterService.TAG);
         Intent intent = new Intent(this, BlueLightFilterService.class);
         startForegroundService(intent);
-
-        // get run
-        Logger.log(TAG, "get run ...");
-        run = SQLRequest.getRun();
-        Logger.log(TAG, "Run id : " + run.getId());
-
-        pm = run.getCurrentProtectionMode();
-        pctrl = run.getParentalControl();
-        scoring = run.getScoring();
 
         Logger.log(TAG, "set midnight alarm at 0 05");
         Utils.unSetMidNightAlarmIfExist(getApplicationContext());
@@ -171,6 +184,7 @@ public class ClockService extends Service {
         startBLTimer();
         startLockScreenCountDown();
     }
+
 
     private final Runnable cptBreakRunnable = new Runnable() {
         private final String TAG = ClockService.TAG + " cptBreakRunnable";

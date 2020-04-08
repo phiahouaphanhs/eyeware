@@ -25,11 +25,13 @@ import com.southiny.eyeware.Constants;
 import com.southiny.eyeware.Main2Activity;
 import com.southiny.eyeware.R;
 import com.southiny.eyeware.database.SQLRequest;
+import com.southiny.eyeware.database.model.ParentalControl;
 import com.southiny.eyeware.database.model.ProtectionMode;
 import com.southiny.eyeware.database.model.Run;
 import com.southiny.eyeware.database.model.Scoring;
 import com.southiny.eyeware.database.model.ScreenFilter;
 import com.southiny.eyeware.tool.Logger;
+import com.southiny.eyeware.tool.NotificationActionReceiver;
 import com.southiny.eyeware.tool.Utils;
 
 import java.util.ArrayList;
@@ -39,11 +41,13 @@ public class BlueLightFilterService extends Service {
 
     private View mOverlayView = null;
 
+    public static final String INTENT_CHANGE_FILTER_ACTION = "change_filter_action";
     public static final String INTENT_EXTRA_CODE = "extra_code";
     public static final int ADD_CODE = 1;
     public static final int REMOVE_AND_EXIT_CODE = 0;
     public static final int ADD_NOTIF_CODE = 2;
     public static final int ADD_NOTIF_SHORT_CODE = 3;
+    public static final int NEXT_CODE = 4;
 
     private int currentFilterIndex = 0;
 
@@ -112,18 +116,27 @@ public class BlueLightFilterService extends Service {
         super.onCreate();
         Logger.log(TAG, "onCreate()");
 
-        ProtectionMode pm = SQLRequest.getRun().getCurrentProtectionMode();
+        Run run = SQLRequest.getRun();
+        ProtectionMode pm = run.getCurrentProtectionMode();
         sfs = pm.getActivatedScreenFiltersByOrder();
         currentFilterIndex = sfs.size() - 1;
+        ParentalControl pctrl = run.getParentalControl();
 
         /****** FOREGROUND ************/
 
+        // action button
+        Intent changeFilterIntent = new Intent(this, NotificationActionReceiver.class);
+        changeFilterIntent.setAction(INTENT_CHANGE_FILTER_ACTION);
+        changeFilterIntent.putExtra(Constants.CHANNEL_ID, 0);
+        PendingIntent changeFilterPendingIntent =
+                PendingIntent.getBroadcast(this, 0, changeFilterIntent, 0);
 
+        // notification
         Intent notificationIntent = new Intent(this, Main2Activity.class);
         PendingIntent pendingIntent =
                 PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        Notification notification =
+        NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(this, Constants.CHANNEL_ID)
                         .setContentTitle("Program is running")
                         .setContentText("Tap to manage")
@@ -131,8 +144,14 @@ public class BlueLightFilterService extends Service {
                         .setContentIntent(pendingIntent)
                         .setShowWhen(false) // to hide timestamp
                         .setPriority(NotificationCompat.PRIORITY_MIN)
-                        .setColor(getColor(R.color.colorAccent))
-                        .build();
+                        .setColor(getColor(R.color.colorAccent));
+
+        if (!pctrl.isPasswordActivated()) {
+            builder.addAction(R.drawable.ic_close_accent_24dp, "NEXT FILTER",
+                    changeFilterPendingIntent);
+        }
+
+        Notification notification = builder.build();
 
         startForeground(2, notification);
 
@@ -168,6 +187,7 @@ public class BlueLightFilterService extends Service {
                     Logger.log(TAG, "current filter index " + currentFilterIndex);
                     removeFilter();
                     addFilter(sfs.get(currentFilterIndex));
+
                     if (!isGainPointRunnablePosted) {
                         gainPointHandler.post(gainPointRunnable);
                         isGainPointRunnablePosted = true;
@@ -204,6 +224,16 @@ public class BlueLightFilterService extends Service {
 
                 break;
 
+            case NEXT_CODE:
+                // change blue light filter color
+                if (!isOnNotification && sfs.size() > 0) {
+                    currentFilterIndex = (currentFilterIndex + 1) % sfs.size();
+                    Logger.log(TAG, "current filter index " + currentFilterIndex);
+                    removeFilter();
+                    addFilter(sfs.get(currentFilterIndex));
+
+                }
+                break;
             // receive only from clock service
             case ADD_NOTIF_CODE:
                 removeFilter();
